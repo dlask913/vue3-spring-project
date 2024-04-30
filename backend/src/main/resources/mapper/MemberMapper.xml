@@ -1,0 +1,30 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.noticeboardservice.mapper.MemberMapper">
+
+    <!-- 회원 생성 -->
+    <insert id="insertMember" parameterType="MemberDto">
+        INSERT INTO member (username, email, password)
+        VALUES (#{username}, #{email}, #{password})
+    </insert>
+
+    <!-- 회원 정보 수정 -->
+    <update id="updateMember" parameterType="MemberDto">
+        UPDATE member
+        SET username = #{username}, email = #{email}, password = #{password}
+        where id = #{id}
+    </update>
+
+    <!-- 회원 단일 조회 -->
+    <select id="findMember" resultType="MemberDto" parameterType="long">
+        SELECT id, username, email, password
+        FROM member
+        where id = #{id}
+    </select>
+
+    <!-- 회원 탈퇴 -->
+    <delete id="deleteMember" parameterType="long">
+        DELETE FROM member
+        where id = #{id}
+    </delete>
+
+</mapper>
