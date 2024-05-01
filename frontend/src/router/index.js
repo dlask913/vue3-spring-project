@@ -9,6 +9,11 @@ const router = createRouter({
             path: '/',
             name: 'Home',
             component: Home
+        },
+        {
+            path: '/register',
+            name: 'RegisterForm',
+            component: RegisterForm
         }
     ]
 });

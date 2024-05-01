@@ -8,7 +8,7 @@
                     <a class="nav-link" href="#">게시판</a>
                     </li>
                     <li class="nav-item">
-                    <router-link class="nav-link" href="#">회원가입</router-link>
+                    <router-link class="nav-link" :to="{name: 'RegisterForm'}">회원가입</router-link>
                     </li>
                 </ul>
             </div>
