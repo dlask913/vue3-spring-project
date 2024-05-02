@@ -1,4 +1,5 @@
 <template>
+    
     <form @submit.prevent = "onSave">
         <div class="my-container">
             <div class="card col-5 mt-5 mb-5">
@@ -51,14 +52,26 @@
             </div>
         </div>
     </form>
+    <Toast 
+        v-if="showToast" 
+        :message="toastMessage"
+        :type="toastAlertType"
+    />
 
 </template>
 
 <script>
 import axios from '@/axios';
-import { ref,computed, onUpdated } from 'vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import Toast from '@/components/common/Toast.vue';
+
 export default {
+    components: {
+        Toast
+    },
     setup(){
+        const router = useRouter();
         const member = ref({
             email: '',
             username: '',
@@ -72,7 +85,23 @@ export default {
             passwordError: ''
         });
 
+        const showToast = ref(false);
+        const toastMessage = ref('');
+        const toastAlertType = ref('success');
+
+        const triggerToast = (message, type = 'success') => {
+          toastMessage.value = message;
+          toastAlertType.value = type;
+          showToast.value = true;
+          setTimeout(() => {
+            toastMessage.value = '';
+            toastAlertType.value = '';
+            showToast.value = false;
+          }, 3000)
+        };
+
         const onSave = async () => {
+
             const requiredFields = ['email', 'username', 'password'];
             const fieldDesc = {
                 email: '이메일은 필수 값입니다.',
@@ -103,12 +132,15 @@ export default {
                     password: member.value.password,
                 };
                 res = await axios.post(`member`, data);
-                member.value.email='';
-                member.value.username='';
-                member.value.password='';
-                member.value.passwordTemp='';
+                // 페이지 이동 시, 이전 페이지의 모든 컴포넌트와 상태 유지 X → 토스트 알림 출력 X
+                triggerToast('회원가입 완료!');
+                router.push("/");
+                
+                
             } catch (error){
                 console.log('실패!')
+                console.log(error);
+                triggerToast('회원가입 실패!','danger');
             }
         };
 
@@ -127,9 +159,13 @@ export default {
             valueError,
             passwordConfirm,
             passwordConfirmError,
+            showToast,
+            toastMessage,
+            toastAlertType,
         }
     }
 }
+
 </script>
 
 <style scoped>
