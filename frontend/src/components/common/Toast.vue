@@ -1,23 +1,20 @@
 <template>
     <div 
         class="alert toast-box" 
-        :class="`alert-${type}`"
+        :class="`alert-${toast.toastAlertType}`"
         role="alert"
     >
-        {{ message }}
+        {{ toast.toastMessage }}
     </div>
 </template>
 
 <script>
+import { useToastStore } from '@/store/index';
 export default {
-    props: {
-        message: {
-            type: String,
-            required: true
-        },
-        type: {
-            type: String,
-            default: 'success'
+    setup(){
+        const toast = useToastStore();
+        return{
+            toast
         }
     }
 }
