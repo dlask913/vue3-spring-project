@@ -1,5 +1,6 @@
 package com.example.noticeboardservice.controller;
 
+import com.example.noticeboardservice.dto.LoginDto;
 import com.example.noticeboardservice.dto.MemberDto;
 import com.example.noticeboardservice.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +23,14 @@ public class MemberController {
         if (result <= 0){
             return ResponseEntity.badRequest().body("회원가입에 실패하였습니다.");
         }
-        return ResponseEntity.badRequest().body("회원 가입이 완료되었습니다.");
+        return ResponseEntity.ok().body("회원 가입이 완료되었습니다.");
+    }
+
+    @PostMapping("/login")
+    @Operation(summary = "로그인 API")
+    public ResponseEntity<String> loginMember(@RequestBody LoginDto loginDto) {
+        String token = memberServiceImpl.login(loginDto);
+        return ResponseEntity.ok().body(token);
     }
 
     @GetMapping("/member/{memberId}")

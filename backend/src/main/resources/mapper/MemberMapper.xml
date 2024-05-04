@@ -21,6 +21,13 @@
         where id = #{id}
     </select>
 
+    <!-- 회원 단일 조회 by Email -->
+    <select id="findByEmail" resultType="MemberDto" parameterType="String">
+        SELECT id, username, email, password
+        FROM member
+        where email = #{email}
+    </select>
+
     <!-- 회원 탈퇴 -->
     <delete id="deleteMember" parameterType="long">
         DELETE FROM member

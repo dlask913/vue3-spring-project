@@ -24,3 +24,22 @@ export const useToastStore = defineStore('toast', {
         }
     }
 });
+
+export const useStorageStore = defineStore('token', {
+    state: () => ({
+        jwt: ''
+    }),
+    getters: {
+        getToken(state) {
+            return state.jwt;
+        },
+    },
+    actions: {
+        setToken(jwt) {
+            this.jwt = jwt;
+        },
+        clearToast() {
+            this.jwt = '';
+        }
+    }
+});
