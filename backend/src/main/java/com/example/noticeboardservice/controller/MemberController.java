@@ -1,11 +1,13 @@
 package com.example.noticeboardservice.controller;
 
 import com.example.noticeboardservice.dto.LoginDto;
+import com.example.noticeboardservice.dto.LoginResponseDto;
 import com.example.noticeboardservice.dto.MemberDto;
 import com.example.noticeboardservice.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,9 +30,9 @@ public class MemberController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인 API")
-    public ResponseEntity<String> loginMember(@RequestBody LoginDto loginDto) {
-        String token = memberServiceImpl.login(loginDto);
-        return ResponseEntity.ok().body(token);
+    public ResponseEntity<LoginResponseDto> loginMember(@RequestBody LoginDto loginDto) {
+        LoginResponseDto response = memberServiceImpl.login(loginDto);
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/member/{memberId}")

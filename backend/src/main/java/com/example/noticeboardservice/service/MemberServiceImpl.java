@@ -1,7 +1,10 @@
 package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.LoginDto;
+import com.example.noticeboardservice.dto.LoginResponseDto;
 import com.example.noticeboardservice.dto.MemberDto;
+import com.example.noticeboardservice.exception.MemberNotFoundException;
+import com.example.noticeboardservice.exception.PasswordMismatchException;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,18 +22,21 @@ public class MemberServiceImpl implements MemberService {
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override
-    public String login(LoginDto loginDto) {
+    public LoginResponseDto login(LoginDto loginDto) {
         MemberDto memberDto = findByEmail(loginDto.getEmail())
-                .orElseThrow(
-                        () -> new RuntimeException("회원 정보가 없습니다.")
-                );
+                .orElseThrow(MemberNotFoundException::new);
 
         if (!(memberDto.getEmail().equals(loginDto.getEmail())
                 && memberDto.getPassword().equals(loginDto.getPassword()))) {
-            throw new RuntimeException("비밀번호가 맞지 않습니다.");
+            throw new PasswordMismatchException();
         }
 
-        return jwtTokenUtil.generateToken(memberDto.getEmail());
+        String token = jwtTokenUtil.generateToken(memberDto.getEmail());
+
+        return LoginResponseDto.builder()
+                .memberId(memberDto.getId())
+                .token(token)
+                .build();
     }
 
     @Override

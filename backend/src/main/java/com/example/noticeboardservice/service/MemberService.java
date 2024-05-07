@@ -1,6 +1,7 @@
 package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.LoginDto;
+import com.example.noticeboardservice.dto.LoginResponseDto;
 import com.example.noticeboardservice.dto.MemberDto;
 
 import java.util.List;
@@ -14,5 +15,5 @@ public interface MemberService {
     int deleteMember(Long memberId);
     List<MemberDto> findAllMembers();
 
-    String login(LoginDto loginDto);
+    LoginResponseDto login(LoginDto loginDto);
 }
