@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useCookies } from 'vue3-cookies';
 
 export const useToastStore = defineStore('toast', {
     state: () => ({
@@ -25,21 +26,29 @@ export const useToastStore = defineStore('toast', {
     }
 });
 
-export const useStorageStore = defineStore('token', {
-    state: () => ({
-        jwt: ''
-    }),
+export const useStorageStore = defineStore('storage', {
+    state: () => {
+        const {cookies} = useCookies();
+        return {
+            userId: '',
+            token: '' || cookies.get('token'),
+        };
+    },
     getters: {
-        getToken(state) {
-            return state.jwt;
+        getToken(state){
+            return state.token;
         },
     },
     actions: {
-        setToken(jwt) {
-            this.jwt = jwt;
+        login(userId, token) {
+            this.userId = userId;
+            this.token = token;
         },
-        clearToast() {
-            this.jwt = '';
+        logout() {
+            const {cookies} = useCookies();
+            this.userId = '';
+            this.token = '';
+            cookies.remove('token');
         }
     }
 });

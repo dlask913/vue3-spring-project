@@ -32,16 +32,21 @@
         </div>
     </form>
 </template>
+
 <script>
 import axios from '@/axios';
-import { ref,computed } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useToastStore, useStorageStore } from '@/store/index';
+import { useToastStore } from '@/store/index';
+import { useCookies } from 'vue3-cookies';
+import { useStorageStore } from '@/store/index';
 export default {
     setup(){
         const toast = useToastStore();
-        const token = useStorageStore();
         const router = useRouter();
+        const { cookies } = useCookies();
+        const storage = useStorageStore();
+        
         const login = ref({
             email: '',
             password: ''
@@ -77,22 +82,27 @@ export default {
                     email: login.value.email,
                     password: login.value.password,
                 };
-                res = await axios.post(`login`, data);
-                toast.setToast('로그인 완료!');
-                token.setToken(res.data);
-                console.log(token.jwt);
+
+                res = await axios.post(`login`, data); // POST /login
+                cookies.set("token", res.data.token); // 쿠키에 토큰 저장
+                storage.login(res.data.memberId, res.data.token); // store 에 토큰 저장
+                toast.setToast('로그인 완료');
+                router.push('/');
                 
             } catch (error){
                 console.log(error);
-                toast.setToast('로그인 실패!','danger');
+                if (error.response.data.status == 500){
+                    toast.setToast('알 수 없는 오류가 발생하였습니다.','danger');    
+                } else{
+                    toast.setToast(error.response.data.message,'danger');    
+                }
             }
             
         };
-
         return {
             login,
             valueError,
-            onLogin
+            onLogin,
         }
     }
 }

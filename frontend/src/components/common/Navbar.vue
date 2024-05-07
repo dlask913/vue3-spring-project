@@ -10,12 +10,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">게시판</a>
                     </li>
-                    <li class="nav-item">
+                    <li v-if="storage.getToken" class="nav-item">
+                        <button class="nav-link" :to="{name: 'UpdateForm'}">마이페이지</button>
+                    </li>
+                    <li v-if="storage.getToken" class="nav-item">
+                        <button class="nav-link" @click="onLogout">로그아웃</button>
+                    </li>
+                    <div v-else class="navbar-nav">
                         <router-link class="nav-link" :to="{name: 'RegisterForm'}">회원가입</router-link>
-                    </li>
-                    <li class="nav-item">
                         <router-link class="nav-link" :to="{name: 'LoginForm'}">로그인</router-link>
-                    </li>
+                    </div>
                 </ul>
             </div>
         </div>
@@ -23,8 +27,23 @@
 </template>
 
 <script>
-export default {
 
+import { useRouter } from 'vue-router';
+import { useStorageStore } from '@/store/index';
+export default {
+    setup(){
+        const router = useRouter();
+        const storage = useStorageStore();
+        const onLogout= () => {
+            storage.logout();
+            router.push('/login');
+        };
+
+        return {
+            storage,
+            onLogout
+        }
+    }
 }
 </script>
 
