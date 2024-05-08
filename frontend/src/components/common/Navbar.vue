@@ -10,11 +10,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">게시판</a>
                     </li>
-                    <li v-if="storage.getToken" class="nav-item">
-                        <button class="nav-link" :to="{name: 'UpdateForm'}">마이페이지</button>
-                    </li>
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">                
                     <li v-if="storage.getToken" class="nav-item">
                         <button class="nav-link" @click="onLogout">로그아웃</button>
+                    </li>
+                    <li v-if="storage.getToken" class="nav-item">
+                        <button class="nav-link" @click="openModal" data-bs-toggle="modal" data-bs-target="#confirmModal">회원탈퇴</button>
                     </li>
                     <div v-else class="navbar-nav">
                         <router-link class="nav-link" :to="{name: 'RegisterForm'}">회원가입</router-link>
@@ -24,24 +28,43 @@
             </div>
         </div>
     </nav>
+    <Modal 
+        v-if="showModal" 
+        :message="showMessage"
+    />
 </template>
 
 <script>
 
 import { useRouter } from 'vue-router';
-import { useStorageStore } from '@/store/index';
+import { ref } from 'vue';
+import { useStorageStore, useToastStore } from '@/store/index';
+import Modal from '@/components/common/Modal.vue';
 export default {
+    components:{
+        Modal
+    },
     setup(){
         const router = useRouter();
         const storage = useStorageStore();
+        const toast = useToastStore();
+        const showModal = ref(false);
+        const showMessage = ref('');
         const onLogout= () => {
             storage.logout();
             router.push('/login');
         };
+        const openModal = () => {
+            showModal.value = true;
+            showMessage.value = '정말 탈퇴하시겠습니까?';
+        };
 
         return {
             storage,
-            onLogout
+            onLogout,
+            openModal,
+            showModal,
+            showMessage,
         }
     }
 }
