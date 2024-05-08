@@ -84,8 +84,10 @@ export default {
                 };
 
                 res = await axios.post(`login`, data); // POST /login
+                cookies.set("userId", res.data.memberId); // 쿠키에 userId 저장
                 cookies.set("token", res.data.token); // 쿠키에 토큰 저장
-                storage.login(res.data.memberId, res.data.token); // store 에 토큰 저장
+                storage.login(res.data.memberId, res.data.token); // store 에 userId / 토큰 저장
+                
                 toast.setToast('로그인 완료');
                 router.push('/');
                 

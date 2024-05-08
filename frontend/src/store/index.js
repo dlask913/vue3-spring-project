@@ -30,13 +30,16 @@ export const useStorageStore = defineStore('storage', {
     state: () => {
         const {cookies} = useCookies();
         return {
-            userId: '',
-            token: '' || cookies.get('token'),
+            userId: '' || cookies.get('userId'),
+            token: '' || 'Bearer ' + cookies.get('token'),
         };
     },
     getters: {
         getToken(state){
             return state.token;
+        },
+        getUserId(state){
+            return state.userId;
         },
     },
     actions: {
@@ -48,6 +51,7 @@ export const useStorageStore = defineStore('storage', {
             const {cookies} = useCookies();
             this.userId = '';
             this.token = '';
+            cookies.remove('userId');
             cookies.remove('token');
         }
     }
