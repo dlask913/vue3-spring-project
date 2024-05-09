@@ -5,6 +5,7 @@ import com.example.noticeboardservice.dto.LoginResponseDto;
 import com.example.noticeboardservice.dto.MemberDto;
 import com.example.noticeboardservice.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -43,7 +44,7 @@ public class MemberController {
     }
 
     @PutMapping("/member")
-    @Operation(summary = "회원 정보 수정 API")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "회원 정보 수정 API")
     public ResponseEntity<String> updateMember(@RequestBody MemberDto memberDto) {
         int result = memberServiceImpl.updateMember(memberDto);
         if (result <= 0){
@@ -53,7 +54,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/member/{memberId}")
-    @Operation(summary = "회원 탈퇴 API")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "회원 탈퇴 API")
     public ResponseEntity<String> deleteMember(@PathVariable("memberId") Long memberId) {
         int result = memberServiceImpl.deleteMember(memberId);
         if (result <= 0){
