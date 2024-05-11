@@ -1,0 +1,47 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.noticeboardservice.mapper.NoticeMapper">
+
+    <!-- 게시글 생성 -->
+    <insert id="insertNotice" parameterType="NoticeRequestDto">
+        INSERT INTO notice (title, content, post_date, member_id)
+        VALUES (#{title}, #{content}, #{postDate}, #{memberId})
+    </insert>
+
+    <!-- 게시글 수정 -->
+    <update id="updateNotice" parameterType="NoticeRequestDto">
+        UPDATE notice
+        SET title = #{title}, content = #{content}
+        where id = #{id}
+    </update>
+
+    <!-- 게시글 조회 -->
+    <select id="findNotice" resultType="NoticeResponseDto" parameterType="long">
+        SELECT id, title, content, post_date, member_id
+        FROM notice
+        where id = #{noticeId}
+    </select>
+
+    <!-- 게시글 조회 by Member -->
+    <select id="findNoticeByMember" resultType="NoticeResponseDto" parameterType="long">
+        SELECT id, title, content, post_date
+        FROM notice
+        where member_id = #{memberId}
+    </select>
+
+    <!-- 게시글 데이터 모두 조회 -->
+    <select id="findAllNotices" resultType="NoticeResponseDto" parameterType="long">
+        SELECT id, title, content, DATE_FORMAT(post_date, '%Y-%m-%d %H:%i:%s') AS post_date
+        FROM notice
+    </select>
+
+    <!-- 게시글 삭제 -->
+    <delete id="deleteNotice" parameterType="long">
+        DELETE FROM notice
+        where id = #{id}
+    </delete>
+
+    <!-- 게시글 데이터 모두 삭제 -->
+    <delete id="deleteAll" parameterType="long">
+        DELETE FROM notice
+    </delete>
+</mapper>
