@@ -13,4 +13,5 @@ public interface MemberMapper {
     int deleteMember(Long memberId);
     List<MemberDto> findAllMembers();
     MemberDto findByEmail(String email);
+    void deleteAll();
 }

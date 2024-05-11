@@ -10,7 +10,7 @@
     <!-- 회원 정보 수정 -->
     <update id="updateMember" parameterType="MemberDto">
         UPDATE member
-        SET username = #{username}, email = #{email}, password = #{password}
+        SET username = #{username}, password = #{password}
         where id = #{id}
     </update>
 
@@ -28,10 +28,21 @@
         where email = #{email}
     </select>
 
+    <!-- 회원 데이터 모두 조회 -->
+    <select id="findAllMembers" resultType="MemberDto">
+        SELECT id, username, email, password
+        FROM member
+    </select>
+
     <!-- 회원 탈퇴 -->
     <delete id="deleteMember" parameterType="long">
         DELETE FROM member
         where id = #{id}
+    </delete>
+
+    <!-- 회원 데이터 모두 삭제 -->
+    <delete id="deleteAll">
+        DELETE FROM member
     </delete>
 
 </mapper>
