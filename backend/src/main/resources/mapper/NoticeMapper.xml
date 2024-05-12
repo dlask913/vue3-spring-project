@@ -22,15 +22,15 @@
     </select>
 
     <!-- 게시글 조회 by Member -->
-    <select id="findNoticeByMember" resultType="NoticeResponseDto" parameterType="long">
-        SELECT id, title, content, post_date
+    <select id="findNoticeByMemberId" resultType="NoticeResponseDto" parameterType="long">
+        SELECT id, title, content, post_date, member_id
         FROM notice
         where member_id = #{memberId}
     </select>
 
     <!-- 게시글 데이터 모두 조회 -->
     <select id="findAllNotices" resultType="NoticeResponseDto" parameterType="long">
-        SELECT id, title, content, DATE_FORMAT(post_date, '%Y-%m-%d %H:%i:%s') AS post_date
+        SELECT id, title, content, DATE_FORMAT(post_date, '%Y-%m-%d %H:%i:%s') AS post_date, member_id
         FROM notice
     </select>
 
