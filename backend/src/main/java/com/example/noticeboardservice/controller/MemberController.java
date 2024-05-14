@@ -33,6 +33,10 @@ public class MemberController {
     @Operation(summary = "로그인 API")
     public ResponseEntity<LoginResponseDto> loginMember(@RequestBody LoginDto loginDto) {
         LoginResponseDto response = memberServiceImpl.login(loginDto);
+        /** todo
+         * HTTPOnly 로 설정하여 토큰값을 헤더에 전달하게 되면 JS 에서 접근이 불가
+         * 추후 배포 시 SSL 인증 적용하여 통신 방법 변경
+         */
         return ResponseEntity.ok().body(response);
     }
 
