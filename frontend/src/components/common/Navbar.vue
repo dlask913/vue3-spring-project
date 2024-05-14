@@ -29,7 +29,7 @@
         </div>
     </nav>
     <Modal 
-        v-if="showModal" 
+        v-show="showModal" 
         :message="showMessage"
     />
 </template>
