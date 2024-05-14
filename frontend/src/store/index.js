@@ -28,10 +28,9 @@ export const useToastStore = defineStore('toast', {
 
 export const useStorageStore = defineStore('storage', {
     state: () => {
-        const {cookies} = useCookies();
         return {
-            userId: '' || cookies.get('userId'),
-            token: '' || 'Bearer ' + cookies.get('token'),
+            userId: '',
+            token: '',
         };
     },
     getters: {
