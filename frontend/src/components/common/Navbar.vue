@@ -8,7 +8,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">                
                     <li class="nav-item">
-                        <a class="nav-link" href="#">게시판</a>
+                        <router-link class="nav-link" :to="{name: 'NoticeList'}">게시판</router-link>
                     </li>
                 </ul>
             </div>
