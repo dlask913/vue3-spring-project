@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class NoticeController {
@@ -49,6 +51,13 @@ public class NoticeController {
             return ResponseEntity.badRequest().body("게시글 삭제에 실패하였습니다.");
         }
         return ResponseEntity.ok().body("게시글 삭제가 완료되었습니다.");
+    }
+
+    @GetMapping("/notices")
+    @Operation(summary = "모든 게시글 조회 API")
+    public ResponseEntity<List<NoticeResponseDto>> getAllNotices() {
+        List<NoticeResponseDto> notices = noticeServiceImpl.findAllNotices();
+        return ResponseEntity.ok().body(notices);
     }
 
 }

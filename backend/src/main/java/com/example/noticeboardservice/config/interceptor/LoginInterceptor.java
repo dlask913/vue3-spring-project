@@ -31,7 +31,9 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         // 회원 가입 API 요청 예외
         String method = request.getMethod();
-        if ("/member".equals(request.getRequestURI()) && "POST".equals(method) || "OPTIONS".equals(method)) {
+        if (("/member".equals(request.getRequestURI()) && "POST".equals(method))
+                || ((request.getRequestURI()).startsWith("/notice") && "GET".equals(method))
+                || "OPTIONS".equals(method)) {
             return true;
         }
 
@@ -48,7 +50,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             log.info("[REQUEST] [" + memberDto.get().getEmail() + "]" + request.getRequestURI());
         } else {
             log.warn("인증 실패 !");
-
+            return false;
         }
         return true;
     }

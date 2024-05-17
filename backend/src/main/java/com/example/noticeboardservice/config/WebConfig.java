@@ -29,6 +29,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor)
                 .order(1)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login","/");
+                .excludePathPatterns("/login","/","/notices");
     }
 }
