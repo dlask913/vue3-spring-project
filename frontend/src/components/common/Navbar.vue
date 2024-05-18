@@ -14,10 +14,10 @@
             </div>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">                
-                    <li v-if="storage.getToken" class="nav-item">
+                    <li v-if="storage.isLogin" class="nav-item">
                         <button class="nav-link" @click="onLogout">로그아웃</button>
                     </li>
-                    <li v-if="storage.getToken" class="nav-item">
+                    <li v-if="storage.isLogin" class="nav-item">
                         <button class="nav-link" @click="openModal" data-bs-toggle="modal" data-bs-target="#confirmModal">회원탈퇴</button>
                     </li>
                     <div v-else class="navbar-nav">

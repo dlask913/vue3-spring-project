@@ -34,8 +34,11 @@ export const useStorageStore = defineStore('storage', {
         };
     },
     getters: {
+        isLogin(state){
+            return state.token ==='' ? false : true;
+        },
         getToken(state){
-            return state.token;
+            return "Bearer " + state.token;
         },
         getUserId(state){
             return state.userId;
