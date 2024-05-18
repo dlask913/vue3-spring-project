@@ -11,7 +11,7 @@
                 </tr>   
             </thead>
             <tbody>
-                <tr v-for="(notice, index) in notices" :key="notice.id">
+                <tr v-for="(notice, index) in notices" :key="notice.id" @click="moveToPage(notice.id)">
                     <th scope="row">{{ index + 1 }}</th>
                     <td>{{ notice.title }}</td>
                     <td>{{ notice.username }}</td>
@@ -29,8 +29,10 @@
 import axios from '@/axios';
 import { ref } from 'vue';
 import { useStorageStore } from '@/store';
+import { useRouter } from 'vue-router';
 export default {
     setup() {
+        const router = useRouter();
         const storage = useStorageStore();
         const notices = ref([]);
         const getNotices  = async ()  => {
@@ -41,12 +43,16 @@ export default {
                 console.log(err);
             }
         };
+        const moveToPage = (noticeId) => {
+            router.push('/post-details/' + noticeId);
+        };
 
         getNotices();
 
         return {
             storage,
             notices,
+            moveToPage,
         }
     }
 }
