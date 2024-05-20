@@ -4,9 +4,9 @@ spring:
   # MySQL DataSource
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/noticeboard?serverTimezone=UTC
+    url: jdbc:mysql://localhost:13308/vue3_board?serverTimezone=UTC
     username: root
-    password: 1234
+    password: 9999
 
 # Mapper Xml Location
 mybatis:
@@ -22,6 +22,6 @@ spring:
       on-profile: test # 환경이름설정
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/testboard?serverTimezone=UTC
+    url: jdbc:mysql://localhost:13308/vue3_board?serverTimezone=UTC
     username: root
-    password: 1234
+    password: 9999
