@@ -31,6 +31,7 @@
     <Modal 
         v-show="showModal" 
         :message="showMessage"
+        @is-confirmed="onQuit"
     />
 </template>
 
@@ -39,6 +40,7 @@
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { useStorageStore, useToastStore } from '@/store/index';
+import axios from '@/axios';
 import Modal from '@/components/common/Modal.vue';
 export default {
     components:{
@@ -59,12 +61,33 @@ export default {
             showMessage.value = '정말 탈퇴하시겠습니까?';
         };
 
+        const onQuit = async (isConfirmed) => {
+            if(isConfirmed){
+                try{
+                    let res;
+                    let memberId = storage.getUserId;
+                    let token = storage.getToken;
+                    res = await axios.delete(`member/${memberId}`,
+                        {
+                            headers: {'Authorization': token, }
+                        }
+                    );
+                    storage.logout();
+                    toast.setToast('회원 탈퇴 완료');
+                }catch(error){
+                    console.log(error);
+                    toast.setToast('재시도 부탁드립니다.','danger');
+                }
+            }
+        };
+
         return {
             storage,
             onLogout,
             openModal,
             showModal,
             showMessage,
+            onQuit,
         }
     }
 }
