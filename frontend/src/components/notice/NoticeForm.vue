@@ -1,7 +1,7 @@
 <template>
     <form @submit.prevent="onSaveNotice" >
         <div class="container mt-5" style="width: 40%;">
-            <h2 class="mt-5 mb-4 text-center"><b>rptlrmf emdfhr</b></h2>
+            <h2 class="mt-5 mb-4 text-center"><b>게시글 작성</b></h2>
             <div class="mb-4">
                 <label for="title" class="form-label">제목</label>
                 <input type="text" v-model="notice.title" class="form-control" placeholder="제목을 입력하세요" required>

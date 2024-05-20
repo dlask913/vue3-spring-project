@@ -1,6 +1,6 @@
 <template>
     <div class="container mt-5" style="width: 70%;">
-        <h1 class="mb-4">rptlvks</h1>
+        <h1 class="mb-4">게시판</h1>
         <table class="table table-hover text-center">
             <thead>
                 <tr>
@@ -19,7 +19,7 @@
                 </tr>
             </tbody>
         </table>
-        <div class="d-flex justify-content-end" v-if="storage.getToken">
+        <div class="d-flex justify-content-end" v-if="storage.isLogin">
             <router-link to="/post/new" class="btn btn-primary">새 글 작성</router-link>
         </div>
     </div>
