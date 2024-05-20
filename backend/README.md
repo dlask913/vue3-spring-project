@@ -1,5 +1,13 @@
 # backend
 
+### 개발 환경
+- Build Tool: Gradle
+- Framework: Spring Boot 3.2.5
+- Programming Language: Java, JDK 17
+- ORM: MyBatis 
+- DBMS: MySQL
+
+* * *
 ### DDL script
 ```sql
 CREATE TABLE Member (
@@ -16,5 +24,6 @@ CREATE TABLE Notice (
     post_date DATETIME NOT NULL,
     member_id BIGINT,
     FOREIGN KEY (member_id) REFERENCES Member(id)
+    ON DELETE CASCADE
 );
 ```
