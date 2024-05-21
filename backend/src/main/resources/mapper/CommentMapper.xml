@@ -1,0 +1,39 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.noticeboardservice.mapper.CommentMapper">
+    <!-- 댓글 생성 -->
+    <insert id="insertComment" parameterType="CommentRequestDto">
+        INSERT INTO comment (content, post_date, member_id, notice_id)
+        VALUES (#{content}, #{postDate}, #{memberId}, #{noticeId})
+    </insert>
+
+    <!-- 댓글 수정 -->
+    <update id="updateComment" parameterType="CommentRequestDto">
+        UPDATE comment
+        SET content = #{content}, post_date = #{postDate}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 댓글 조회 by Notice -->
+    <select id="findCommentsByNoticeId" resultType="CommentResponseDto" parameterType="long">
+        SELECT id, content, post_date, member_id, notice_id
+        FROM comment
+        WHERE notice_id = #{noticeId}
+    </select>
+
+    <!-- 댓글 삭제 -->
+    <delete id="deleteComment" parameterType="long">
+        DELETE FROM comment
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 댓글 데이터 모두 조회 -->
+    <select id="findAllComments" resultType="CommentResponseDto">
+        SELECT id, content, DATE_FORMAT(post_date, '%Y-%m-%d'), member_id, notice_id
+        FROM comment
+    </select>
+
+    <!-- 댓글 데이터 모두 삭제 -->
+    <delete id="deleteAll" >
+        DELETE FROM comment
+    </delete>
+</mapper>
