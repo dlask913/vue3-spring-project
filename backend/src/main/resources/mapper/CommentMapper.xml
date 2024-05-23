@@ -15,9 +15,10 @@
 
     <!-- 댓글 조회 by Notice -->
     <select id="findCommentsByNoticeId" resultType="CommentResponseDto" parameterType="long">
-        SELECT id, content, post_date, member_id, notice_id
-        FROM comment
-        WHERE notice_id = #{noticeId}
+        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id
+        FROM comment c
+            LEFT JOIN Member m ON c.member_id = m.id
+        WHERE c.notice_id = #{noticeId}
     </select>
 
     <!-- 댓글 삭제 -->
