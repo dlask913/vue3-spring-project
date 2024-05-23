@@ -45,7 +45,7 @@
     </delete>
 
     <!-- 게시글 데이터 모두 삭제 -->
-    <delete id="deleteAll" parameterType="long">
+    <delete id="deleteAll">
         DELETE FROM notice
     </delete>
 </mapper>
