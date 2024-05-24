@@ -50,7 +50,7 @@ export default {
     };
 
     const isEditable = computed(() => {
-      return storage.getUserId === notice.value.memberId;
+      return storage.getUserId == notice.value.memberId;
     });
 
     const moveToPage = () => {
