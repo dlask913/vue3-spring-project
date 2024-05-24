@@ -28,17 +28,20 @@ export const useToastStore = defineStore('toast', {
 
 export const useStorageStore = defineStore('storage', {
     state: () => {
+        const { cookies } = useCookies();
+        const userIdInCookie = cookies.get("userId");
+        const tokenInCookie =  cookies.get("token");
         return {
-            userId: '',
-            token: '',
+            userId: userIdInCookie || '',
+            token: tokenInCookie || ''
         };
     },
     getters: {
         isLogin(state){
-            return state.token ==='' ? false : true;
+            return !!state.token;
         },
         getToken(state){
-            return "Bearer " + state.token;
+            return `Bearer ${state.token}`;
         },
         getUserId(state){
             return state.userId;
