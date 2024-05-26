@@ -13,8 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @ActiveProfiles("test")
 class NoticeServiceTest {
@@ -58,7 +56,7 @@ class NoticeServiceTest {
         NoticeRequestDto updateNotice = createNoticeRequestDto(savedNotice.getId(),"제목1", "내용1", noticeRequestDto.getMemberId());
 
         // when
-        noticeServiceImpl.updateNotice(updateNotice);
+        noticeServiceImpl.updateNotice(savedNotice.getId(), updateNotice);
 
         // then
         NoticeResponseDto findNotice = noticeMapper.findAllNotices().get(0);
@@ -145,7 +143,7 @@ class NoticeServiceTest {
                     .username("limnj1")
                     .build();
             memberMapper.insertMember(memberDto);
-            return memberMapper.findByEmail("limnj1@test.com").getId();
+            return memberMapper.findByEmail(email).getId();
         }
         return findMember.getId();
     }

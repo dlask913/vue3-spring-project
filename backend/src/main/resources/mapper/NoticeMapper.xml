@@ -33,7 +33,7 @@
 
     <!-- 게시글 데이터 모두 조회 -->
     <select id="findAllNotices" resultType="NoticeResponseDto" parameterType="long">
-        SELECT n.id, n.title, n.content, DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, m.username
+        SELECT n.id, n.title, n.content, DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, n.member_id, m.username
         FROM notice n
             LEFT JOIN member m ON n.member_id = m.id;
     </select>
