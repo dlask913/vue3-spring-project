@@ -26,7 +26,8 @@
 </template>
 
 <script>
-import axios from '@/axios';
+
+import { getNotices } from '@/api/notices';
 import { ref } from 'vue';
 import { useStorageStore } from '@/store';
 import { useRouter } from 'vue-router';
@@ -35,19 +36,19 @@ export default {
         const router = useRouter();
         const storage = useStorageStore();
         const notices = ref([]);
-        const getNotices  = async ()  => {
+        const fetchNotices  = async ()  => {
             try {
-                let res = await axios.get('notices');
-                notices.value = res.data;
-            } catch (err){
-                console.log(err);
+                const { data } = await getNotices();
+                notices.value = data;
+            } catch (error){
+                console.error(error);
             }
         };
         const moveToPage = (noticeId) => {
             router.push('/post-details/' + noticeId);
         };
 
-        getNotices();
+        fetchNotices();
 
         return {
             storage,

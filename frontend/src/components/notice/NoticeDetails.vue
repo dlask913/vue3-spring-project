@@ -18,7 +18,7 @@
     </div>
 </template>
 <script>
-import axios from '@/axios';
+import { getNoticeById, deleteNotice } from '@/api/notices';
 import { useRoute, useRouter } from 'vue-router';
 import { ref, computed } from 'vue';
 import { useStorageStore, useToastStore } from '@/store/index';
@@ -42,10 +42,10 @@ export default {
     const noticeId = route.params.id;
     const getNotice = async () => {
       try{
-        let res = await axios.get(`notice/${noticeId}`);
-        notice.value = { ...res.data };
+        const { data } = await getNoticeById(noticeId);
+        notice.value = data;
       } catch(error){
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -59,9 +59,7 @@ export default {
 
     const onDelete = async () => {
       try{
-        let res = await axios.delete(`notice/${noticeId}`,{
-          headers: {'Authorization': storage.getToken, }
-        });
+        await deleteNotice(storage.getToken, noticeId);
         router.push('/post');
         toast.setToast('게시글이 삭제되었습니다.');
       } catch(error){

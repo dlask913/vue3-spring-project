@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public interface NoticeService {
     int saveNotice(NoticeRequestDto noticeRequestDto);
-    int updateNotice(NoticeRequestDto noticeRequestDto);
+    int updateNotice(Long noticeId, NoticeRequestDto noticeRequestDto);
     int deleteNotice(Long noticeId);
     NoticeResponseDto findNotice(Long noticeId);
     List<NoticeResponseDto> findAllNotices();

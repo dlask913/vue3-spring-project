@@ -20,7 +20,9 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public int updateNotice(NoticeRequestDto noticeRequestDto) {
+    public int updateNotice(Long noticeId,
+                            NoticeRequestDto noticeRequestDto) {
+        noticeRequestDto.saveNoticeId(noticeId);
         return noticeMapper.updateNotice(noticeRequestDto);
     }
 

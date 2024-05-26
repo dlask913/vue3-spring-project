@@ -21,4 +21,7 @@ public class NoticeRequestDto {
         this.postDate = LocalDateTime.now();
         this.memberId = memberId;
     }
+    public void saveNoticeId(Long noticeId){ // notice 수정 시 pathvariable 저장 용도
+        this.id = noticeId;
+    }
 }

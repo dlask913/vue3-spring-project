@@ -35,8 +35,9 @@ public class NoticeController {
 
      @PutMapping("/notice/{noticeId}")
      @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "게시글 수정 API")
-     public ResponseEntity<?> updateNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
-         int result = noticeServiceImpl.updateNotice(noticeRequestDto);
+     public ResponseEntity<?> updateNotice(@PathVariable("noticeId") Long noticeId,
+                                           @RequestBody NoticeRequestDto noticeRequestDto) {
+         int result = noticeServiceImpl.updateNotice(noticeId, noticeRequestDto);
          if (result <= 0) {
              return ResponseEntity.badRequest().body("게시글 수정에 실패하였습니다.");
          }
