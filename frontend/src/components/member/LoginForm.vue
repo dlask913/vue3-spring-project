@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import axios from '@/axios';
+import { loginMember } from '@/api/users';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToastStore } from '@/store/index';
@@ -46,12 +46,10 @@ export default {
         const router = useRouter();
         const { cookies } = useCookies();
         const storage = useStorageStore();
-        
         const login = ref({
             email: '',
             password: ''
         });
-
         const valueError = ref({
             emailError: '',
             passwordError: ''
@@ -77,22 +75,17 @@ export default {
             }
 
             try {
-                let res;
-                const data = {
-                    email: login.value.email,
-                    password: login.value.password,
-                };
-
-                res = await axios.post(`login`, data); // POST /login
-                cookies.set("userId", res.data.memberId); // 쿠키에 userId 저장
-                cookies.set("token", res.data.token); // 쿠키에 토큰 저장
-                storage.login(res.data.memberId, res.data.token); // store 에 userId / 토큰 저장
+                const loginDto = { ...login.value };
+                const { data } = await loginMember(loginDto); // POST /login
+                cookies.set("userId", data.memberId); // 쿠키에 userId 저장
+                cookies.set("token", data.token); // 쿠키에 토큰 저장
+                storage.login(data.memberId, data.token); // store 에 userId / 토큰 저장
                 
                 toast.setToast('로그인 완료');
                 router.push('/');
                 
             } catch (error){
-                console.log(error);
+                console.error(error);
                 if (error.response.data.status == 500){
                     toast.setToast('알 수 없는 오류가 발생하였습니다.','danger');    
                 } else{

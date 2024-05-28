@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import axios from '@/axios';
+import { createMember } from '@/api/users';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToastStore } from '@/store/index';
@@ -69,7 +69,6 @@ export default {
             passwordTemp: '',
             password: ''
         });
-        
         const valueError = ref({
             emailError: '',
             usernameError: '',
@@ -100,19 +99,12 @@ export default {
                 return;
             }
             try {
-                let res;
-                const data = {
-                    email: member.value.email,
-                    username: member.value.username,
-                    password: member.value.password,
-                };
-                res = await axios.post(`member`, data);
+                const data = { ...member.value, };
+                createMember(data);
                 toast.setToast('회원가입 완료!');
                 router.push("/");
-                
-                
             } catch (error){
-                console.log(error);
+                console.error(error);
                 toast.setToast('회원가입 실패!','danger');
             }
         };
