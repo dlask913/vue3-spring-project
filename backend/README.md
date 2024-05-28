@@ -26,4 +26,17 @@ CREATE TABLE Notice (
     FOREIGN KEY (member_id) REFERENCES Member(id)
     ON DELETE CASCADE
 );
+
+CREATE TABLE Comment (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    content TEXT NOT NULL,
+    post_date DATETIME NOT NULL,
+    is_like BIGINT DEFAULT 0 NOT NULL, 
+    member_id BIGINT,
+    notice_id BIGINT,
+    FOREIGN KEY (member_id) REFERENCES Member(id)
+    ON DELETE CASCADE,
+    FOREIGN KEY (notice_id) REFERENCES Notice(id)
+    ON DELETE CASCADE
+);
 ```
