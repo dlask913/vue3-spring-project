@@ -10,33 +10,43 @@
 * * *
 ### DDL script
 ```sql
-CREATE TABLE Member (
+CREATE TABLE member (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Notice (
+CREATE TABLE notice (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     post_date DATETIME NOT NULL,
     member_id BIGINT,
-    FOREIGN KEY (member_id) REFERENCES Member(id)
+    FOREIGN KEY (member_id) REFERENCES member(id)
     ON DELETE CASCADE
 );
 
-CREATE TABLE Comment (
+CREATE TABLE comment (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     content TEXT NOT NULL,
     post_date DATETIME NOT NULL,
-    is_like BIGINT DEFAULT 0 NOT NULL, 
     member_id BIGINT,
     notice_id BIGINT,
-    FOREIGN KEY (member_id) REFERENCES Member(id)
+    FOREIGN KEY (member_id) REFERENCES member(id)
     ON DELETE CASCADE,
-    FOREIGN KEY (notice_id) REFERENCES Notice(id)
+    FOREIGN KEY (notice_id) REFERENCES notice(id)
+    ON DELETE CASCADE
+);
+
+CREATE TABLE heart (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    is_like BOOLEAN DEFAULT FALSE NOT NULL,
+    member_id BIGINT,
+    comment_id BIGINT, 
+    FOREIGN KEY (member_id) REFERENCES member(id)
+    ON DELETE CASCADE,
+    FOREIGN KEY (comment_id) REFERENCES notice(id)
     ON DELETE CASCADE
 );
 ```
