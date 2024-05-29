@@ -18,7 +18,7 @@
 </div>
 </template>
 <script>
-import axios from '@/axios';
+import { createComment } from '@/api/comments';
 import { ref } from 'vue';
 import { useStorageStore } from '@/store/index';
 export default {
@@ -40,23 +40,22 @@ export default {
         valueError.value = '내용을 입력해주세요';
         return;
       };
+      if(!storage.isLogin){
+        alert('로그인을 한 사용자만 댓글을 작성할 수 있습니다.');
+        return;
+      }
       valueError.value ='';
       try{
-        let memberId = storage.getUserId;
-        let token = storage.getToken;
         const data = {
           content: comment.value.content,
           noticeId: props.noticeId,
-          memberId: memberId,
+          memberId: storage.getUserId,
         };
-        let res = await axios.post('comment',data,
-          {
-              headers: {'Authorization': token, }
-          });
+        await createComment(storage.getToken, data);
         comment.value.content = '';
         emit('comment-saved');
       }catch(error){
-        console.log(error);
+        console.error(error);
       }
     };
     
