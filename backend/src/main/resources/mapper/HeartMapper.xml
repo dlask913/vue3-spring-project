@@ -1,0 +1,24 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.noticeboardservice.mapper.HeartMapper">
+
+    <!-- 좋아요 상태 조회 -->
+    <select id="findHeart" parameterType="HeartDto">
+        SELECT id, member_id, comment_id
+        FROM heart
+        WHERE member_id = #{memberId} AND comment_id = #{commentId}
+    </select>
+
+    <!-- 좋아요 생성 -->
+    <insert id="saveHeart" parameterType="HeartDto">
+        INSERT INTO heart(member_id, comment_id)
+        VALUES (#{memberId}, #{commentId})
+    </insert>
+
+    <!-- 좋아요 취소 -->
+    <delete id="deleteHeart" parameterType="long">
+        DELETE
+        FROM heart
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
