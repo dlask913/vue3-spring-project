@@ -41,12 +41,11 @@ CREATE TABLE comment (
 
 CREATE TABLE heart (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    is_like BOOLEAN DEFAULT FALSE NOT NULL,
     member_id BIGINT,
     comment_id BIGINT, 
     FOREIGN KEY (member_id) REFERENCES member(id)
     ON DELETE CASCADE,
-    FOREIGN KEY (comment_id) REFERENCES notice(id)
+    FOREIGN KEY (comment_id) REFERENCES comment(id)
     ON DELETE CASCADE
 );
 ```
