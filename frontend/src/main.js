@@ -5,6 +5,7 @@ import { createPinia } from 'pinia';
 import VueCookies from 'vue3-cookies'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 createApp(App).use(router).use(createPinia()).
 use(VueCookies, {
