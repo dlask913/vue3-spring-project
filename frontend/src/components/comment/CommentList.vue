@@ -8,9 +8,11 @@
         <span v-else >{{ comment.content }}</span>
         <p class="fw-lighter">{{ comment.postDate }}</p>
       </div>
-      <div v-if="isMine(comment.memberId)" class="d-flex justify-content-end mt-2">
-          <a href="#" class="me-2" @click.prevent="onEdit(comment)">수정</a>
-          <a href="#" class="me-2" @click.prevent="onDeleteComment(comment.id)">삭제</a>
+      
+      <div class="d-flex justify-content-end mt-2">
+          <a v-if="isMine(comment.memberId)" href="#" class="me-2" @click.prevent="onEdit(comment)">수정</a>
+          <a v-if="isMine(comment.memberId)" href="#" class="me-2" @click.prevent="onDeleteComment(comment.id)">삭제</a>
+          <HeartIcon :noticeId="noticeId" :commentId="comment.id"/>
       </div>
     </li>
     <hr />
@@ -25,9 +27,11 @@ import { deleteComment, getCommentsByNoticeId, updateComment } from '@/api/comme
 import { useRoute } from 'vue-router';
 import { useStorageStore, useToastStore } from '@/store/index';
 import CommentForm from '@/components/comment/CommentForm.vue';
+import HeartIcon from '@/components/comment/HeartIcon.vue';
 export default {
   components:{
     CommentForm,
+    HeartIcon,
   },
   setup() {
     const storage = useStorageStore();
