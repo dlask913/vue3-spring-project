@@ -29,8 +29,9 @@
 
     <!-- 댓글 데이터 모두 조회 -->
     <select id="findAllComments" resultType="CommentResponseDto">
-        SELECT id, content, DATE_FORMAT(post_date, '%Y-%m-%d'), member_id, notice_id
-        FROM comment
+        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id
+        FROM comment c
+            LEFT JOIN Member m ON c.member_id = m.id
     </select>
 
     <!-- 댓글 데이터 모두 삭제 -->
