@@ -34,6 +34,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (("/member".equals(request.getRequestURI()) && "POST".equals(method))
                 || ((request.getRequestURI()).startsWith("/notice") && "GET".equals(method))
                 || ((request.getRequestURI()).startsWith("/comment") && "GET".equals(method))
+                || ((request.getRequestURI()).startsWith("/heart") && "GET".equals(method))
                 || "OPTIONS".equals(method)) {
             return true;
         }

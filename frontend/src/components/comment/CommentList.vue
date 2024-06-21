@@ -12,7 +12,7 @@
       <div class="d-flex justify-content-end mt-2">
           <a v-if="isMine(comment.memberId)" href="#" class="me-2" @click.prevent="onEdit(comment)">수정</a>
           <a v-if="isMine(comment.memberId)" href="#" class="me-2" @click.prevent="onDeleteComment(comment.id)">삭제</a>
-          <HeartIcon :noticeId="noticeId" :commentId="comment.id"/>
+          <HeartIcon :commentId="comment.id" />
       </div>
     </li>
     <hr />
@@ -84,9 +84,9 @@ export default {
       } catch(error) {
         console.error(error);
       }
-    }
+    };
 
-    getComments();
+        getComments();
 
     return {
       comments,

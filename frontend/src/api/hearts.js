@@ -1,7 +1,14 @@
 import axios from 'axios';
 
-export function getHeartStatus(data) {
-  return axios.get(`http://localhost:8080/heart`, data);
+export function getHeartStatus(token, memberId, commentId) {
+  return axios.get(`http://localhost:8080/heart`,{
+      params: {
+        memberId: memberId,
+        commentId: commentId
+      },
+    
+      headers: {'Authorization': token }
+    });
 }
 
 export function saveHeart(token, data) {
