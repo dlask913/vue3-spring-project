@@ -7,10 +7,10 @@ import java.util.List;
 
 @Mapper
 public interface HeartMapper {
+    List<HeartDto> findHeartByCommentId(HeartDto hearDto);
     HeartDto findHeart(HeartDto hearDto);
     int saveHeart(HeartDto heartDto);
     int deleteHeart(Long heartId);
     List<HeartDto> findAllHearts();
     void deleteAll();
-
 }

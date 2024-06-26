@@ -15,12 +15,8 @@ public class HeartController {
 
     @GetMapping("/heart")
     @Operation(summary = "하트 조회 API")
-    public ResponseEntity<?> getHeartStatus(@RequestParam Long memberId, @RequestParam Long commentId){
-        HeartDto heartDto = HeartDto.builder()
-                .memberId(memberId)
-                .commentId(commentId)
-                .build();
-        HeartDto response = heartServiceImpl.findHeart(heartDto);
+    public ResponseEntity<?> getHeartStatus(@RequestParam(required = false) Long memberId, @RequestParam Long commentId){
+        HeartDto response = heartServiceImpl.findHeart(memberId, commentId);
         return ResponseEntity.ok().body(response);
     }
 

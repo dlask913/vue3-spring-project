@@ -50,11 +50,12 @@ class HeartServiceTest {
         heartMapper.saveHeart(heartDto);
 
         // when
-        HeartDto findHeartDto = heartServiceImpl.findHeart(heartDto);
+        HeartDto findHeartDto = heartServiceImpl.findHeart(heartDto.getMemberId(), heartDto.getCommentId());
 
         // then
         Assertions.assertThat(findHeartDto.getCommentId()).isEqualTo(heartDto.getCommentId());
         Assertions.assertThat(findHeartDto.getMemberId()).isEqualTo(heartDto.getMemberId());
+        Assertions.assertThat(findHeartDto.getCnt()).isEqualTo(1);
     }
 
     @Test

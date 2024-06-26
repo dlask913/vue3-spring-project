@@ -2,6 +2,7 @@
   <div :id="heartId">
     <i :class="isLike ? 'bi-suit-heart-fill' : 'bi-suit-heart'" 
       @click="toggleHeart"></i>
+    <span class="fw-lighter ms-1">{{ heartCnt }}</span>
   </div>
 </template>
 
@@ -20,6 +21,7 @@ export default {
     const storage = useStorageStore();
     const isLike = ref(false);
     const heartId = ref(0);
+    const heartCnt = ref(0);
 
     const toggleHeart = async () => {
       try{
@@ -29,11 +31,11 @@ export default {
             commentId: props.commentId,
           };
           await saveHeart(storage.getToken, request);
-          await fetchHeartStatus();
         } else {
           await removeHeart(storage.getToken, heartId.value);
           isLike.value = false;
         }
+        await fetchHeartStatus();
       } catch(error) {
         console.error(error);
       }
@@ -43,8 +45,11 @@ export default {
       try{
         const { data } = await getHeartStatus(storage.getToken, storage.getUserId, props.commentId);
         if (data){
-          isLike.value = true;
+          if (storage.getUserId == data.memberId){
+            isLike.value = true;
+          }
           heartId.value = data.id;
+          heartCnt.value = data.cnt;
         } else{
           isLike.value = false;
         }
@@ -59,6 +64,7 @@ export default {
       isLike,
       toggleHeart,
       heartId,
+      heartCnt,
     }
   }
 }
