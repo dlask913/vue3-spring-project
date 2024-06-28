@@ -59,6 +59,29 @@ class HeartServiceTest {
     }
 
     @Test
+    @DisplayName("로그인 하지 않은 사용자가 댓글(좋아요)를 조회한다.")
+    void findHeartWithoutLogin() {
+        // given
+        Long originMemberId = getMemberId("limnj@test.com");
+        Long commentId = getCommentId("댓글 내용", originMemberId);
+        for (int i = 0; i < 3; i++) {
+            Long memberId = getMemberId("limnj"+i+"@test.com");
+            HeartDto heartDto = HeartDto.builder()
+                    .commentId(commentId)
+                    .memberId(memberId)
+                    .build();
+            heartMapper.saveHeart(heartDto);
+        }
+
+        // when
+        HeartDto findHeartDto = heartServiceImpl.findHeart(null, commentId);
+
+        // then
+        Assertions.assertThat(findHeartDto.getCommentId()).isEqualTo(commentId);
+        Assertions.assertThat(findHeartDto.getCnt()).isEqualTo(3);
+    }
+
+    @Test
     @DisplayName("좋아하는 댓글에 좋아요를 누른다.")
     void saveHeartTest() {
         // given
