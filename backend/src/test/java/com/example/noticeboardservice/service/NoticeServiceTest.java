@@ -13,6 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @ActiveProfiles("test")
 class NoticeServiceTest {
@@ -42,8 +44,8 @@ class NoticeServiceTest {
 
         // then
         NoticeResponseDto findNotice = noticeMapper.findAllNotices().get(0);
-        Assertions.assertThat(findNotice.getTitle()).isEqualTo(noticeRequestDto.getTitle());
-        Assertions.assertThat(findNotice.getContent()).isEqualTo(noticeRequestDto.getContent());
+        assertThat(findNotice.getTitle()).isEqualTo(noticeRequestDto.getTitle());
+        assertThat(findNotice.getContent()).isEqualTo(noticeRequestDto.getContent());
     }
 
     @Test
@@ -60,10 +62,10 @@ class NoticeServiceTest {
 
         // then
         NoticeResponseDto findNotice = noticeMapper.findAllNotices().get(0);
-        Assertions.assertThat(findNotice.getId()).isEqualTo(updateNotice.getId());
-        Assertions.assertThat(findNotice.getTitle()).isEqualTo(updateNotice.getTitle());
-        Assertions.assertThat(findNotice.getContent()).isEqualTo(updateNotice.getContent());
-        Assertions.assertThat(findNotice.getMemberId()).isEqualTo(updateNotice.getMemberId());
+        assertThat(findNotice.getId()).isEqualTo(updateNotice.getId());
+        assertThat(findNotice.getTitle()).isEqualTo(updateNotice.getTitle());
+        assertThat(findNotice.getContent()).isEqualTo(updateNotice.getContent());
+        assertThat(findNotice.getMemberId()).isEqualTo(updateNotice.getMemberId());
     }
 
     @Test
@@ -78,7 +80,7 @@ class NoticeServiceTest {
         noticeServiceImpl.deleteNotice(findNotice.getId());
 
         // then
-        Assertions.assertThat(noticeMapper.findAllNotices().size()).isEqualTo(0);
+        assertThat(noticeMapper.findAllNotices().size()).isEqualTo(0);
     }
 
     @Test
@@ -92,9 +94,9 @@ class NoticeServiceTest {
         NoticeResponseDto findNotice = noticeMapper.findAllNotices().get(0);
 
         // then
-        Assertions.assertThat(findNotice.getMemberId()).isEqualTo(noticeRequestDto.getMemberId());
-        Assertions.assertThat(findNotice.getTitle()).isEqualTo(noticeRequestDto.getTitle());
-        Assertions.assertThat(findNotice.getContent()).isEqualTo(noticeRequestDto.getContent());
+        assertThat(findNotice.getMemberId()).isEqualTo(noticeRequestDto.getMemberId());
+        assertThat(findNotice.getTitle()).isEqualTo(noticeRequestDto.getTitle());
+        assertThat(findNotice.getContent()).isEqualTo(noticeRequestDto.getContent());
     }
 
     @Test
@@ -110,7 +112,7 @@ class NoticeServiceTest {
         List<NoticeResponseDto> notices = noticeServiceImpl.findAllNotices();
 
         // then
-        Assertions.assertThat(notices.size()).isEqualTo(2);
+        assertThat(notices.size()).isEqualTo(2);
     }
 
     @Test
@@ -128,10 +130,31 @@ class NoticeServiceTest {
         List<NoticeResponseDto> findNotices = noticeServiceImpl.findNoticeByMemberId(getMemberId("limnj1@test.com"));
 
         // then
-        Assertions.assertThat(findNotices.get(0).getTitle()).isEqualTo(noticeRequestDto1.getTitle());
-        Assertions.assertThat(findNotices.get(0).getContent()).isEqualTo(noticeRequestDto1.getContent());
-        Assertions.assertThat(findNotices.get(1).getTitle()).isEqualTo(noticeRequestDto2.getTitle());
-        Assertions.assertThat(findNotices.get(1).getContent()).isEqualTo(noticeRequestDto2.getContent());
+        assertThat(findNotices.get(0).getTitle()).isEqualTo(noticeRequestDto1.getTitle());
+        assertThat(findNotices.get(0).getContent()).isEqualTo(noticeRequestDto1.getContent());
+        assertThat(findNotices.get(1).getTitle()).isEqualTo(noticeRequestDto2.getTitle());
+        assertThat(findNotices.get(1).getContent()).isEqualTo(noticeRequestDto2.getContent());
+    }
+
+    @Test
+    @DisplayName("3페이지의 게시물 5개를 조회한다.")
+    void findNoticesByPage() {
+        // given
+        for (int i = 0; i < 17; i++) {
+            NoticeRequestDto noticeRequestDto =
+                    createNoticeRequestDto(0L,"제목"+i, "내용"+i, getMemberId("limnj1@test.com"));
+            noticeServiceImpl.saveNotice(noticeRequestDto);
+        }
+
+        // when
+        List<NoticeResponseDto> findNotices =
+                noticeServiceImpl.findNoticesByPage(3,5);
+
+        // then
+        assertThat(findNotices)
+                .hasSize(5)
+                .extracting(NoticeResponseDto::getTitle)
+                .containsExactly("제목10", "제목11", "제목12", "제목13", "제목14");
     }
 
     private Long getMemberId(String email){
