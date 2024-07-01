@@ -32,10 +32,19 @@
     </select>
 
     <!-- 게시글 데이터 모두 조회 -->
-    <select id="findAllNotices" resultType="NoticeResponseDto" parameterType="long">
+    <select id="findAllNotices" resultType="NoticeResponseDto">
         SELECT n.id, n.title, n.content, DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, n.member_id, m.username
         FROM notice n
-            LEFT JOIN member m ON n.member_id = m.id;
+            LEFT JOIN member m ON n.member_id = m.id
+    </select>
+
+    <!-- 게시글 데이터 조회 By Page -->
+    <select id="findNoticesByPage" resultType="NoticeResponseDto">
+        SELECT n.id, n.title, n.content, DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, n.member_id, m.username
+        FROM notice n
+                 LEFT JOIN member m ON n.member_id = m.id
+        ORDER BY n.id
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <!-- 게시글 삭제 -->

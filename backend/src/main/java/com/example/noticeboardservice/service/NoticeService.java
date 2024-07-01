@@ -14,4 +14,5 @@ public interface NoticeService {
     NoticeResponseDto findNotice(Long noticeId);
     List<NoticeResponseDto> findAllNotices();
     List<NoticeResponseDto> findNoticeByMemberId(Long memberId);
+    List<NoticeResponseDto> findNoticesByPage(int page, int limit);
 }

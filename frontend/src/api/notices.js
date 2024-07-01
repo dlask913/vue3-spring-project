@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export function getNotices() {
-  return axios.get('http://localhost:8080/notices');
+  return axios.get('http://localhost:8080/notices/all');
 }
 
 export function getNoticeById(id) {

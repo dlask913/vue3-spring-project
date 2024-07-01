@@ -42,6 +42,11 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
+    public List<NoticeResponseDto> findNoticesByPage(int page, int limit) {
+        return noticeMapper.findNoticesByPage((page-1)*limit, limit); // offset index 0부터 시작하므로, -1
+    }
+
+    @Override
     public List<NoticeResponseDto> findNoticeByMemberId(Long memberId) {
         return noticeMapper.findNoticeByMemberId(memberId);
     }

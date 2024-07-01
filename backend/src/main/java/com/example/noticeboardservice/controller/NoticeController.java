@@ -54,10 +54,20 @@ public class NoticeController {
         return ResponseEntity.ok().body("게시글 삭제가 완료되었습니다.");
     }
 
-    @GetMapping("/notices")
+    @GetMapping("/notices/all")
     @Operation(summary = "모든 게시글 조회 API")
     public ResponseEntity<List<NoticeResponseDto>> getAllNotices() {
         List<NoticeResponseDto> notices = noticeServiceImpl.findAllNotices();
+        return ResponseEntity.ok().body(notices);
+    }
+
+    @GetMapping("/notices")
+    @Operation(summary = "게시글 페이지네이션 API")
+    public ResponseEntity<List<NoticeResponseDto>> getNoticesByPage(
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "limit") int limit
+    ) {
+        List<NoticeResponseDto> notices = noticeServiceImpl.findNoticesByPage(page, limit);
         return ResponseEntity.ok().body(notices);
     }
 
