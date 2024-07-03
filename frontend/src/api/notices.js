@@ -4,6 +4,10 @@ export function getNotices() {
   return axios.get('http://localhost:8080/notices/all');
 }
 
+export function getNoticesByPage(page, limit) {
+  return axios.get(`http://localhost:8080/notices?page=${page}&limit=${limit}`);
+}
+
 export function getNoticeById(id) {
   return axios.get(`http://localhost:8080/notice/${id}`);
 }

@@ -64,10 +64,10 @@ public class NoticeController {
     @GetMapping("/notices")
     @Operation(summary = "게시글 페이지네이션 API")
     public ResponseEntity<List<NoticeResponseDto>> getNoticesByPage(
-            @RequestParam(value = "page") int page,
-            @RequestParam(value = "limit") int limit
+            @RequestParam(value = "page") String page,
+            @RequestParam(value = "limit") String limit
     ) {
-        List<NoticeResponseDto> notices = noticeServiceImpl.findNoticesByPage(page, limit);
+        List<NoticeResponseDto> notices = noticeServiceImpl.findNoticesByPage(Integer.parseInt(page), Integer.parseInt(limit));
         return ResponseEntity.ok().body(notices);
     }
 
