@@ -5,6 +5,7 @@ import com.example.noticeboardservice.dto.NoticeResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface NoticeService {
@@ -14,5 +15,5 @@ public interface NoticeService {
     NoticeResponseDto findNotice(Long noticeId);
     List<NoticeResponseDto> findAllNotices();
     List<NoticeResponseDto> findNoticeByMemberId(Long memberId);
-    List<NoticeResponseDto> findNoticesByPage(int page, int limit);
+    List<NoticeResponseDto> searchNoticeByPage(int page, int limit, Map<String, String> params);
 }

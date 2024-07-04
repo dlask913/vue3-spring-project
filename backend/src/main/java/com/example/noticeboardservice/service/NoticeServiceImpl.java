@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service @Transactional
 @RequiredArgsConstructor
@@ -42,8 +43,8 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public List<NoticeResponseDto> findNoticesByPage(int page, int limit) {
-        return noticeMapper.findNoticesByPage((page-1)*limit, limit); // offset index 0부터 시작하므로, -1
+    public List<NoticeResponseDto> searchNoticeByPage(int page, int limit, Map<String, String> params) {
+        return noticeMapper.searchNoticesByPage((page-1)*limit, limit, params); // offset index 0부터 시작하므로, -1
     }
 
     @Override

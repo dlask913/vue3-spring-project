@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,13 +63,14 @@ public class NoticeController {
     }
 
     @GetMapping("/notices")
-    @Operation(summary = "게시글 페이지네이션 API")
-    public ResponseEntity<List<NoticeResponseDto>> getNoticesByPage(
-            @RequestParam(value = "page") String page,
-            @RequestParam(value = "limit") String limit
+    @Operation(summary = "게시글 검색 AND 페이지네이션 API")
+    public ResponseEntity<List<NoticeResponseDto>> searchNoticesByPage(
+            @RequestParam(value = "page", defaultValue = "1") String page,
+            @RequestParam(value = "limit", defaultValue = "5") String limit,
+            @RequestParam Map<String, String> params
     ) {
-        List<NoticeResponseDto> notices = noticeServiceImpl.findNoticesByPage(Integer.parseInt(page), Integer.parseInt(limit));
+        List<NoticeResponseDto> notices = noticeServiceImpl.searchNoticeByPage(
+                Integer.parseInt(page), Integer.parseInt(limit), params);
         return ResponseEntity.ok().body(notices);
     }
-
 }
