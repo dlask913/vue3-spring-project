@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +28,6 @@ class NoticeServiceTest {
     @Autowired
     MemberMapper memberMapper;
 
-
     @AfterEach
     void tearDown() {
         noticeMapper.deleteAll();
@@ -37,7 +38,8 @@ class NoticeServiceTest {
     @DisplayName("게시글을 저장한다.")
     void saveNoticeTest() {
         // given
-        NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용", getMemberId("limnj1@test.com"));
+        NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
+                getMemberId("limnj1@test.com", "limnj"));
 
         // when
         noticeServiceImpl.saveNotice(noticeRequestDto);
@@ -52,7 +54,8 @@ class NoticeServiceTest {
     @DisplayName("게시글의 제목과 내용을 수정한다.")
     void updateNoticeTest() {
         // given
-        NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용", getMemberId("limnj1@test.com"));
+        NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
+                getMemberId("limnj1@test.com", "limnj"));
         noticeServiceImpl.saveNotice(noticeRequestDto);
         NoticeResponseDto savedNotice = noticeMapper.findAllNotices().get(0);
         NoticeRequestDto updateNotice = createNoticeRequestDto(savedNotice.getId(),"제목1", "내용1", noticeRequestDto.getMemberId());
@@ -72,7 +75,8 @@ class NoticeServiceTest {
     @DisplayName("게시글을 삭제한다.")
     void deleteNoticeTest() {
         // given
-        NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용", getMemberId("limnj1@test.com"));
+        NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
+                getMemberId("limnj1@test.com", "limnj"));
         noticeServiceImpl.saveNotice(noticeRequestDto);
         NoticeResponseDto findNotice = noticeMapper.findAllNotices().get(0);
 
@@ -87,7 +91,8 @@ class NoticeServiceTest {
     @DisplayName("게시글 한 개를 상세 조회한다.")
     void findNoticeTest() {
         // given
-        NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용", getMemberId("limnj1@test.com"));
+        NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
+                getMemberId("limnj1@test.com", "limnj"));
         noticeServiceImpl.saveNotice(noticeRequestDto);
 
         // when
@@ -103,8 +108,8 @@ class NoticeServiceTest {
     @DisplayName("모든 게시글을 조회한다.")
     void findAllNoticesTest() {
         // given
-        NoticeRequestDto noticeRequestDto1 = createNoticeRequestDto(0L,"제목1", "내용1", getMemberId("limnj1@test.com"));
-        NoticeRequestDto noticeRequestDto2 = createNoticeRequestDto(0L,"제목2", "내용2", getMemberId("limnj1@test.com"));
+        NoticeRequestDto noticeRequestDto1 = createNoticeRequestDto(0L,"제목1", "내용1", getMemberId("limnj1@test.com", "limnj"));
+        NoticeRequestDto noticeRequestDto2 = createNoticeRequestDto(0L,"제목2", "내용2", getMemberId("limnj1@test.com", "limnj"));
         noticeServiceImpl.saveNotice(noticeRequestDto1);
         noticeServiceImpl.saveNotice(noticeRequestDto2);
 
@@ -117,17 +122,17 @@ class NoticeServiceTest {
 
     @Test
     @DisplayName("특정 회원이 작성한 게시글을 모두 조회한다.")
-    void findNoticeByMemberId() {
+    void findNoticeByMemberIdTest() {
         // given
-        NoticeRequestDto noticeRequestDto1 = createNoticeRequestDto(0L,"제목1", "내용1", getMemberId("limnj1@test.com"));
-        NoticeRequestDto noticeRequestDto2 = createNoticeRequestDto(0L,"제목2", "내용2", getMemberId("limnj1@test.com"));
-        NoticeRequestDto noticeRequestDto3 = createNoticeRequestDto(0L,"제목3", "내용3", getMemberId("limnj2@test.com"));
+        NoticeRequestDto noticeRequestDto1 = createNoticeRequestDto(0L,"제목1", "내용1", getMemberId("limnj1@test.com", "limnj1"));
+        NoticeRequestDto noticeRequestDto2 = createNoticeRequestDto(0L,"제목2", "내용2", getMemberId("limnj1@test.com", "limnj1"));
+        NoticeRequestDto noticeRequestDto3 = createNoticeRequestDto(0L,"제목3", "내용3", getMemberId("limnj2@test.com", "limnj2"));
         noticeServiceImpl.saveNotice(noticeRequestDto1);
         noticeServiceImpl.saveNotice(noticeRequestDto2);
         noticeServiceImpl.saveNotice(noticeRequestDto3);
 
         // when
-        List<NoticeResponseDto> findNotices = noticeServiceImpl.findNoticeByMemberId(getMemberId("limnj1@test.com"));
+        List<NoticeResponseDto> findNotices = noticeServiceImpl.findNoticeByMemberId(getMemberId("limnj1@test.com", "limnj1"));
 
         // then
         assertThat(findNotices.get(0).getTitle()).isEqualTo(noticeRequestDto1.getTitle());
@@ -138,17 +143,17 @@ class NoticeServiceTest {
 
     @Test
     @DisplayName("3페이지의 게시물 5개를 조회한다.")
-    void findNoticesByPage() {
+    void findNoticesByPageTest() {
         // given
         for (int i = 0; i < 17; i++) {
             NoticeRequestDto noticeRequestDto =
-                    createNoticeRequestDto(0L,"제목"+i, "내용"+i, getMemberId("limnj1@test.com"));
+                    createNoticeRequestDto(0L,"제목"+i, "내용"+i, getMemberId("limnj1@test.com", "limnj"));
             noticeServiceImpl.saveNotice(noticeRequestDto);
         }
 
         // when
         List<NoticeResponseDto> findNotices =
-                noticeServiceImpl.findNoticesByPage(3,5);
+                noticeServiceImpl.searchNoticeByPage(3,5, Map.of());
 
         // then
         assertThat(findNotices)
@@ -157,13 +162,69 @@ class NoticeServiceTest {
                 .containsExactly("제목10", "제목11", "제목12", "제목13", "제목14");
     }
 
-    private Long getMemberId(String email){
+    @Test
+    @DisplayName("저장된 게시물들 중 작성자의 username 에 limnj 가 포함된 게시물들을 검색한다.")
+    void searchNoticesByUsernameTest() {
+        // given
+        for (int i = 0; i < 3; i++) { // username 에 limnj 가 포함되는 경우
+            NoticeRequestDto noticeRequestDto =
+                    createNoticeRequestDto(0L,"제목"+i, "내용"+i, getMemberId("limnj"+i+"@test.com", "limnj"+i));
+            noticeServiceImpl.saveNotice(noticeRequestDto);
+        }
+        for (int i = 0; i < 6; i++) { // username 에 limnj 가 포함되지 않는 경우
+            NoticeRequestDto noticeRequestDto =
+                    createNoticeRequestDto(0L,"제목"+i, "내용"+i, getMemberId("happy"+i+"@test.com", "happy"+i));
+            noticeServiceImpl.saveNotice(noticeRequestDto);
+        }
+        Map<String, String> params = new HashMap<>();
+        params.put("username","limnj");
+
+        // when - page 및 limit 은 default 값
+        List<NoticeResponseDto> findNotices = noticeServiceImpl.searchNoticeByPage(1,5, params);
+
+        // then
+        assertThat(findNotices)
+                .hasSize(3)
+                .extracting(NoticeResponseDto::getUsername)
+                .containsExactly("limnj0", "limnj1", "limnj2");
+    }
+
+    @Test
+    @DisplayName("저장된 게시물들 중 게시글 제목에 '인사' 가 포함된 게시물들을 검색한다.")
+    void searchNoticesByTitleTest() {
+        // given
+        for (int i = 4; i < 7; i++) { // 게시글 제목에 '인사'가 포함되는 경우
+            NoticeRequestDto noticeRequestDto =
+                    createNoticeRequestDto(0L,"인사합니다."+i, "내용"+i, getMemberId("limnj"+i+"@test.com", "limnj"+i));
+            noticeServiceImpl.saveNotice(noticeRequestDto);
+        }
+        for (int i = 0; i < 6; i++) { // 게시글 제목에 '인사'가 포함되지 않는 경우
+            NoticeRequestDto noticeRequestDto =
+                    createNoticeRequestDto(0L,"제목"+i, "내용"+i, getMemberId("happy"+i+"@test.com", "happy"+i));
+            noticeServiceImpl.saveNotice(noticeRequestDto);
+        }
+        Map<String, String> params = new HashMap<>();
+        params.put("title","인사");
+
+        // when - page 및 limit 은 default 값
+        List<NoticeResponseDto> findNotices = noticeServiceImpl.searchNoticeByPage(1,5, params);
+
+        // then
+        assertThat(findNotices)
+                .hasSize(3)
+                .extracting(NoticeResponseDto::getTitle)
+                .containsExactly("인사합니다.4", "인사합니다.5", "인사합니다.6");
+    }
+
+
+
+    private Long getMemberId(String email, String username){
         MemberDto findMember = memberMapper.findByEmail(email);
         if (findMember == null) {
             MemberDto memberDto = MemberDto.builder()
                     .email(email)
                     .password("1234")
-                    .username("limnj1")
+                    .username(username)
                     .build();
             memberMapper.insertMember(memberDto);
             return memberMapper.findByEmail(email).getId();
