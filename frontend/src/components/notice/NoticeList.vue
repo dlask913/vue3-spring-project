@@ -1,6 +1,25 @@
 <template>
     <div class="container mt-5" style="width: 70%;">
         <h1 class="mb-4">게시판</h1>
+        <!-- 검색 기능 -->
+        <form class="d-flex" @submit.prevent="searchNotices">
+          <div class="row w-100">
+            <div class="col-3">
+              <select class="form-select" v-model="searchOption">
+                <option value="username">글쓴이</option>
+                <option value="title">제목</option>
+              </select>
+            </div>
+            <div class="col-7">
+              <input class="form-control" type="search" placeholder="Search" aria-label="Search" v-model="searchValue">
+            </div>
+            <div class="col-2">
+              <button class="btn btn-outline-success w-100" type="submit">검색하기</button>
+            </div>
+          </div>
+        </form>
+        <!-- -->
+        <hr>
         <table class="table table-hover text-center">
             <thead>
                 <tr>
@@ -62,7 +81,7 @@
 
 <script>
 
-import { getNotices, getNoticesByPage } from '@/api/notices';
+import { getNotices, getNoticesByPage, getNoticesByKeyword } from '@/api/notices';
 import { ref, computed, watchEffect } from 'vue';
 import { useStorageStore } from '@/store';
 import { useRouter } from 'vue-router';
@@ -71,6 +90,9 @@ export default {
         const router = useRouter();
         const storage = useStorageStore();
         const notices = ref([]);
+        const searchOption = ref('title'); // 검색 옵션
+        const searchValue = ref(''); // 검색 키워드
+
         // pagination
         const params = ref({
             _sort: 'createdAt',
@@ -114,6 +136,22 @@ export default {
           params.value._page = page;
         };
 
+        const searchNotices = async () => { // 키워드 검색 (title or username)
+          /** to do
+           * total size 다시 계산하기 
+           */
+          if (!searchValue.value){
+            fetchInit();
+            return;
+          }
+          try {
+              const { data } = await getNoticesByKeyword(params.value._page, params.value._limit, searchOption.value, searchValue.value);
+              notices.value = data;
+          } catch (error){
+              console.error(error);
+          }
+        };
+
         return {
             storage,
             notices,
@@ -122,6 +160,9 @@ export default {
             params,
             totalCount,
             pageCount,
+            searchOption,
+            searchValue,
+            searchNotices,
         }
     }
 }
