@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-export function getNotices() {
-  return axios.get('http://localhost:8080/notices/all');
+export function getNotices(option, value) {
+  return axios.get(`http://localhost:8080/notices/all?${option}=${value}`);
 }
 
 export function getNoticesByPage(page, limit) {

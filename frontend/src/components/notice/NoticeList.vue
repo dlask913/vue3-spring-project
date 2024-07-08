@@ -61,7 +61,7 @@
           class="page-item"
           :class="{ active: params._page === page }"
         >
-          <a class="page-link" href="#" @click.prevent="params._page = page">{{
+          <a class="page-link" href="#" @click.prevent="goToPage(page)">{{
             page
           }}</a>
         </li>
@@ -81,8 +81,8 @@
 
 <script>
 
-import { getNotices, getNoticesByPage, getNoticesByKeyword } from '@/api/notices';
-import { ref, computed, watchEffect } from 'vue';
+import { getNotices, getNoticesByKeyword } from '@/api/notices';
+import { ref, computed } from 'vue';
 import { useStorageStore } from '@/store';
 import { useRouter } from 'vue-router';
 export default {
@@ -100,20 +100,20 @@ export default {
             _page: 1,
             _limit: 5,
         });
-        const totalCount = ref(0);
+        const totalCount = ref(1);
 
         const fetchInit = async() => { // 게시글 totalCount 가져오기
           try {
-                const { data } = await getNotices();
-                totalCount.value = data.length;
+              const { data } = await getNotices(searchOption.value, searchValue.value);
+              totalCount.value = data.length == 0 ? 1 : data.length;
             } catch (error){
-                console.error(error);
+              console.error(error);
             }
         };
 
-        const fetchNotices  = async ()  => { // 현재 page 에 따라 게시글 Pagination API 호출
+        const fetchNotices  = async ()  => { // 현재 page 의 게시글 데이터 가져오기 
             try {
-                const { data } = await getNoticesByPage(params.value._page, params.value._limit);
+                const { data } = await getNoticesByKeyword(params.value._page, params.value._limit, searchOption.value, searchValue.value);
                 notices.value = data;
             } catch (error){
                 console.error(error);
@@ -125,7 +125,7 @@ export default {
         };
 
         fetchInit();
-        watchEffect(fetchNotices);
+        fetchNotices();
         
         const pageCount = computed(() => // 최대 페이지 계산
             Math.ceil(totalCount.value / params.value._limit),
@@ -134,16 +134,12 @@ export default {
         const goToPage = (page) => { // 페이지 이동
           if (page < 1 || page > pageCount.value) return; // 페이지 범위를 벗어나는 경우
           params.value._page = page;
+          fetchNotices();
         };
 
         const searchNotices = async () => { // 키워드 검색 (title or username)
-          /** to do
-           * total size 다시 계산하기 
-           */
-          if (!searchValue.value){
-            fetchInit();
-            return;
-          }
+          fetchInit(); // totalCount 초기화
+          params.value._page = 1; // 검색 시 1 페이지로 설정
           try {
               const { data } = await getNoticesByKeyword(params.value._page, params.value._limit, searchOption.value, searchValue.value);
               notices.value = data;
