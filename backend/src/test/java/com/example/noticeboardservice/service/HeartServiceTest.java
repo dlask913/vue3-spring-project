@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -141,7 +142,7 @@ class HeartServiceTest {
                 .memberId(memberId)
                 .build();
         noticeMapper.insertNotice(noticeRequestDto);
-        List<NoticeResponseDto> notices = noticeMapper.findAllNotices();
+        List<NoticeResponseDto> notices = noticeMapper.findAllNotices(Map.of());
 
         CommentRequestDto commentRequestDto = CommentRequestDto.builder()
                 .content(content)

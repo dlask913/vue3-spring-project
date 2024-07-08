@@ -38,8 +38,8 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public List<NoticeResponseDto> findAllNotices() {
-        return noticeMapper.findAllNotices();
+    public List<NoticeResponseDto> findAllNotices(Map<String, String> params) {
+        return noticeMapper.findAllNotices(params);
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface NoticeService {
     int updateNotice(Long noticeId, NoticeRequestDto noticeRequestDto);
     int deleteNotice(Long noticeId);
     NoticeResponseDto findNotice(Long noticeId);
-    List<NoticeResponseDto> findAllNotices();
+    List<NoticeResponseDto> findAllNotices(Map<String, String> params);
     List<NoticeResponseDto> findNoticeByMemberId(Long memberId);
     List<NoticeResponseDto> searchNoticeByPage(int page, int limit, Map<String, String> params);
 }

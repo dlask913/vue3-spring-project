@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -158,7 +159,7 @@ class CommentServiceTest {
 
     private Long getNoticeId(NoticeRequestDto noticeRequestDto){
         noticeMapper.insertNotice(noticeRequestDto);
-        List<NoticeResponseDto> notices = noticeMapper.findAllNotices();
+        List<NoticeResponseDto> notices = noticeMapper.findAllNotices(Map.of());
         return notices.get(0).getId();
     }
 

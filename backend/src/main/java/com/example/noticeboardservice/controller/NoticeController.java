@@ -57,8 +57,8 @@ public class NoticeController {
 
     @GetMapping("/notices/all")
     @Operation(summary = "모든 게시글 조회 API")
-    public ResponseEntity<List<NoticeResponseDto>> getAllNotices() {
-        List<NoticeResponseDto> notices = noticeServiceImpl.findAllNotices();
+    public ResponseEntity<List<NoticeResponseDto>> getAllNotices(@RequestParam Map<String, String> params) {
+        List<NoticeResponseDto> notices = noticeServiceImpl.findAllNotices(params);
         return ResponseEntity.ok().body(notices);
     }
 

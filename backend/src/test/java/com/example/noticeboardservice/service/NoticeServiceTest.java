@@ -45,7 +45,7 @@ class NoticeServiceTest {
         noticeServiceImpl.saveNotice(noticeRequestDto);
 
         // then
-        NoticeResponseDto findNotice = noticeMapper.findAllNotices().get(0);
+        NoticeResponseDto findNotice = noticeMapper.findAllNotices(Map.of()).get(0);
         assertThat(findNotice.getTitle()).isEqualTo(noticeRequestDto.getTitle());
         assertThat(findNotice.getContent()).isEqualTo(noticeRequestDto.getContent());
     }
@@ -57,14 +57,14 @@ class NoticeServiceTest {
         NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
                 getMemberId("limnj1@test.com", "limnj"));
         noticeServiceImpl.saveNotice(noticeRequestDto);
-        NoticeResponseDto savedNotice = noticeMapper.findAllNotices().get(0);
+        NoticeResponseDto savedNotice = noticeMapper.findAllNotices(Map.of()).get(0);
         NoticeRequestDto updateNotice = createNoticeRequestDto(savedNotice.getId(),"제목1", "내용1", noticeRequestDto.getMemberId());
 
         // when
         noticeServiceImpl.updateNotice(savedNotice.getId(), updateNotice);
 
         // then
-        NoticeResponseDto findNotice = noticeMapper.findAllNotices().get(0);
+        NoticeResponseDto findNotice = noticeMapper.findAllNotices(Map.of()).get(0);
         assertThat(findNotice.getId()).isEqualTo(updateNotice.getId());
         assertThat(findNotice.getTitle()).isEqualTo(updateNotice.getTitle());
         assertThat(findNotice.getContent()).isEqualTo(updateNotice.getContent());
@@ -78,13 +78,13 @@ class NoticeServiceTest {
         NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
                 getMemberId("limnj1@test.com", "limnj"));
         noticeServiceImpl.saveNotice(noticeRequestDto);
-        NoticeResponseDto findNotice = noticeMapper.findAllNotices().get(0);
+        NoticeResponseDto findNotice = noticeMapper.findAllNotices(Map.of()).get(0);
 
         // when
         noticeServiceImpl.deleteNotice(findNotice.getId());
 
         // then
-        assertThat(noticeMapper.findAllNotices().size()).isEqualTo(0);
+        assertThat(noticeMapper.findAllNotices(Map.of()).size()).isEqualTo(0);
     }
 
     @Test
@@ -96,7 +96,7 @@ class NoticeServiceTest {
         noticeServiceImpl.saveNotice(noticeRequestDto);
 
         // when
-        NoticeResponseDto findNotice = noticeMapper.findAllNotices().get(0);
+        NoticeResponseDto findNotice = noticeMapper.findAllNotices(Map.of()).get(0);
 
         // then
         assertThat(findNotice.getMemberId()).isEqualTo(noticeRequestDto.getMemberId());
@@ -114,7 +114,7 @@ class NoticeServiceTest {
         noticeServiceImpl.saveNotice(noticeRequestDto2);
 
         // when
-        List<NoticeResponseDto> notices = noticeServiceImpl.findAllNotices();
+        List<NoticeResponseDto> notices = noticeServiceImpl.findAllNotices(Map.of());
 
         // then
         assertThat(notices.size()).isEqualTo(2);
