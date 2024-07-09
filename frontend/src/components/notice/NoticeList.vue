@@ -43,40 +43,11 @@
         </div>
     </div>
     <!-- Pagination 추가 -->
-    <nav class="mt-5" aria-label="Page navigation example">
-      <ul class="pagination justify-content-center">
-        <li class="page-item">
-          <a
-            class="page-link"
-            href="#"
-            aria-label="Previous"
-            @click.prevent="goToPage(params._page-1)"
-          >
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li
-          v-for="page in pageCount"
-          :key="page"
-          class="page-item"
-          :class="{ active: params._page === page }"
-        >
-          <a class="page-link" href="#" @click.prevent="goToPage(page)">{{
-            page
-          }}</a>
-        </li>
-        <li class="page-item">
-          <a
-            class="page-link"
-            href="#"
-            aria-label="Next"
-            @click.prevent="goToPage(params._page+1)"
-          >
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
+    <Pagination 
+      :currentPage="params._page"
+      :pageCount="pageCount"
+      @page-changed="goToPage"
+    />
 </template>
 
 <script>
@@ -85,22 +56,24 @@ import { getNotices, getNoticesByKeyword } from '@/api/notices';
 import { ref, computed } from 'vue';
 import { useStorageStore } from '@/store';
 import { useRouter } from 'vue-router';
+import Pagination from '@/components/common/Pagination.vue';
 export default {
+    components: {
+      Pagination,
+    },
     setup() {
         const router = useRouter();
         const storage = useStorageStore();
         const notices = ref([]);
         const searchOption = ref('title'); // 검색 옵션
         const searchValue = ref(''); // 검색 키워드
-
-        // pagination
-        const params = ref({
+        const params = ref({ // pagination
             _sort: 'createdAt',
             _order: 'desc',
             _page: 1,
             _limit: 5,
         });
-        const totalCount = ref(1);
+        const totalCount = ref(1); // 게시글 전체 개수
 
         const fetchInit = async() => { // 게시글 totalCount 가져오기
           try {
@@ -132,7 +105,6 @@ export default {
         );
 
         const goToPage = (page) => { // 페이지 이동
-          if (page < 1 || page > pageCount.value) return; // 페이지 범위를 벗어나는 경우
           params.value._page = page;
           fetchNotices();
         };
