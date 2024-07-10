@@ -2,23 +2,10 @@
     <div class="container mt-5" style="width: 70%;">
         <h1 class="mb-4">게시판</h1>
         <!-- 검색 기능 -->
-        <form class="d-flex" @submit.prevent="searchNotices">
-          <div class="row w-100">
-            <div class="col-3">
-              <select class="form-select" v-model="searchOption">
-                <option value="username">글쓴이</option>
-                <option value="title">제목</option>
-              </select>
-            </div>
-            <div class="col-7">
-              <input class="form-control" type="search" placeholder="Search" aria-label="Search" v-model="searchValue">
-            </div>
-            <div class="col-2">
-              <button class="btn btn-outline-success w-100" type="submit">검색하기</button>
-            </div>
-          </div>
-        </form>
-        <!-- -->
+        <SearchBar
+          :initSearchOption="searchOption",
+          @search="handleSearch"
+        />
         <hr>
         <table class="table table-hover text-center">
             <thead>
@@ -57,9 +44,11 @@ import { ref, computed } from 'vue';
 import { useStorageStore } from '@/store';
 import { useRouter } from 'vue-router';
 import Pagination from '@/components/common/Pagination.vue';
+import SearchBar from '@/components/common/SearchBar.vue';
 export default {
     components: {
       Pagination,
+      SearchBar,
     },
     setup() {
         const router = useRouter();
