@@ -34,6 +34,7 @@ public class NoticeServiceImpl implements NoticeService{
 
     @Override
     public NoticeResponseDto findNotice(Long noticeId) {
+        int result = noticeMapper.incrementViewCount(noticeId); // 조회수 증가 ( todo: 게시글 없을 때 예외 처리 )
         return noticeMapper.findNotice(noticeId);
     }
 

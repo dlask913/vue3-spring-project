@@ -8,7 +8,7 @@ public class NoticeResponseDto {
     String title;
     String content;
     String postDate;
-    Long views;
     Long memberId;
     String username;
+    Long viewCount;
 }

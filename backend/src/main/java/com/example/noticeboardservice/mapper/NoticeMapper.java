@@ -14,6 +14,7 @@ public interface NoticeMapper {
     int updateNotice(NoticeRequestDto noticeRequestDto);
     int deleteNotice(Long noticeId);
     NoticeResponseDto findNotice(Long noticeId);
+    int incrementViewCount(Long noticeId);
     List<NoticeResponseDto> findAllNotices(@Param("params") Map<String, String> params);
     List<NoticeResponseDto> searchNoticesByPage(
             @Param("offset") int offset,
