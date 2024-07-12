@@ -56,7 +56,7 @@ class NoticeServiceTest {
         // given
         NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
                 getMemberId("limnj1@test.com", "limnj"));
-        noticeServiceImpl.saveNotice(noticeRequestDto);
+        noticeMapper.insertNotice(noticeRequestDto);
         NoticeResponseDto savedNotice = noticeMapper.findAllNotices(Map.of()).get(0);
         NoticeRequestDto updateNotice = createNoticeRequestDto(savedNotice.getId(),"제목1", "내용1", noticeRequestDto.getMemberId());
 
@@ -77,7 +77,7 @@ class NoticeServiceTest {
         // given
         NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
                 getMemberId("limnj1@test.com", "limnj"));
-        noticeServiceImpl.saveNotice(noticeRequestDto);
+        noticeMapper.insertNotice(noticeRequestDto);
         NoticeResponseDto findNotice = noticeMapper.findAllNotices(Map.of()).get(0);
 
         // when
@@ -93,15 +93,32 @@ class NoticeServiceTest {
         // given
         NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
                 getMemberId("limnj1@test.com", "limnj"));
-        noticeServiceImpl.saveNotice(noticeRequestDto);
+        noticeMapper.insertNotice(noticeRequestDto);
 
         // when
-        NoticeResponseDto findNotice = noticeMapper.findAllNotices(Map.of()).get(0);
+        NoticeResponseDto findNotice = noticeServiceImpl.findAllNotices(Map.of()).get(0);
 
         // then
         assertThat(findNotice.getMemberId()).isEqualTo(noticeRequestDto.getMemberId());
         assertThat(findNotice.getTitle()).isEqualTo(noticeRequestDto.getTitle());
         assertThat(findNotice.getContent()).isEqualTo(noticeRequestDto.getContent());
+        assertThat(findNotice.getViewCount()).isEqualTo(0); // 조회수 초기값 0
+    }
+
+    @Test
+    @DisplayName("게시글 조회수를 올린다.")
+    void incrementViewCountOfNoticeTest() {
+        // given
+        NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
+                getMemberId("limnj1@test.com", "limnj"));
+        noticeMapper.insertNotice(noticeRequestDto);
+        NoticeResponseDto savedNotice = noticeMapper.findAllNotices(Map.of()).get(0); // 저장한 게시글 조회
+
+        // when
+        NoticeResponseDto findNotice = noticeServiceImpl.findNotice(savedNotice.getId());
+
+        // then
+        assertThat(findNotice.getViewCount()).isEqualTo(1); // 조회수 초기값 0
     }
 
     @Test
@@ -110,8 +127,8 @@ class NoticeServiceTest {
         // given
         NoticeRequestDto noticeRequestDto1 = createNoticeRequestDto(0L,"제목1", "내용1", getMemberId("limnj1@test.com", "limnj"));
         NoticeRequestDto noticeRequestDto2 = createNoticeRequestDto(0L,"제목2", "내용2", getMemberId("limnj1@test.com", "limnj"));
-        noticeServiceImpl.saveNotice(noticeRequestDto1);
-        noticeServiceImpl.saveNotice(noticeRequestDto2);
+        noticeMapper.insertNotice(noticeRequestDto1);
+        noticeMapper.insertNotice(noticeRequestDto2);
 
         // when
         List<NoticeResponseDto> notices = noticeServiceImpl.findAllNotices(Map.of());
@@ -127,9 +144,9 @@ class NoticeServiceTest {
         NoticeRequestDto noticeRequestDto1 = createNoticeRequestDto(0L,"제목1", "내용1", getMemberId("limnj1@test.com", "limnj1"));
         NoticeRequestDto noticeRequestDto2 = createNoticeRequestDto(0L,"제목2", "내용2", getMemberId("limnj1@test.com", "limnj1"));
         NoticeRequestDto noticeRequestDto3 = createNoticeRequestDto(0L,"제목3", "내용3", getMemberId("limnj2@test.com", "limnj2"));
-        noticeServiceImpl.saveNotice(noticeRequestDto1);
-        noticeServiceImpl.saveNotice(noticeRequestDto2);
-        noticeServiceImpl.saveNotice(noticeRequestDto3);
+        noticeMapper.insertNotice(noticeRequestDto1);
+        noticeMapper.insertNotice(noticeRequestDto2);
+        noticeMapper.insertNotice(noticeRequestDto3);
 
         // when
         List<NoticeResponseDto> findNotices = noticeServiceImpl.findNoticeByMemberId(getMemberId("limnj1@test.com", "limnj1"));
@@ -148,7 +165,7 @@ class NoticeServiceTest {
         for (int i = 0; i < 17; i++) {
             NoticeRequestDto noticeRequestDto =
                     createNoticeRequestDto(0L,"제목"+i, "내용"+i, getMemberId("limnj1@test.com", "limnj"));
-            noticeServiceImpl.saveNotice(noticeRequestDto);
+            noticeMapper.insertNotice(noticeRequestDto);
         }
 
         // when
@@ -169,12 +186,12 @@ class NoticeServiceTest {
         for (int i = 0; i < 3; i++) { // username 에 limnj 가 포함되는 경우
             NoticeRequestDto noticeRequestDto =
                     createNoticeRequestDto(0L,"제목"+i, "내용"+i, getMemberId("limnj"+i+"@test.com", "limnj"+i));
-            noticeServiceImpl.saveNotice(noticeRequestDto);
+            noticeMapper.insertNotice(noticeRequestDto);
         }
         for (int i = 0; i < 6; i++) { // username 에 limnj 가 포함되지 않는 경우
             NoticeRequestDto noticeRequestDto =
                     createNoticeRequestDto(0L,"제목"+i, "내용"+i, getMemberId("happy"+i+"@test.com", "happy"+i));
-            noticeServiceImpl.saveNotice(noticeRequestDto);
+            noticeMapper.insertNotice(noticeRequestDto);
         }
         Map<String, String> params = new HashMap<>();
         params.put("username","limnj");
@@ -196,12 +213,12 @@ class NoticeServiceTest {
         for (int i = 4; i < 7; i++) { // 게시글 제목에 '인사'가 포함되는 경우
             NoticeRequestDto noticeRequestDto =
                     createNoticeRequestDto(0L,"인사합니다."+i, "내용"+i, getMemberId("limnj"+i+"@test.com", "limnj"+i));
-            noticeServiceImpl.saveNotice(noticeRequestDto);
+            noticeMapper.insertNotice(noticeRequestDto);
         }
         for (int i = 0; i < 6; i++) { // 게시글 제목에 '인사'가 포함되지 않는 경우
             NoticeRequestDto noticeRequestDto =
                     createNoticeRequestDto(0L,"제목"+i, "내용"+i, getMemberId("happy"+i+"@test.com", "happy"+i));
-            noticeServiceImpl.saveNotice(noticeRequestDto);
+            noticeMapper.insertNotice(noticeRequestDto);
         }
         Map<String, String> params = new HashMap<>();
         params.put("title","인사");
@@ -215,8 +232,6 @@ class NoticeServiceTest {
                 .extracting(NoticeResponseDto::getTitle)
                 .containsExactly("인사합니다.4", "인사합니다.5", "인사합니다.6");
     }
-
-
 
     private Long getMemberId(String email, String username){
         MemberDto findMember = memberMapper.findByEmail(email);
