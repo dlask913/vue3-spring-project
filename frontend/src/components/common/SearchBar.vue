@@ -1,10 +1,11 @@
 <template>
-  <form class="d-flex" @submit.prevent="searchNotices">
+  <form class="d-flex" @submit.prevent="handleSearch">
     <div class="row w-100">
       <div class="col-3">
-        <select class="form-select" v-model="searchOption">
-          <option value="username">글쓴이</option>
-          <option value="title">제목</option>
+        <select class="form-select" v-model="selectedOption">
+          <option v-for="option in searchOptions" :key="option.key" :value="option.key">
+            {{ option.value }}
+          </option>
         </select>
       </div>
       <div class="col-7">
@@ -17,21 +18,26 @@
   </form>
 </template>
 <script>
+import { ref } from 'vue';
 export default {
   props:{
-    initSearchOption: {
-      type: String,
-      default: 'title',
-    },
-    initSearchValue: {
-      type: String,
-      default: '',
-    },
-  },
-  emits:['search'],
-  setup(props,{emits}){
-    return {
+    searchOptions: {
+      type: Array,
+    }
+  },  
+  emits:['handle-search'],
+  setup(props,{emit}){
+    const searchValue = ref('');
+    const selectedOption = ref('title');
 
+    const handleSearch = () => {
+      emit('handle-search', selectedOption.value, searchValue.value);
+    };
+
+    return {
+      searchValue,
+      selectedOption,
+      handleSearch,
     };
   }
   

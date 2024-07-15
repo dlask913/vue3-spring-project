@@ -1,10 +1,10 @@
 <template>
     <div class="container mt-5" style="width: 70%;">
-        <h1 class="mb-4">게시판</h1>
+        <h1 class="mb-4">rptlvks</h1>
         <!-- 검색 기능 -->
         <SearchBar
-          :initSearchOption="searchOption",
-          @search="handleSearch"
+            :searchOptions="searchOptions"
+            @handle-search="searchNotices"
         />
         <hr>
         <table class="table table-hover text-center">
@@ -31,9 +31,9 @@
     </div>
     <!-- Pagination 추가 -->
     <Pagination 
-      :currentPage="params._page"
-      :pageCount="pageCount"
-      @page-changed="goToPage"
+        :currentPage="params._page"
+        :pageCount="pageCount"
+        @page-changed="goToPage"
     />
 </template>
 
@@ -54,7 +54,11 @@ export default {
         const router = useRouter();
         const storage = useStorageStore();
         const notices = ref([]);
-        const searchOption = ref('title'); // 검색 옵션
+        const searchOptions = ref([ // 검색 옵션들
+            { key: 'title', value: '제목' },
+            { key: 'username', value: '글쓴이' }
+        ]); 
+        const selectedOption = ref('title'); // 선택 옵션 ( 초기값 title )
         const searchValue = ref(''); // 검색 키워드
         const params = ref({ // pagination
             _sort: 'createdAt',
@@ -66,8 +70,8 @@ export default {
 
         const fetchInit = async() => { // 게시글 totalCount 가져오기
           try {
-              const { data } = await getNotices(searchOption.value, searchValue.value);
-              totalCount.value = data.length == 0 ? 1 : data.length;
+              const { data } = await getNotices(selectedOption.value, searchValue.value);
+              totalCount.value = data.length || 1;
             } catch (error){
               console.error(error);
             }
@@ -75,7 +79,8 @@ export default {
 
         const fetchNotices  = async ()  => { // 현재 page 의 게시글 데이터 가져오기 
             try {
-                const { data } = await getNoticesByKeyword(params.value._page, params.value._limit, searchOption.value, searchValue.value);
+                const { data } = await getNoticesByKeyword(
+                    params.value._page, params.value._limit, selectedOption.value, searchValue.value);
                 notices.value = data;
             } catch (error){
                 console.error(error);
@@ -98,15 +103,18 @@ export default {
           fetchNotices();
         };
 
-        const searchNotices = async () => { // 키워드 검색 (title or username)
-          fetchInit(); // totalCount 초기화
-          params.value._page = 1; // 검색 시 1 페이지로 설정
-          try {
-              const { data } = await getNoticesByKeyword(params.value._page, params.value._limit, searchOption.value, searchValue.value);
-              notices.value = data;
-          } catch (error){
-              console.error(error);
-          }
+        const searchNotices = async (option, value) => { // 키워드 검색 (title or username)
+            selectedOption.value = option;
+            searchValue.value = value;
+            fetchInit(); // totalCount 초기화
+            params.value._page = 1; // 검색 시 1 페이지로 설정
+            try {
+                const { data } = await getNoticesByKeyword(
+                    params.value._page, params.value._limit, selectedOption.value, searchValue.value);
+                notices.value = data;
+            } catch (error){
+                console.error(error);
+            }
         };
 
         return {
@@ -117,9 +125,10 @@ export default {
             params,
             totalCount,
             pageCount,
-            searchOption,
+            selectedOption,
             searchValue,
             searchNotices,
+            searchOptions,
         }
     }
 }
