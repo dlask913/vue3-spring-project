@@ -33,7 +33,7 @@
 
     <!-- 게시글 조회 by Member -->
     <select id="findNoticeByMemberId" resultType="NoticeResponseDto" parameterType="long">
-        SELECT id, title, content, post_date, member_id
+        SELECT id, title, content, post_date, member_id, view_count
         FROM notice
         WHERE member_id = #{memberId}
     </select>
@@ -55,7 +55,8 @@
 
     <!-- 게시글 데이터 조회 By Page AND Keyword -->
     <select id="searchNoticesByPage" resultType="NoticeResponseDto">
-        SELECT n.id, n.title, n.content, DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, n.member_id, m.username
+        SELECT n.id, n.title, n.content, n.view_count,
+            DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, n.member_id, m.username
         FROM notice n
              LEFT JOIN member m ON n.member_id = m.id
         WHERE 1=1

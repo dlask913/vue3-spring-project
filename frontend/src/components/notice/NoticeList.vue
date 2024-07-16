@@ -14,6 +14,7 @@
                     <th scope="col" style="width: 70%;">제목</th>
                     <th scope="col">작성자</th>
                     <th scope="col">작성일</th>
+                    <th scope="col">조회수</th>
                 </tr>   
             </thead>
             <tbody>
@@ -22,6 +23,7 @@
                     <td>{{ notice.title }}</td>
                     <td>{{ notice.username }}</td>
                     <td>{{ notice.postDate }}</td>
+                    <td>{{ notice.viewCount }}</td>
                 </tr>
             </tbody>
         </table>
