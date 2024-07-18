@@ -8,9 +8,13 @@ import com.example.noticeboardservice.exception.PasswordMismatchException;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,5 +70,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<MemberDto> findAllMembers() {
         return memberMapper.findAllMembers();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        MemberDto member = findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        return new User(
+                member.getEmail(), member.getPassword(),
+                true, true, true, true,
+                new ArrayList<>()
+        );
     }
 }
