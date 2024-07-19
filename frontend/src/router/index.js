@@ -8,45 +8,44 @@ import NoticeDetails from '@/components/notice/NoticeDetails.vue';
 import Notice from '@/components/notice/Notice.vue';
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-        {
-            path: '/',
-            name: 'Home',
-            component: Home
-        },
-        {
-            path: '/register',
-            name: 'RegisterForm',
-            component: RegisterForm
-        },
-        {
-            path: '/login',
-            name: 'LoginForm',
-            component: LoginForm
-        },
-        {
-            path: '/post',
-            name: 'NoticeList',
-            component: NoticeList
-        },
-        {
-            path: '/post/new',
-            name: 'NoticeForm',
-            component: NoticeForm
-        },
-        {
-            path: '/post-details/:id',
-            name: 'NoticeDetails',
-            component: NoticeDetails
-        },
-        {
-            path: '/post/:id',
-            name: 'Notice',
-            component: Notice
-        }
-        
-    ]
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/',
+      name: 'Home',
+      component: Home,
+    },
+    {
+      path: '/register',
+      name: 'RegisterForm',
+      component: RegisterForm,
+    },
+    {
+      path: '/login',
+      name: 'LoginForm',
+      component: LoginForm,
+    },
+    {
+      path: '/post',
+      name: 'NoticeList',
+      component: NoticeList,
+    },
+    {
+      path: '/post/new',
+      name: 'NoticeForm',
+      component: NoticeForm,
+    },
+    {
+      path: '/post-details/:id',
+      name: 'NoticeDetails',
+      component: NoticeDetails,
+    },
+    {
+      path: '/post/:id',
+      name: 'Notice',
+      component: Notice,
+    },
+  ],
 });
 
 export default router;

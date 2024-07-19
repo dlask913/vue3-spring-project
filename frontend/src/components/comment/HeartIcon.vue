@@ -1,7 +1,9 @@
 <template>
   <div :id="heartId">
-    <i :class="isLike ? 'bi-suit-heart-fill' : 'bi-suit-heart'" 
-      @click="toggleHeart"></i>
+    <i
+      :class="isLike ? 'bi-suit-heart-fill' : 'bi-suit-heart'"
+      @click="toggleHeart"
+    ></i>
     <span class="fw-lighter ms-1">{{ heartCnt }}</span>
   </div>
 </template>
@@ -14,8 +16,8 @@ export default {
   props: {
     commentId: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props) {
     const storage = useStorageStore();
@@ -24,8 +26,8 @@ export default {
     const heartCnt = ref(0);
 
     const toggleHeart = async () => {
-      try{
-        if(!isLike.value){
+      try {
+        if (!isLike.value) {
           const request = {
             memberId: storage.getUserId,
             commentId: props.commentId,
@@ -36,24 +38,28 @@ export default {
           isLike.value = false;
         }
         await fetchHeartStatus();
-      } catch(error) {
+      } catch (error) {
         console.error(error);
       }
     };
 
     const fetchHeartStatus = async () => {
-      try{
-        const { data } = await getHeartStatus(storage.getToken, storage.getUserId, props.commentId);
-        if (data){
-          if (storage.getUserId == data.memberId){
+      try {
+        const { data } = await getHeartStatus(
+          storage.getToken,
+          storage.getUserId,
+          props.commentId
+        );
+        if (data) {
+          if (storage.getUserId == data.memberId) {
             isLike.value = true;
           }
           heartId.value = data.id;
           heartCnt.value = data.cnt;
-        } else{
+        } else {
           isLike.value = false;
         }
-      }catch(error){
+      } catch (error) {
         console.error(error);
       }
     };
@@ -65,10 +71,9 @@ export default {
       toggleHeart,
       heartId,
       heartCnt,
-    }
-  }
-}
+    };
+  },
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -13,15 +13,13 @@ export function createMember(data) {
 }
 
 export function updateMember(token, id, data) {
-  return axios.put(`http://localhost:8080/member/${id}`, data,
-    {
-      headers: {'Authorization': token }
-    });
+  return axios.put(`http://localhost:8080/member/${id}`, data, {
+    headers: { Authorization: token },
+  });
 }
 
 export function deleteMember(token, id) {
-  return axios.delete(`http://localhost:8080/member/${id}`,
-    {
-      headers: {'Authorization': token }
-    });
+  return axios.delete(`http://localhost:8080/member/${id}`, {
+    headers: { Authorization: token },
+  });
 }

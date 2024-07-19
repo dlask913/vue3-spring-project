@@ -6,7 +6,7 @@
           class="page-link"
           href="#"
           aria-label="Previous"
-          @click.prevent="goToPage(currentPage-1)"
+          @click.prevent="goToPage(currentPage - 1)"
         >
           <span aria-hidden="true">&laquo;</span>
         </a>
@@ -26,7 +26,7 @@
           class="page-link"
           href="#"
           aria-label="Next"
-          @click.prevent="goToPage(currentPage+1)"
+          @click.prevent="goToPage(currentPage + 1)"
         >
           <span aria-hidden="true">&raquo;</span>
         </a>
@@ -47,18 +47,16 @@ export default {
     },
   },
   emits: ['page-changed'],
-  setup(props, { emit }){
+  setup(props, { emit }) {
     const goToPage = (page) => {
       if (page < 1 || page > props.pageCount) return; // 페이지 범위를 벗어나는 경우
       emit('page-changed', page);
     };
 
     return {
-      goToPage
+      goToPage,
     };
-  }
-}
+  },
+};
 </script>
-<style>
-  
-</style>
+<style></style>

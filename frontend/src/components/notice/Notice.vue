@@ -6,11 +6,9 @@
 import NoticeForm from '@/components/notice/NoticeForm.vue';
 export default {
   components: {
-    NoticeForm
+    NoticeForm,
   },
-}
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
