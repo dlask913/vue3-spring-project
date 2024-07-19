@@ -12,7 +12,7 @@ public interface NoticeService {
     int saveNotice(NoticeRequestDto noticeRequestDto);
     int updateNotice(Long noticeId, NoticeRequestDto noticeRequestDto);
     int deleteNotice(Long noticeId);
-    NoticeResponseDto findNotice(Long noticeId);
+    NoticeResponseDto findNotice(Long noticeId, String email);
     List<NoticeResponseDto> findAllNotices(Map<String, String> params);
     List<NoticeResponseDto> findNoticeByMemberId(Long memberId);
     List<NoticeResponseDto> searchNoticeByPage(int page, int limit, Map<String, String> params);

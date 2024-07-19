@@ -6,6 +6,7 @@ import com.example.noticeboardservice.service.NoticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,9 @@ public class NoticeController {
 
     @GetMapping("/notice/{noticeId}")
     @Operation(summary = "게시글 단일 조회 API")
-    public ResponseEntity<?> findNotice(@PathVariable("noticeId") Long noticeId) {
-        NoticeResponseDto response = noticeServiceImpl.findNotice(noticeId);
+    public ResponseEntity<?> findNotice(@PathVariable("noticeId") Long noticeId, Authentication authentication) {
+        String email = authentication == null ? "" : authentication.name();
+        NoticeResponseDto response = noticeServiceImpl.findNotice(noticeId, email);
         return ResponseEntity.ok().body(response);
     }
 

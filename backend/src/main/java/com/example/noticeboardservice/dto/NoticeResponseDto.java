@@ -10,5 +10,6 @@ public class NoticeResponseDto {
     String postDate;
     Long memberId;
     String username;
+    String email;
     Long viewCount;
 }

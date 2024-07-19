@@ -115,10 +115,26 @@ class NoticeServiceTest {
         NoticeResponseDto savedNotice = noticeMapper.findAllNotices(Map.of()).get(0); // 저장한 게시글 조회
 
         // when
-        NoticeResponseDto findNotice = noticeServiceImpl.findNotice(savedNotice.getId());
+        NoticeResponseDto findNotice = noticeServiceImpl.findNotice(savedNotice.getId(), "test");
 
         // then
         assertThat(findNotice.getViewCount()).isEqualTo(1); // 조회수 초기값 0
+    }
+
+    @Test
+    @DisplayName("내가 쓴 글은 조회수가 올라가지 않는다.")
+    void incrementViewCountOfMyNoticeTest() {
+        // given
+        NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
+                getMemberId("limnj1@test.com", "limnj"));
+        noticeMapper.insertNotice(noticeRequestDto);
+        NoticeResponseDto savedNotice = noticeMapper.findAllNotices(Map.of()).get(0); // 저장한 게시글 조회
+
+        // when
+        NoticeResponseDto findNotice = noticeServiceImpl.findNotice(savedNotice.getId(), "limnj1@test.com");
+
+        // then
+        assertThat(findNotice.getViewCount()).isEqualTo(0); // 조회수 초기값 0 유지
     }
 
     @Test

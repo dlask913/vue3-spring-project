@@ -18,7 +18,7 @@
     <select id="findNotice" resultType="NoticeResponseDto" parameterType="long">
         SELECT n.id, n.title, n.content, n.view_count,
                DATE_FORMAT(n.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
-               n.member_id, m.username
+               n.member_id, m.username, m.email
         FROM notice n
             LEFT JOIN member m ON n.member_id = m.id
         WHERE n.id = #{noticeId}
