@@ -29,29 +29,21 @@
     </div>
   </form>
 </template>
-<script>
-import { ref } from 'vue';
-export default {
-  props: {
-    searchOptions: {
-      type: Array,
-    },
+<script setup>
+import { ref, defineEmits } from 'vue';
+const props = defineProps({
+  searchOptions: {
+    type: Array,
   },
-  emits: ['handle-search'],
-  setup(props, { emit }) {
-    const searchValue = ref('');
-    const selectedOption = ref('title');
+});
 
-    const handleSearch = () => {
-      emit('handle-search', selectedOption.value, searchValue.value);
-    };
+const emit = defineEmits(['handle-search']);
 
-    return {
-      searchValue,
-      selectedOption,
-      handleSearch,
-    };
-  },
+const searchValue = ref('');
+const selectedOption = ref('title');
+
+const handleSearch = () => {
+  emit('handle-search', selectedOption.value, searchValue.value);
 };
 </script>
 <style></style>

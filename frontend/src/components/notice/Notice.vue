@@ -2,13 +2,8 @@
   <NoticeForm :editing="true" />
 </template>
 
-<script>
+<script setup>
 import NoticeForm from '@/components/notice/NoticeForm.vue';
-export default {
-  components: {
-    NoticeForm,
-  },
-};
 </script>
 
 <style></style>

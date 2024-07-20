@@ -42,8 +42,8 @@
   </div>
 </template>
 
-<script>
-import { defineProps, defineEmits } from 'vue';
+<script setup>
+import { defineEmits } from 'vue';
 
 const props = defineProps({
   message: {

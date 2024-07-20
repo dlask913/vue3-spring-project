@@ -34,29 +34,25 @@
     </ul>
   </nav>
 </template>
-<script>
-export default {
-  props: {
-    currentPage: {
-      type: Number,
-      required: true,
-    },
-    pageCount: {
-      type: Number,
-      required: true,
-    },
-  },
-  emits: ['page-changed'],
-  setup(props, { emit }) {
-    const goToPage = (page) => {
-      if (page < 1 || page > props.pageCount) return; // 페이지 범위를 벗어나는 경우
-      emit('page-changed', page);
-    };
+<script setup>
+import { defineEmits } from 'vue';
 
-    return {
-      goToPage,
-    };
+const props = defineProps({
+  currentPage: {
+    type: Number,
+    required: true,
   },
+  pageCount: {
+    type: Number,
+    required: true,
+  },
+});
+
+const emit = defineEmits(['page-changed']);
+
+const goToPage = (page) => {
+  if (page < 1 || page > props.pageCount) return; // 페이지 범위를 벗어나는 경우
+  emit('page-changed', page);
 };
 </script>
 <style></style>

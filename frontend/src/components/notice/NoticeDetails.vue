@@ -30,65 +30,53 @@
     <CommentList />
   </div>
 </template>
-<script>
+<script setup>
 import { getNoticeById, deleteNotice } from '@/api/notices';
 import { useRoute, useRouter } from 'vue-router';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useStorageStore, useToastStore } from '@/store/index';
 import CommentList from '@/components/comment/CommentList.vue';
-export default {
-  components: {
-    CommentList,
-  },
-  setup() {
-    const route = useRoute();
-    const router = useRouter();
-    const storage = useStorageStore();
-    const toast = useToastStore();
-    const notice = ref({
-      title: '',
-      content: '',
-      username: '',
-      postDate: '',
-      memberId: '',
-    });
-    const noticeId = route.params.id;
-    const getNotice = async () => {
-      try {
-        const { data } = await getNoticeById(noticeId);
-        notice.value = data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
 
-    const isEditable = computed(() => {
-      return storage.getUserId == notice.value.memberId;
-    });
+const route = useRoute();
+const router = useRouter();
+const storage = useStorageStore();
+const toast = useToastStore();
+const notice = ref({
+  title: '',
+  content: '',
+  username: '',
+  postDate: '',
+  memberId: '',
+});
+const noticeId = route.params.id;
 
-    const moveToPage = () => {
-      router.push('/post/' + noticeId);
-    };
-
-    const onDelete = async () => {
-      try {
-        await deleteNotice(storage.getToken, noticeId);
-        router.push('/post');
-        toast.setToast('게시글이 삭제되었습니다.');
-      } catch (error) {
-        toast.setToast('게시글 삭제에 실패하였습니다.', 'danger');
-      }
-    };
-
-    getNotice();
-
-    return {
-      notice,
-      isEditable,
-      moveToPage,
-      onDelete,
-    };
-  },
+const getNotice = async () => {
+  try {
+    const { data } = await getNoticeById(noticeId);
+    notice.value = data;
+  } catch (error) {
+    console.error(error);
+  }
 };
+
+const isEditable = computed(() => {
+  return storage.getUserId == notice.value.memberId;
+});
+
+const moveToPage = () => {
+  router.push('/post/' + noticeId);
+};
+
+const onDelete = async () => {
+  try {
+    await deleteNotice(storage.getToken, noticeId);
+    router.push('/post');
+    toast.setToast('게시글이 삭제되었습니다.');
+  } catch (error) {
+    toast.setToast('게시글 삭제에 실패하였습니다.', 'danger');
+  }
+};
+
+onMounted(getNotice);
 </script>
 <style></style>

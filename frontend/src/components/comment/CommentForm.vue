@@ -20,54 +20,48 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import { createComment } from '@/api/comments';
 import { ref } from 'vue';
 import { useStorageStore } from '@/store/index';
-export default {
-  props: {
-    noticeId: {
-      type: String,
-      required: true,
-    },
-  },
-  setup(props, { emit }) {
-    const storage = useStorageStore();
-    const comment = ref({
-      content: '',
-    });
-    const valueError = ref('');
 
-    const onSave = async () => {
-      if (!comment.value.content) {
-        valueError.value = '내용을 입력해주세요';
-        return;
-      }
-      if (!storage.isLogin) {
-        alert('로그인을 한 사용자만 댓글을 작성할 수 있습니다.');
-        return;
-      }
-      valueError.value = '';
-      try {
-        const data = {
-          content: comment.value.content,
-          noticeId: props.noticeId,
-          memberId: storage.getUserId,
-        };
-        await createComment(storage.getToken, data);
-        comment.value.content = '';
-        emit('comment-saved');
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    return {
-      onSave,
-      comment,
-      valueError,
-    };
+const props = defineProps({
+  noticeId: {
+    type: String,
+    required: true,
   },
+});
+
+const emit = defineEmits(['comment-saved']);
+
+const storage = useStorageStore();
+const comment = ref({
+  content: '',
+});
+const valueError = ref('');
+
+const onSave = async () => {
+  if (!comment.value.content) {
+    valueError.value = '내용을 입력해주세요';
+    return;
+  }
+  if (!storage.isLogin) {
+    alert('로그인을 한 사용자만 댓글을 작성할 수 있습니다.');
+    return;
+  }
+  valueError.value = '';
+  try {
+    const data = {
+      content: comment.value.content,
+      noticeId: props.noticeId,
+      memberId: storage.getUserId,
+    };
+    await createComment(storage.getToken, data);
+    comment.value.content = '';
+    emit('comment-saved');
+  } catch (error) {
+    console.error(error);
+  }
 };
 </script>
 <style scoped>

@@ -8,16 +8,10 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useToastStore } from '@/store/index';
-export default {
-  setup() {
-    const toast = useToastStore();
-    return {
-      toast,
-    };
-  },
-};
+
+const toast = useToastStore();
 </script>
 
 <style scoped>

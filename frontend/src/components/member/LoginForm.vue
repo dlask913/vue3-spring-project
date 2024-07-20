@@ -37,71 +37,63 @@
   </form>
 </template>
 
-<script>
+<script setup>
 import { loginMember } from '@/api/users';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToastStore } from '@/store/index';
 import { useCookies } from 'vue3-cookies';
 import { useStorageStore } from '@/store/index';
-export default {
-  setup() {
-    const toast = useToastStore();
-    const router = useRouter();
-    const { cookies } = useCookies();
-    const storage = useStorageStore();
-    const login = ref({
-      email: '',
-      password: '',
-    });
-    const valueError = ref({
-      emailError: '',
-      passwordError: '',
-    });
 
-    const onLogin = async () => {
-      const requiredFields = ['email', 'password'];
-      const fieldDesc = {
-        email: '이메일을 입력해주세요.',
-        password: '비밀번호를 입력해주세요.',
-      };
-      let hasError = false;
+const toast = useToastStore();
+const router = useRouter();
+const { cookies } = useCookies();
+const storage = useStorageStore();
+const login = ref({
+  email: '',
+  password: '',
+});
+const valueError = ref({
+  emailError: '',
+  passwordError: '',
+});
 
-      requiredFields.forEach((field) => {
-        if (!login.value[field]) {
-          valueError.value[field] = `${fieldDesc[field]}`;
-          hasError = true;
-        }
-      });
+const onLogin = async () => {
+  const requiredFields = ['email', 'password'];
+  const fieldDesc = {
+    email: '이메일을 입력해주세요.',
+    password: '비밀번호를 입력해주세요.',
+  };
+  let hasError = false;
 
-      if (hasError) {
-        return;
-      }
+  requiredFields.forEach((field) => {
+    if (!login.value[field]) {
+      valueError.value[field] = `${fieldDesc[field]}`;
+      hasError = true;
+    }
+  });
 
-      try {
-        const loginDto = { ...login.value };
-        const { data } = await loginMember(loginDto); // POST /login
-        cookies.set('userId', data.memberId); // 쿠키에 userId 저장
-        cookies.set('token', data.token); // 쿠키에 토큰 저장
-        storage.login(data.memberId, data.token); // store 에 userId / 토큰 저장
+  if (hasError) {
+    return;
+  }
 
-        toast.setToast('로그인 완료');
-        router.push('/');
-      } catch (error) {
-        console.error(error);
-        if (error.response.data.status == 500) {
-          toast.setToast('알 수 없는 오류가 발생하였습니다.', 'danger');
-        } else {
-          toast.setToast(error.response.data.message, 'danger');
-        }
-      }
-    };
-    return {
-      login,
-      valueError,
-      onLogin,
-    };
-  },
+  try {
+    const loginDto = { ...login.value };
+    const { data } = await loginMember(loginDto); // POST /login
+    cookies.set('userId', data.memberId); // 쿠키에 userId 저장
+    cookies.set('token', data.token); // 쿠키에 토큰 저장
+    storage.login(data.memberId, data.token); // store 에 userId / 토큰 저장
+
+    toast.setToast('로그인 완료');
+    router.push('/');
+  } catch (error) {
+    console.error(error);
+    if (error.response.data.status == 500) {
+      toast.setToast('알 수 없는 오류가 발생하였습니다.', 'danger');
+    } else {
+      toast.setToast(error.response.data.message, 'danger');
+    }
+  }
 };
 </script>
 <style scoped>

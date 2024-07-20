@@ -39,8 +39,8 @@
   <CommentForm :noticeId="noticeId" @comment-saved="getComments" />
 </template>
 
-<script>
-import { ref } from 'vue';
+<script setup>
+import { ref, onMounted } from 'vue';
 import {
   deleteComment,
   getCommentsByNoticeId,
@@ -50,77 +50,62 @@ import { useRoute } from 'vue-router';
 import { useStorageStore, useToastStore } from '@/store/index';
 import CommentForm from '@/components/comment/CommentForm.vue';
 import HeartIcon from '@/components/comment/HeartIcon.vue';
-export default {
-  components: {
-    CommentForm,
-    HeartIcon,
-  },
-  setup() {
-    const storage = useStorageStore();
-    const toast = useToastStore();
-    const route = useRoute();
-    const comments = ref([]);
-    const editFlag = ref(0);
-    const noticeId = route.params.id;
-    const getComments = async () => {
-      try {
-        const { data } = await getCommentsByNoticeId(noticeId);
-        comments.value = data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
 
-    const isMine = (memberId) => {
-      return storage.getUserId == memberId;
-    };
-
-    const onDeleteComment = async (commentId) => {
-      try {
-        await deleteComment(storage.getToken, commentId);
-        getComments();
-        toast.setToast('댓글 삭제 완료!');
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const isEdit = (commentId) => {
-      return editFlag.value == commentId;
-    };
-
-    const onEdit = async (comment) => {
-      if (editFlag.value === 0) {
-        editFlag.value = comment.id;
-        return;
-      }
-
-      try {
-        const form = {
-          id: comment.id,
-          content: comment.content,
-        };
-        await updateComment(storage.getToken, comment.id, form);
-        editFlag.value = 0;
-        getComments();
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    getComments();
-
-    return {
-      comments,
-      isMine,
-      noticeId,
-      getComments,
-      onDeleteComment,
-      isEdit,
-      onEdit,
-    };
-  },
+const storage = useStorageStore();
+const toast = useToastStore();
+const route = useRoute();
+const comments = ref([]);
+const editFlag = ref(0);
+const noticeId = route.params.id;
+const getComments = async () => {
+  try {
+    const { data } = await getCommentsByNoticeId(noticeId);
+    comments.value = data;
+  } catch (error) {
+    console.error(error);
+  }
 };
+
+const isMine = (memberId) => {
+  return storage.getUserId == memberId;
+};
+
+const onDeleteComment = async (commentId) => {
+  try {
+    await deleteComment(storage.getToken, commentId);
+    getComments();
+    toast.setToast('댓글 삭제 완료!');
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const isEdit = (commentId) => {
+  return editFlag.value == commentId;
+};
+
+const onEdit = async (comment) => {
+  if (editFlag.value === 0) {
+    editFlag.value = comment.id;
+    return;
+  }
+
+  try {
+    const form = {
+      id: comment.id,
+      content: comment.content,
+    };
+    await updateComment(storage.getToken, comment.id, form);
+    editFlag.value = 0;
+    getComments();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(() => {
+  getComments();
+});
 </script>
 <style scoped>
 .ms-2.me-auto {

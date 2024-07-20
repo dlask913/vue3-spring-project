@@ -8,72 +8,63 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue';
+<script setup>
+import { ref, onMounted } from 'vue';
 import { getHeartStatus, saveHeart, removeHeart } from '@/api/hearts';
 import { useStorageStore } from '@/store/index';
-export default {
-  props: {
-    commentId: {
-      type: Number,
-      required: true,
-    },
+
+const props = defineProps({
+  commentId: {
+    type: Number,
+    required: true,
   },
-  setup(props) {
-    const storage = useStorageStore();
-    const isLike = ref(false);
-    const heartId = ref(0);
-    const heartCnt = ref(0);
+});
 
-    const toggleHeart = async () => {
-      try {
-        if (!isLike.value) {
-          const request = {
-            memberId: storage.getUserId,
-            commentId: props.commentId,
-          };
-          await saveHeart(storage.getToken, request);
-        } else {
-          await removeHeart(storage.getToken, heartId.value);
-          isLike.value = false;
-        }
-        await fetchHeartStatus();
-      } catch (error) {
-        console.error(error);
-      }
-    };
+const storage = useStorageStore();
+const isLike = ref(false);
+const heartId = ref(0);
+const heartCnt = ref(0);
 
-    const fetchHeartStatus = async () => {
-      try {
-        const { data } = await getHeartStatus(
-          storage.getToken,
-          storage.getUserId,
-          props.commentId
-        );
-        if (data) {
-          if (storage.getUserId == data.memberId) {
-            isLike.value = true;
-          }
-          heartId.value = data.id;
-          heartCnt.value = data.cnt;
-        } else {
-          isLike.value = false;
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchHeartStatus();
-
-    return {
-      isLike,
-      toggleHeart,
-      heartId,
-      heartCnt,
-    };
-  },
+const toggleHeart = async () => {
+  try {
+    if (!isLike.value) {
+      const request = {
+        memberId: storage.getUserId,
+        commentId: props.commentId,
+      };
+      await saveHeart(storage.getToken, request);
+    } else {
+      await removeHeart(storage.getToken, heartId.value);
+      isLike.value = false;
+    }
+    await fetchHeartStatus();
+  } catch (error) {
+    console.error(error);
+  }
 };
+
+const fetchHeartStatus = async () => {
+  try {
+    const { data } = await getHeartStatus(
+      storage.getToken,
+      storage.getUserId,
+      props.commentId
+    );
+    if (data) {
+      if (storage.getUserId == data.memberId) {
+        isLike.value = true;
+      }
+      heartId.value = data.id;
+      heartCnt.value = data.cnt;
+    } else {
+      isLike.value = false;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(fetchHeartStatus);
 </script>
 
 <style scoped></style>

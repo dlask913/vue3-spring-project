@@ -57,79 +57,67 @@
   </form>
 </template>
 
-<script>
+<script setup>
 import { createMember } from '@/api/users';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToastStore } from '@/store/index';
 
-export default {
-  setup() {
-    const toast = useToastStore();
-    const router = useRouter();
-    const member = ref({
-      email: '',
-      username: '',
-      passwordTemp: '',
-      password: '',
-    });
-    const valueError = ref({
-      emailError: '',
-      usernameError: '',
-      passwordError: '',
-    });
+const toast = useToastStore();
+const router = useRouter();
+const member = ref({
+  email: '',
+  username: '',
+  passwordTemp: '',
+  password: '',
+});
+const valueError = ref({
+  emailError: '',
+  usernameError: '',
+  passwordError: '',
+});
 
-    const onSave = async () => {
-      const requiredFields = ['email', 'username', 'password'];
-      const fieldDesc = {
-        email: '이메일은 필수 값입니다.',
-        username: '이름은 필수 값입니다.',
-        password: '비밀번호는 필수 값입니다.',
-      };
-      let hasError = false;
+const onSave = async () => {
+  const requiredFields = ['email', 'username', 'password'];
+  const fieldDesc = {
+    email: '이메일은 필수 값입니다.',
+    username: '이름은 필수 값입니다.',
+    password: '비밀번호는 필수 값입니다.',
+  };
+  let hasError = false;
 
-      requiredFields.forEach((field) => {
-        if (!member.value[field]) {
-          valueError.value[field] = `${fieldDesc[field]}`;
-          hasError = true;
-        }
-      });
+  requiredFields.forEach((field) => {
+    if (!member.value[field]) {
+      valueError.value[field] = `${fieldDesc[field]}`;
+      hasError = true;
+    }
+  });
 
-      if (member.value.password != member.value.passwordTemp) {
-        hasError = true;
-      }
+  if (member.value.password != member.value.passwordTemp) {
+    hasError = true;
+  }
 
-      if (hasError) {
-        return;
-      }
-      try {
-        const data = { ...member.value };
-        createMember(data);
-        toast.setToast('회원가입 완료!');
-        router.push('/');
-      } catch (error) {
-        console.error(error);
-        toast.setToast('회원가입 실패!', 'danger');
-      }
-    };
+  if (hasError) {
+    return;
+  }
+  try {
+    const data = { ...member.value };
+    createMember(data);
+    toast.setToast('회원가입 완료!');
+    router.push('/');
+  } catch (error) {
+    console.error(error);
+    toast.setToast('회원가입 실패!', 'danger');
+  }
+};
 
-    const passwordConfirmError = ref('');
-    const passwordConfirm = (e) => {
-      if (e.target.value != member.value.passwordTemp) {
-        passwordConfirmError.value = '비밀번호가 일치하지 않습니다.';
-      } else {
-        passwordConfirmError.value = '';
-      }
-    };
-
-    return {
-      member,
-      onSave,
-      valueError,
-      passwordConfirm,
-      passwordConfirmError,
-    };
-  },
+const passwordConfirmError = ref('');
+const passwordConfirm = (e) => {
+  if (e.target.value != member.value.passwordTemp) {
+    passwordConfirmError.value = '비밀번호가 일치하지 않습니다.';
+  } else {
+    passwordConfirmError.value = '';
+  }
 };
 </script>
 

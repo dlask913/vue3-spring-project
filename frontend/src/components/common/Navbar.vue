@@ -54,53 +54,38 @@
   <Modal v-show="showModal" :message="showMessage" @is-confirmed="onQuit" />
 </template>
 
-<script>
+<script setup>
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { useStorageStore, useToastStore } from '@/store/index';
 import { deleteMember } from '@/api/users';
 import Modal from '@/components/common/Modal.vue';
-export default {
-  components: {
-    Modal,
-  },
-  setup() {
-    const router = useRouter();
-    const storage = useStorageStore();
-    const toast = useToastStore();
-    const showModal = ref(false);
-    const showMessage = ref('');
-    const onLogout = () => {
+
+const router = useRouter();
+const storage = useStorageStore();
+const toast = useToastStore();
+const showModal = ref(false);
+const showMessage = ref('');
+const onLogout = () => {
+  storage.logout();
+  router.push('/login');
+};
+const openModal = () => {
+  showModal.value = true;
+  showMessage.value = '정말 탈퇴하시겠습니까?';
+};
+
+const onQuit = async (isConfirmed) => {
+  if (isConfirmed) {
+    try {
+      await deleteMember(storage.getToken, storage.getUserId);
       storage.logout();
-      router.push('/login');
-    };
-    const openModal = () => {
-      showModal.value = true;
-      showMessage.value = '정말 탈퇴하시겠습니까?';
-    };
-
-    const onQuit = async (isConfirmed) => {
-      if (isConfirmed) {
-        try {
-          await deleteMember(storage.getToken, storage.getUserId);
-          storage.logout();
-          toast.setToast('회원 탈퇴 완료');
-        } catch (error) {
-          console.log(error);
-          toast.setToast('재시도 부탁드립니다.', 'danger');
-        }
-      }
-    };
-
-    return {
-      storage,
-      onLogout,
-      openModal,
-      showModal,
-      showMessage,
-      onQuit,
-    };
-  },
+      toast.setToast('회원 탈퇴 완료');
+    } catch (error) {
+      console.log(error);
+      toast.setToast('재시도 부탁드립니다.', 'danger');
+    }
+  }
 };
 </script>
 
