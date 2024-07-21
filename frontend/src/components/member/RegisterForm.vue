@@ -84,20 +84,20 @@ const onSave = async () => {
     username: '이름은 필수 값입니다.',
     password: '비밀번호는 필수 값입니다.',
   };
-  let hasError = false;
+  const hasError = ref(false);
 
   requiredFields.forEach((field) => {
     if (!member.value[field]) {
       valueError.value[field] = `${fieldDesc[field]}`;
-      hasError = true;
+      hasError.value = true;
     }
   });
 
   if (member.value.password != member.value.passwordTemp) {
-    hasError = true;
+    hasError.value = true;
   }
 
-  if (hasError) {
+  if (hasError.value) {
     return;
   }
   try {

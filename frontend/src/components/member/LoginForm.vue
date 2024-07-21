@@ -64,16 +64,16 @@ const onLogin = async () => {
     email: '이메일을 입력해주세요.',
     password: '비밀번호를 입력해주세요.',
   };
-  let hasError = false;
+  const hasError = ref(false);
 
   requiredFields.forEach((field) => {
     if (!login.value[field]) {
       valueError.value[field] = `${fieldDesc[field]}`;
-      hasError = true;
+      hasError.value = true;
     }
   });
 
-  if (hasError) {
+  if (hasError.value) {
     return;
   }
 
