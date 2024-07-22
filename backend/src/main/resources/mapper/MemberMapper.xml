@@ -11,7 +11,7 @@
     <update id="updateMember" parameterType="MemberDto">
         UPDATE member
         SET username = #{username}, password = #{password}
-        where id = #{id}
+        WHERE id = #{id}
     </update>
 
     <!-- 회원 단일 조회 -->
@@ -25,7 +25,7 @@
     <select id="findByEmail" resultType="MemberDto" parameterType="String">
         SELECT id, username, email, password
         FROM member
-        where email = #{email}
+        WHERE email = #{email}
     </select>
 
     <!-- 회원 데이터 모두 조회 -->
@@ -37,7 +37,7 @@
     <!-- 회원 탈퇴 -->
     <delete id="deleteMember" parameterType="long">
         DELETE FROM member
-        where id = #{id}
+        WHERE id = #{id}
     </delete>
 
     <!-- 회원 데이터 모두 삭제 -->
