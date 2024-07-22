@@ -134,6 +134,41 @@ class CommentServiceTest {
                 .containsExactlyInAnyOrderElementsOf(tmp);
     }
 
+    @Test
+    @DisplayName("내가 작성한 댓글들을 모두 조회한다.")
+    void getCommentsByUserTest() {
+        // given
+        String email = "limnj2@test.com";
+        Long memberId = getMemberId("limnj@test.com");
+        Long memberId2 = getMemberId(email);
+        Long noticeId = getNoticeId(NoticeRequestDto.builder()
+                .title("게시글")
+                .content("게시글 내용")
+                .memberId(memberId)
+                .build());
+        CommentRequestDto commentDto1 = createCommentDto(0L,"내용1", noticeId, memberId);
+        CommentRequestDto commentDto2 = createCommentDto(0L,"내용2", noticeId, memberId2);
+        CommentRequestDto commentDto3 = createCommentDto(0L,"내용3", noticeId, memberId2);
+        CommentRequestDto commentDto4 = createCommentDto(0L,"내용4", noticeId, memberId);
+        CommentRequestDto commentDto5 = createCommentDto(0L,"내용5", noticeId, memberId);
+
+        commentServiceImpl.insertComment(commentDto1);
+        commentServiceImpl.insertComment(commentDto2);
+        commentServiceImpl.insertComment(commentDto3);
+        commentServiceImpl.insertComment(commentDto4);
+        commentServiceImpl.insertComment(commentDto5);
+
+        // when
+        List<CommentResponseDto> comments = commentServiceImpl.findCommentsByUser(email);
+
+        // then
+        List<String> tmp = new ArrayList<>();
+        tmp.add(commentDto2.getContent());
+        tmp.add(commentDto3.getContent());
+        assertThat(comments.stream().map(CommentResponseDto::getContent).toList())
+                .containsExactlyInAnyOrderElementsOf(tmp);
+    }
+
     CommentRequestDto createCommentDto(Long id, String content, Long noticeId, Long memberId) {
         return CommentRequestDto.builder()
                 .id(id)
