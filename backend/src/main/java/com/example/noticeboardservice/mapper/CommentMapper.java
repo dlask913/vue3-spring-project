@@ -14,4 +14,5 @@ public interface CommentMapper {
     List<CommentResponseDto> findCommentsByNoticeId(Long noticeId);
     List<CommentResponseDto> findAllComments();
     void deleteAll();
+    List<CommentResponseDto> findCommentsByEmail(String email);
 }

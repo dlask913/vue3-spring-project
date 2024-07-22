@@ -38,4 +38,12 @@
     <delete id="deleteAll" >
         DELETE FROM comment
     </delete>
+
+    <!-- 내가 작성한 댓글 조회 -->
+    <select id="findCommentsByEmail" resultType="CommentResponseDto" parameterType="String">
+        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id
+        FROM comment c
+            LEFT JOIN Member m ON c.member_id = m.id
+        WHERE m.email = #{email}
+    </select>
 </mapper>

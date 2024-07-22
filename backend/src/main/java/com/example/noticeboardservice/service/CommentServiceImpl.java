@@ -33,4 +33,9 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentResponseDto> findCommentsByNoticeId(Long noticeId) {
         return commentMapper.findCommentsByNoticeId(noticeId);
     }
+
+    @Override
+    public List<CommentResponseDto> findCommentsByUser(String email) {
+        return commentMapper.findCommentsByEmail(email);
+    }
 }

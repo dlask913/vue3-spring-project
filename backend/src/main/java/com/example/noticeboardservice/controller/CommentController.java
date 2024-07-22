@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,5 +52,12 @@ public class CommentController {
             return ResponseEntity.badRequest().body("삭제 실패하였습니다.");
         }
         return ResponseEntity.ok().body("삭제 완료되었습니다.");
+    }
+
+    @GetMapping("/member/comments")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "내가 쓴 댓글 조회 API")
+    public ResponseEntity<List<CommentResponseDto>> findCommentsByUser(Authentication authentication) {
+        List<CommentResponseDto> comments = commentServiceImpl.findCommentsByUser(authentication.getName());
+        return ResponseEntity.ok().body(comments);
     }
 }

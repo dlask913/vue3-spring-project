@@ -13,4 +13,6 @@ public interface CommentService {
     int updateComment(CommentRequestDto commentDto);
     int deleteComment(Long commentId);
     List<CommentResponseDto> findCommentsByNoticeId(Long noticeId);
+    List<CommentResponseDto> findCommentsByUser(String email);
+
 }
