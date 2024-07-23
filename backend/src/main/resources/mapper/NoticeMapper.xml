@@ -80,4 +80,13 @@
     <delete id="deleteAll">
         DELETE FROM notice
     </delete>
+
+    <!-- 내가 쓴 게시글 모두 조회 -->
+    <select id="findNoticeByEmail" resultType="NoticeResponseDto" parameterType="String">
+        SELECT n.id, n.title, n.content, n.view_count,
+            DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, n.member_id, m.username
+        FROM notice n
+            LEFT JOIN member m ON n.member_id = m.id
+        WHERE m.email = #{email}
+    </select>
 </mapper>

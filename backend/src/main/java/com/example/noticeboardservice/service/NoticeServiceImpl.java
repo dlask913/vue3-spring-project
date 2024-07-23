@@ -55,4 +55,9 @@ public class NoticeServiceImpl implements NoticeService{
     public List<NoticeResponseDto> findNoticeByMemberId(Long memberId) {
         return noticeMapper.findNoticeByMemberId(memberId);
     }
+
+    @Override
+    public List<NoticeResponseDto> findNoticesByUser(String email) {
+        return noticeMapper.findNoticeByEmail(email);
+    }
 }

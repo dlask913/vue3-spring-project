@@ -23,4 +23,5 @@ public interface NoticeMapper {
     );
     List<NoticeResponseDto> findNoticeByMemberId(Long memberId);
     void deleteAll();
+    List<NoticeResponseDto> findNoticeByEmail(String email);
 }

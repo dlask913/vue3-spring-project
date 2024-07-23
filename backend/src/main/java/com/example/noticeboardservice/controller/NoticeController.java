@@ -6,8 +6,8 @@ import com.example.noticeboardservice.service.NoticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class NoticeController {
     @GetMapping("/notice/{noticeId}")
     @Operation(summary = "게시글 단일 조회 API")
     public ResponseEntity<?> findNotice(@PathVariable("noticeId") Long noticeId, Authentication authentication) {
-        String email = authentication == null ? "" : authentication.name();
+        String email = authentication == null ? "" : authentication.getName();
         NoticeResponseDto response = noticeServiceImpl.findNotice(noticeId, email);
         return ResponseEntity.ok().body(response);
     }
@@ -73,6 +73,13 @@ public class NoticeController {
     ) {
         List<NoticeResponseDto> notices = noticeServiceImpl.searchNoticeByPage(
                 Integer.parseInt(page), Integer.parseInt(limit), params);
+        return ResponseEntity.ok().body(notices);
+    }
+
+    @GetMapping("/member/notices")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "내가 쓴 게시글 조회 API")
+    public ResponseEntity<List<NoticeResponseDto>> findCommentsByUser(Authentication authentication) {
+        List<NoticeResponseDto> notices = noticeServiceImpl.findNoticesByUser(authentication.getName());
         return ResponseEntity.ok().body(notices);
     }
 }
