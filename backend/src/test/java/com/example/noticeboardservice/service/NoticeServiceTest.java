@@ -249,6 +249,30 @@ class NoticeServiceTest {
                 .containsExactly("인사합니다.4", "인사합니다.5", "인사합니다.6");
     }
 
+    @Test
+    @DisplayName("내가 작성한 게시글을 조회한다.")
+    void findNoticesByUserTest() {
+        // given
+        String email = "limnj1@test.com";
+        NoticeRequestDto noticeRequestDto1 = createNoticeRequestDto(0L,"제목1", "내용1", getMemberId(email, "limnj"));
+        NoticeRequestDto noticeRequestDto2 = createNoticeRequestDto(0L,"제목2", "내용2", getMemberId(email, "limnj"));
+        NoticeRequestDto noticeRequestDto3 = createNoticeRequestDto(0L,"제목3", "내용3", getMemberId("limnj2@test.com", "limnj"));
+        NoticeRequestDto noticeRequestDto4 = createNoticeRequestDto(0L,"제목4", "내용4", getMemberId(email, "limnj"));
+        noticeMapper.insertNotice(noticeRequestDto1);
+        noticeMapper.insertNotice(noticeRequestDto2);
+        noticeMapper.insertNotice(noticeRequestDto3);
+        noticeMapper.insertNotice(noticeRequestDto4);
+
+        // when
+        List<NoticeResponseDto> notices = noticeServiceImpl.findNoticesByUser(email);
+
+        // then
+        assertThat(notices)
+                .hasSize(3)
+                .extracting(NoticeResponseDto::getTitle)
+                .containsExactly("제목1", "제목2", "제목4");
+    }
+
     private Long getMemberId(String email, String username){
         MemberDto findMember = memberMapper.findByEmail(email);
         if (findMember == null) {
