@@ -6,6 +6,7 @@ import NoticeList from '@/components/notice/NoticeList.vue';
 import NoticeForm from '@/components/notice/NoticeForm.vue';
 import NoticeDetails from '@/components/notice/NoticeDetails.vue';
 import Notice from '@/components/notice/Notice.vue';
+import MyPage from '@/components/member/MyPage.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -44,6 +45,11 @@ const router = createRouter({
       path: '/post/:id',
       name: 'Notice',
       component: Notice,
+    },
+    {
+      path: '/my-page',
+      name: 'MyPage',
+      component: MyPage,
     },
   ],
 });

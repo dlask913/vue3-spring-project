@@ -27,6 +27,11 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
           <li v-if="storage.isLogin" class="nav-item">
+            <router-link class="nav-link" :to="{ name: 'MyPage' }"
+              >마이페이지</router-link
+            >
+          </li>
+          <li v-if="storage.isLogin" class="nav-item">
             <button class="nav-link" @click="onLogout">로그아웃</button>
           </li>
           <li v-if="storage.isLogin" class="nav-item">
