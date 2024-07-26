@@ -13,12 +13,14 @@ public class MemberDto {
     String username;
     @NotNull(message = "password 은 필수 값 입니다.")
     String password;
+    String address;
 
     @Builder
-    public MemberDto(Long id, String email, String username, String password) {
+    public MemberDto(Long id, String email, String username, String password, String address) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
+        this.address = address;
     }
 }
