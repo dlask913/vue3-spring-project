@@ -21,3 +21,9 @@ export function deleteComment(token, id) {
     headers: { Authorization: token },
   });
 }
+
+export function getComentsByMember(token) {
+  return axios.get(`http://localhost:8080/member/comments`, {
+    headers: { Authorization: token },
+  });
+}

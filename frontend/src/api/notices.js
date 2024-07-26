@@ -35,3 +35,9 @@ export function deleteNotice(token, id) {
     headers: { Authorization: token },
   });
 }
+
+export function getNoticesByMember(token) {
+  return axios.get(`http://localhost:8080/member/notices`, {
+    headers: { Authorization: token },
+  });
+}
