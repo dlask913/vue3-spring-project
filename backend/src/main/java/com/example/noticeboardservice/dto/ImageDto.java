@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class ImageDto {
+    Long id;
     String imgName; // 이미지 파일명
     String oriImgName; // 원본 이미지 파일명
     String imgUrl; // 이미지 조회 경로
@@ -22,5 +23,11 @@ public class ImageDto {
         this.fileSize = fileSize;
         this.uploadDate = LocalDateTime.now();
         this.imageType = imageType;
+    }
+
+    public void updateImage(String imgName, String oriImgName, String imgUrl){
+        this.imgName = imgName;
+        this.oriImgName = oriImgName;
+        this.imgUrl = imgUrl;
     }
 }
