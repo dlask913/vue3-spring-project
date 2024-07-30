@@ -1,11 +1,14 @@
 package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.ImageDto;
+import com.example.noticeboardservice.dto.ImageType;
 import com.example.noticeboardservice.mapper.ImageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 @Service @Transactional
 @RequiredArgsConstructor
@@ -19,8 +22,9 @@ public class ImageServiceImpl implements ImageService {
         String oriImgName = multipartFile.getOriginalFilename();
         String imgName = fileService.uploadFile(location, multipartFile);
         String imgUrl = "/images/" + imageDto.getImageType().toString() + "/" + imgName;
+        Long fileSize = multipartFile.getSize();
 
-        imageDto.updateImage(imgName,oriImgName,imgUrl); // todo: fileSize 추가
+        imageDto.updateImage(imgName, oriImgName, imgUrl, fileSize);
         return imageMapper.saveImage(imageDto);
     }
 
@@ -32,5 +36,10 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public int deleteImage(Long imageId) {
         return imageMapper.deleteImage(imageId);
+    }
+
+    @Override
+    public Optional<ImageDto> findByTypeId(Long typeId, ImageType imageType) {
+        return Optional.ofNullable(imageMapper.findByType(typeId, imageType));
     }
 }

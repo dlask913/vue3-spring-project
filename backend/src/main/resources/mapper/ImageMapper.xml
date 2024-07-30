@@ -2,8 +2,8 @@
 <mapper namespace="com.example.noticeboardservice.mapper.ImageMapper">
     <!-- 이미지 생성 -->
     <insert id="saveImage" parameterType="ImageDto">
-        INSERT INTO images (img_name, ori_img_name, img_url, file_size, upload_date, image_type)
-        VALUES (#{imgName}, #{oriImgName}, #{imgUrl}, #{fileSize}, #{uploadDate}, #{imageType})
+        INSERT INTO images (img_name, ori_img_name, img_url, file_size, upload_date, image_type, type_id)
+        VALUES (#{imgName}, #{oriImgName}, #{imgUrl}, #{fileSize}, #{uploadDate}, #{imageType}, #{typeId})
     </insert>
 
     <!-- 이미지 수정 -->
@@ -19,4 +19,10 @@
         DELETE FROM images
         WHERE id = #{id}
     </delete>
+
+    <select id="findByType">
+        SELECT img_name, ori_img_name, img_url, file_size, upload_date, image_type, type_id
+        FROM images
+        WHERE type_id = #{typeId} AND image_type = #{type}
+    </select>
 </mapper>
