@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 public class ImageDto {
     Long id;
+    Long typeId;
     String imgName; // 이미지 파일명
     String oriImgName; // 원본 이미지 파일명
     String imgUrl; // 이미지 조회 경로
@@ -16,7 +17,8 @@ public class ImageDto {
     ImageType imageType;
 
     @Builder
-    public ImageDto(String imgName, String oriImgName, String imgUrl, Long fileSize, ImageType imageType) {
+    public ImageDto(Long typeId, String imgName, String oriImgName, String imgUrl, Long fileSize, ImageType imageType) {
+        this.typeId = typeId;
         this.imgName = imgName;
         this.oriImgName = oriImgName;
         this.imgUrl = imgUrl;
@@ -25,9 +27,10 @@ public class ImageDto {
         this.imageType = imageType;
     }
 
-    public void updateImage(String imgName, String oriImgName, String imgUrl){
+    public void updateImage(String imgName, String oriImgName, String imgUrl, Long fileSize){
         this.imgName = imgName;
         this.oriImgName = oriImgName;
         this.imgUrl = imgUrl;
+        this.fileSize = fileSize;
     }
 }

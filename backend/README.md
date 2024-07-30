@@ -53,6 +53,7 @@ CREATE TABLE heart (
 
 CREATE TABLE images (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    type_id BIGINT NOT ULL,
     img_name VARCHAR(255) NOT NULL,
     ori_img_name VARCHAR(255) NOT NULL,
     img_url VARCHAR(255) NOT NULL,
