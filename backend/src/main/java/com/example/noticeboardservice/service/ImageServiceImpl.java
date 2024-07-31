@@ -1,6 +1,7 @@
 package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.ImageDto;
+import com.example.noticeboardservice.dto.ImageResponseDto;
 import com.example.noticeboardservice.dto.ImageType;
 import com.example.noticeboardservice.mapper.ImageMapper;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +35,13 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public int deleteImage(Long imageId) {
+    public int deleteImage(Long imageId, String location, String imgName) {
+        fileService.deleteFile(location, imgName); // 파일 삭제
         return imageMapper.deleteImage(imageId);
     }
 
     @Override
-    public Optional<ImageDto> findByTypeId(Long typeId, ImageType imageType) {
+    public Optional<ImageResponseDto> findByTypeId(Long typeId, ImageType imageType) {
         return Optional.ofNullable(imageMapper.findByType(typeId, imageType));
     }
 }
