@@ -17,6 +17,7 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
+memberImgLocation: C:/images/member
 ---
 spring:
   config:

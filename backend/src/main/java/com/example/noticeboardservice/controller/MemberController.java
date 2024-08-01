@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -47,10 +48,12 @@ public class MemberController {
         return ResponseEntity.ok().body(findMember);
     }
 
-    @PutMapping("/member")
+    @PatchMapping("/member/{memberId}")
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "회원 정보 수정 API")
-    public ResponseEntity<String> updateMember(@RequestBody MemberDto memberDto) {
-        int result = memberServiceImpl.updateMember(memberDto);
+    public ResponseEntity<String> updateMember( @PathVariable("memberId") Long memberId,
+                                                @RequestPart("memberDto") MemberDto memberDto,
+                                                @RequestPart(value = "memberImg", required = false) MultipartFile memberImg) {
+        int result = memberServiceImpl.updateMember(memberDto, memberImg);
         if (result <= 0){
             return ResponseEntity.badRequest().body("수정 실패하였습니다.");
         }
