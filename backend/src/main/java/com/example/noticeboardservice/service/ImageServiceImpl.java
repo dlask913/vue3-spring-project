@@ -30,11 +30,6 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public int updateImage(ImageDto imageDto, MultipartFile multipartFile) {
-        return 0;
-    }
-
-    @Override
     public int deleteImage(Long imageId, String location, String imgName) {
         fileService.deleteFile(location, imgName); // 파일 삭제
         return imageMapper.deleteImage(imageId);

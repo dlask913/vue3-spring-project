@@ -6,14 +6,6 @@
         VALUES (#{imgName}, #{oriImgName}, #{imgUrl}, #{fileSize}, #{uploadDate}, #{imageType}, #{typeId})
     </insert>
 
-    <!-- 이미지 수정 -->
-    <update id="updateImage" parameterType="ImageDto">
-        UPDATE images
-        SET img_name = #{imgName}, ori_img_name = #{oriImgName}, img_url = #{imgUrl},
-            file_size = #{fileSize}, upload_date = #{uploadDate}, image_type = #{imageType}
-        WHERE id = #{id}
-    </update>
-
     <!-- 이미지 삭제 -->
     <delete id="deleteImage" parameterType="long">
         DELETE FROM images
@@ -26,4 +18,8 @@
         FROM images
         WHERE type_id = #{typeId} AND image_type = #{type}
     </select>
+
+    <delete id="deleteAll">
+        DELETE FROM images
+    </delete>
 </mapper>
