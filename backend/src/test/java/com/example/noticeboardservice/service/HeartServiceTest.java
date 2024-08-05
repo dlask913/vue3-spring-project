@@ -16,8 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @ActiveProfiles("test")
 class HeartServiceTest {
@@ -122,14 +120,14 @@ class HeartServiceTest {
     }
 
     private Long getMemberId(String email){
-        MemberDto findMember = memberMapper.findByEmail(email);
+        MemberResponseDto findMember = memberMapper.findByEmail(email);
         if (findMember == null) {
-            MemberDto memberDto = MemberDto.builder()
+            MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                     .email(email)
                     .password("1234")
                     .username("limnj1")
                     .build();
-            memberMapper.insertMember(memberDto);
+            memberMapper.insertMember(memberRequestDto);
             return memberMapper.findByEmail(email).getId();
         }
         return findMember.getId();

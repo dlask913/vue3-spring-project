@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class MemberDto {
+public class MemberRequestDto {
     Long id;
     @NotNull(message = "email 은 필수 값 입니다.")
     String email;
@@ -16,7 +16,7 @@ public class MemberDto {
     String address;
 
     @Builder
-    public MemberDto(Long id, String email, String username, String password, String address) {
+    public MemberRequestDto(Long id, String email, String username, String password, String address) {
         this.id = id;
         this.email = email;
         this.username = username;

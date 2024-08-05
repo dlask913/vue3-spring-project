@@ -1,8 +1,8 @@
 package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.LoginDto;
-import com.example.noticeboardservice.dto.LoginResponseDto;
-import com.example.noticeboardservice.dto.MemberDto;
+import com.example.noticeboardservice.dto.MemberRequestDto;
+import com.example.noticeboardservice.dto.MemberResponseDto;
 import com.example.noticeboardservice.exception.MemberNotFoundException;
 import com.example.noticeboardservice.exception.PasswordMismatchException;
 import com.example.noticeboardservice.mapper.MemberMapper;
@@ -12,9 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,26 +36,26 @@ class MemberServiceTest {
     @DisplayName("회원 가입을 한다.")
     void memberRegisterTest() {
         // given
-        MemberDto memberDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
+        MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
 
         // when
-        memberServiceImpl.registerMember(memberDto);
+        memberServiceImpl.registerMember(memberRequestDto);
 
         // then
-        MemberDto findMember = memberMapper.findByEmail(memberDto.getEmail());
-        Assertions.assertThat(findMember.getEmail()).isEqualTo(memberDto.getEmail());
-        Assertions.assertThat(findMember.getPassword()).isEqualTo(memberDto.getPassword());
-        Assertions.assertThat(findMember.getUsername()).isEqualTo(memberDto.getUsername());
+        MemberResponseDto findMember = memberMapper.findByEmail(memberRequestDto.getEmail());
+        Assertions.assertThat(findMember.getEmail()).isEqualTo(memberRequestDto.getEmail());
+        Assertions.assertThat(findMember.getPassword()).isEqualTo(memberRequestDto.getPassword());
+        Assertions.assertThat(findMember.getUsername()).isEqualTo(memberRequestDto.getUsername());
     }
 
     @Test
     @DisplayName("로그인 시 회원 정보에 대한 비밀번호가 같아야 한다.")
     void loginWithPasswordMismatchExceptionTest() {
         // given
-        MemberDto memberDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
-        memberServiceImpl.registerMember(memberDto);
+        MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
+        memberServiceImpl.registerMember(memberRequestDto);
         LoginDto loginDto = LoginDto.builder()
-                .email(memberDto.getEmail())
+                .email(memberRequestDto.getEmail())
                 .password("123X")
                 .build();
 
@@ -84,16 +84,16 @@ class MemberServiceTest {
     @DisplayName("회원 비밀번호와 이름을 수정한다.")
     void updateMemberTest() {
         // given
-        MemberDto memberDto = createMemberDto(0L, "register@test.com", "1234", "limnj1");
-        memberServiceImpl.registerMember(memberDto);
-        MemberDto findMember = memberServiceImpl.findByEmail(memberDto.getEmail()).orElseThrow();
-        MemberDto updateDto = createMemberDto(findMember.getId(), findMember.getEmail(), "12345", "limnj2");
+        MemberRequestDto memberRequestDto = createMemberDto(0L, "register@test.com", "1234", "limnj1");
+        memberServiceImpl.registerMember(memberRequestDto);
+        MemberResponseDto findMember = memberServiceImpl.findByEmail(memberRequestDto.getEmail()).orElseThrow();
+        MemberRequestDto updateDto = createMemberDto(findMember.getId(), findMember.getEmail(), "12345", "limnj2");
 
         // when
-        memberServiceImpl.updateMember(updateDto);
+        memberServiceImpl.updateMember(updateDto, null);
 
         // then
-        MemberDto updateMember = memberMapper.findByEmail(memberDto.getEmail());
+        MemberResponseDto updateMember = memberMapper.findByEmail(memberRequestDto.getEmail());
         Assertions.assertThat(updateMember.getPassword()).isEqualTo(updateDto.getPassword());
         Assertions.assertThat(updateMember.getUsername()).isEqualTo(updateDto.getUsername());
     }
@@ -102,9 +102,9 @@ class MemberServiceTest {
     @DisplayName("회원 탈퇴 한다.")
     void deleteMemberTest() {
         // given
-        MemberDto memberDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
-        memberServiceImpl.registerMember(memberDto);
-        MemberDto findMember = memberMapper.findByEmail(memberDto.getEmail());
+        MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
+        memberServiceImpl.registerMember(memberRequestDto);
+        MemberResponseDto findMember = memberMapper.findByEmail(memberRequestDto.getEmail());
 
         // when
         memberServiceImpl.deleteMember(findMember.getId());
@@ -113,8 +113,8 @@ class MemberServiceTest {
         Assertions.assertThat(memberMapper.findAllMembers().size()).isEqualTo(0);
     }
 
-    private static MemberDto createMemberDto(Long memberId, String email, String password, String username) {
-        return MemberDto.builder()
+    private static MemberRequestDto createMemberDto(Long memberId, String email, String password, String username) {
+        return MemberRequestDto.builder()
                 .id(memberId)
                 .email(email)
                 .password(password)

@@ -1,6 +1,5 @@
 package com.example.noticeboardservice.utils;
 
-import com.example.noticeboardservice.dto.MemberDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

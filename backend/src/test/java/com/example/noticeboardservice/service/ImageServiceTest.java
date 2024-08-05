@@ -1,9 +1,6 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.ImageDto;
-import com.example.noticeboardservice.dto.ImageResponseDto;
-import com.example.noticeboardservice.dto.ImageType;
-import com.example.noticeboardservice.dto.MemberDto;
+import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.ImageMapper;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import org.assertj.core.api.Assertions;
@@ -16,10 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -120,14 +113,14 @@ class ImageServiceTest {
     }
 
     private Long getMemberId(String email){
-        MemberDto findMember = memberMapper.findByEmail(email);
+        MemberResponseDto findMember = memberMapper.findByEmail(email);
         if (findMember == null) {
-            MemberDto memberDto = MemberDto.builder()
+            MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                     .email(email)
                     .password("1234")
                     .username(email.split("@")[0])
                     .build();
-            memberMapper.insertMember(memberDto);
+            memberMapper.insertMember(memberRequestDto);
             return memberMapper.findByEmail(email).getId();
         }
         return findMember.getId();

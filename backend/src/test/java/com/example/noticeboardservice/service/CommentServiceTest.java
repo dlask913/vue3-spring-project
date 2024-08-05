@@ -4,7 +4,6 @@ import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.CommentMapper;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.NoticeMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -179,14 +178,14 @@ class CommentServiceTest {
     }
 
     private Long getMemberId(String email){
-        MemberDto findMember = memberMapper.findByEmail(email);
+        MemberResponseDto findMember = memberMapper.findByEmail(email);
         if (findMember == null) {
-            MemberDto memberDto = MemberDto.builder()
+            MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                     .email(email)
                     .password("1234")
                     .username("limnj1")
                     .build();
-            memberMapper.insertMember(memberDto);
+            memberMapper.insertMember(memberRequestDto);
             return memberMapper.findByEmail(email).getId();
         }
         return findMember.getId();

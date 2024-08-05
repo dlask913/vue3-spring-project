@@ -1,11 +1,11 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.MemberDto;
+import com.example.noticeboardservice.dto.MemberRequestDto;
+import com.example.noticeboardservice.dto.MemberResponseDto;
 import com.example.noticeboardservice.dto.NoticeRequestDto;
 import com.example.noticeboardservice.dto.NoticeResponseDto;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.NoticeMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -274,14 +274,14 @@ class NoticeServiceTest {
     }
 
     private Long getMemberId(String email, String username){
-        MemberDto findMember = memberMapper.findByEmail(email);
+        MemberResponseDto findMember = memberMapper.findByEmail(email);
         if (findMember == null) {
-            MemberDto memberDto = MemberDto.builder()
+            MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                     .email(email)
                     .password("1234")
                     .username(username)
                     .build();
-            memberMapper.insertMember(memberDto);
+            memberMapper.insertMember(memberRequestDto);
             return memberMapper.findByEmail(email).getId();
         }
         return findMember.getId();

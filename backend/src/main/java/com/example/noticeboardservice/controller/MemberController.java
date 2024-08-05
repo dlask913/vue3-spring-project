@@ -2,13 +2,13 @@ package com.example.noticeboardservice.controller;
 
 import com.example.noticeboardservice.dto.LoginDto;
 import com.example.noticeboardservice.dto.LoginResponseDto;
-import com.example.noticeboardservice.dto.MemberDto;
+import com.example.noticeboardservice.dto.MemberRequestDto;
+import com.example.noticeboardservice.dto.MemberResponseDto;
 import com.example.noticeboardservice.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,8 +22,8 @@ public class MemberController {
 
     @PostMapping("/member")
     @Operation(summary = "회원 가입 API")
-    public ResponseEntity<String> registerMember(@RequestBody MemberDto memberDto){
-        int result = memberServiceImpl.registerMember(memberDto);
+    public ResponseEntity<String> registerMember(@RequestBody MemberRequestDto memberRequestDto){
+        int result = memberServiceImpl.registerMember(memberRequestDto);
         if (result <= 0){
             return ResponseEntity.badRequest().body("회원가입에 실패하였습니다.");
         }
@@ -43,17 +43,17 @@ public class MemberController {
 
     @GetMapping("/member/{memberId}")
     @Operation(summary = "회원 정보 단일 조회 API")
-    public ResponseEntity<MemberDto> findMember(@PathVariable("memberId") Long memberId) {
-        MemberDto findMember = memberServiceImpl.findMember(memberId).orElseThrow();
+    public ResponseEntity<MemberResponseDto> findMember(@PathVariable("memberId") Long memberId) {
+        MemberResponseDto findMember = memberServiceImpl.findMember(memberId).orElseThrow();
         return ResponseEntity.ok().body(findMember);
     }
 
     @PatchMapping("/member/{memberId}")
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "회원 정보 수정 API")
     public ResponseEntity<String> updateMember( @PathVariable("memberId") Long memberId,
-                                                @RequestPart("memberDto") MemberDto memberDto,
+                                                @RequestPart("memberDto") MemberRequestDto memberRequestDto,
                                                 @RequestPart(value = "memberImg", required = false) MultipartFile memberImg) {
-        int result = memberServiceImpl.updateMember(memberDto, memberImg);
+        int result = memberServiceImpl.updateMember(memberRequestDto, memberImg);
         if (result <= 0){
             return ResponseEntity.badRequest().body("수정 실패하였습니다.");
         }

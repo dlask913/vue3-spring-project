@@ -1,17 +1,18 @@
 package com.example.noticeboardservice.mapper;
 
-import com.example.noticeboardservice.dto.MemberDto;
+import com.example.noticeboardservice.dto.MemberRequestDto;
+import com.example.noticeboardservice.dto.MemberResponseDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 @Mapper
 public interface MemberMapper {
-    int insertMember(MemberDto memberDto);
-    int updateMember(MemberDto memberDto);
-    MemberDto findMember(Long memberId);
+    int insertMember(MemberRequestDto memberRequestDto);
+    int updateMember(MemberRequestDto memberRequestDto);
+    MemberResponseDto findMember(Long memberId);
     int deleteMember(Long memberId);
-    List<MemberDto> findAllMembers();
-    MemberDto findByEmail(String email);
+    List<MemberResponseDto> findAllMembers();
+    MemberResponseDto findByEmail(String email);
     void deleteAll();
 }
