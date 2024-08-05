@@ -17,7 +17,11 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
+# 이미지 경로 설정
+uploadPath: file:///C:/images/
+defaultImgPath: classpath:/static/default-image/
 memberImgLocation: C:/images/member
+
 ---
 spring:
   config:
