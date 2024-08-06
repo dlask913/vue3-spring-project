@@ -2,6 +2,7 @@
   <div class="container mt-5">
     <div class="row">
       <div class="col-md-4 text-center">
+        <ImageUploader />
         <h2 class="mt-3">Username</h2>
         <p class="text-muted">{{ member.username }}</p>
       </div>
@@ -72,6 +73,7 @@
   </div>
 </template>
 <script setup>
+import ImageUploader from '../common/ImageUploader.vue';
 import { ref, onMounted } from 'vue';
 import { getMemberById } from '@/api/users';
 import { getNoticesByMember } from '@/api/notices';
@@ -104,7 +106,6 @@ const fetchData = async () => {
 };
 
 onMounted(fetchData);
-
 </script>
 <style scoped>
 .profile-image {
