@@ -10,4 +10,8 @@ public class MemberResponseDto {
     String password;
     String address;
     String imgUrl;
+
+    public void setDefaultImg(){
+        this.imgUrl = "/image/memberDefaultImg.jpg";
+    }
 }

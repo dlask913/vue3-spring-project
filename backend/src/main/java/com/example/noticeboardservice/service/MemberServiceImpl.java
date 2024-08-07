@@ -61,7 +61,7 @@ public class MemberServiceImpl implements MemberService {
                 .imageType(ImageType.MEMBER)
                 .build();
 
-        if(memberImg != null){
+        if(memberImg != null){ // 이미지 있을 때만 저장
             imageServiceImpl.saveImage(imageDto, memberImg, memberImgLocation);
         }
 
@@ -69,8 +69,15 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Optional<MemberResponseDto> findMember(Long memberId) {
-        return Optional.ofNullable(memberMapper.findMember(memberId));
+    public MemberResponseDto findMember(Long memberId) {
+        MemberResponseDto findMember = Optional.ofNullable(memberMapper.findMember(memberId))
+                .orElseThrow(MemberNotFoundException::new);
+
+        if(findMember.getImgUrl() == null) { // 저장된 이미지가 없다면 디폴트 이미지로 내보내기
+            findMember.setDefaultImg();
+        }
+
+        return findMember;
     }
 
     @Override

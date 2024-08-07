@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface MemberService extends UserDetailsService {
     int registerMember(MemberRequestDto memberRequestDto);
     int updateMember(MemberRequestDto memberRequestDto, MultipartFile memberImg);
-    Optional<MemberResponseDto> findMember(Long memberId);
+    MemberResponseDto findMember(Long memberId);
     Optional<MemberResponseDto> findByEmail(String email);
     int deleteMember(Long memberId);
     List<MemberResponseDto> findAllMembers();

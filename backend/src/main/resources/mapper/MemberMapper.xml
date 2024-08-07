@@ -16,9 +16,16 @@
 
     <!-- 회원 단일 조회 -->
     <select id="findMember" resultType="MemberResponseDto" parameterType="long">
-        SELECT id, username, email, password, address
-        FROM member
-        where id = #{id}
+        WITH memberImg AS (
+            SELECT *
+            FROM images
+            WHERE image_type = 'MEMBER'
+        )
+
+        SELECT A.id, A.username, A.email, A.password, A.address, B.img_url
+        FROM member A
+            LEFT JOIN memberImg B ON A.id = B.type_id
+        WHERE A.id = #{id}
     </select>
 
     <!-- 회원 단일 조회 by Email -->
