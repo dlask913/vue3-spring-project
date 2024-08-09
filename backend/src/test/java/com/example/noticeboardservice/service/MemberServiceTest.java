@@ -12,8 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -111,6 +109,24 @@ class MemberServiceTest {
 
         // then
         Assertions.assertThat(memberMapper.findAllMembers().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("회원 PK로 디폴트 이미지가 저장되어있는 회원 정보를 조회한다")
+    void findByMemberIdTest() {
+        // given
+        MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
+        memberServiceImpl.registerMember(memberRequestDto);
+        MemberResponseDto member = memberMapper.findByEmail(memberRequestDto.getEmail());
+
+        // when
+        MemberResponseDto findMember = memberServiceImpl.findMember(member.getId());
+
+        // then
+        Assertions.assertThat(findMember.getEmail()).isEqualTo(memberRequestDto.getEmail());
+        Assertions.assertThat(findMember.getUsername()).isEqualTo(memberRequestDto.getUsername());
+        Assertions.assertThat(findMember.getPassword()).isEqualTo(memberRequestDto.getPassword());
+        Assertions.assertThat(findMember.getImgUrl()).isEqualTo("/image/memberDefaultImg.jpg");
     }
 
     private static MemberRequestDto createMemberDto(Long memberId, String email, String password, String username) {
