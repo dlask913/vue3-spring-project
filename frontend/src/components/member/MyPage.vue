@@ -2,7 +2,7 @@
   <div class="container mt-5">
     <div class="row">
       <div class="col-md-4 text-center">
-        <ImageUploader />
+        <ImageUploader v-if="member.imgUrl" :imageUrl="member.imgUrl" />
         <h2 class="mt-3">Username</h2>
         <p class="text-muted">{{ member.username }}</p>
       </div>
@@ -85,6 +85,7 @@ const member = ref({
   email: '',
   username: '',
   address: '',
+  imgUrl: '',
 });
 const notices = ref([]);
 const comments = ref([]);
@@ -100,6 +101,7 @@ const fetchData = async () => {
     member.value = memberResponse.data;
     notices.value = noticesResponse.data;
     comments.value = commentsResponse.data;
+    member.value.imgUrl = 'http://localhost:8080' + member.value.imgUrl; // todo: baseUrl 따로 빼기
   } catch (e) {
     console.error(e);
   }

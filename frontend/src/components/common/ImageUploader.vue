@@ -24,7 +24,14 @@
 <script setup>
 import { ref } from 'vue';
 
-const imageUrl = ref(null);
+const props = defineProps({
+  imageUrl: {
+    type: String,
+    required: true
+  }
+});
+
+const imageUrl = ref(props.imageUrl); // 초기 회원 이미지 
 const fileInput = ref(null);
 
 const onFileChange = (event) => {
@@ -41,6 +48,7 @@ const onFileChange = (event) => {
 const triggerFileInput = () => {
   fileInput.value.click();
 };
+
 </script>
 
 <style scoped>
