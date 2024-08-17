@@ -12,6 +12,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -127,6 +129,29 @@ class MemberServiceTest {
         Assertions.assertThat(findMember.getUsername()).isEqualTo(memberRequestDto.getUsername());
         Assertions.assertThat(findMember.getPassword()).isEqualTo(memberRequestDto.getPassword());
         Assertions.assertThat(findMember.getImgUrl()).isEqualTo("/image/memberDefaultImg.jpg");
+    }
+
+    @Test
+    @DisplayName("회원 이미지를 수정한다.")
+    void updateMemberImageTest() {
+        // given
+        MemberRequestDto memberRequestDto = createMemberDto(0L, "register@test.com", "1234", "limnj1");
+        memberServiceImpl.registerMember(memberRequestDto);
+        MemberResponseDto findMember = memberServiceImpl.findByEmail(memberRequestDto.getEmail()).orElseThrow();
+        MemberRequestDto updateDto = createMemberDto(findMember.getId(), memberRequestDto.getEmail(), memberRequestDto.getPassword(), memberRequestDto.getUsername());
+        MockMultipartFile memberImg = new MockMultipartFile(
+                "회원 이미지",
+                "memberImg.jpg",
+                String.valueOf(MediaType.IMAGE_JPEG),
+                "memberImg!".getBytes()
+        );
+
+        // when
+        memberServiceImpl.updateMember(updateDto, memberImg);
+
+        // then
+        MemberResponseDto updateMember = memberMapper.findMember(findMember.getId());
+        Assertions.assertThat(updateMember.getImgUrl()).startsWith("/images/member/");
     }
 
     private static MemberRequestDto createMemberDto(Long memberId, String email, String password, String username) {
