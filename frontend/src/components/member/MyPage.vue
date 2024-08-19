@@ -2,13 +2,16 @@
   <div class="container mt-5">
     <div class="row">
       <div class="col-md-4 text-center">
-        <ImageUploader v-if="member.imgUrl" :imageUrl="member.imgUrl" />
-        <h2 class="mt-3">Username</h2>
-        <p class="text-muted">{{ member.username }}</p>
+        <ImageUploader
+          v-if="member.imgUrl"
+          :imageUrl="member.imgUrl"
+          @file-changed="fetchMemberImg"
+        />
+        <h4 class="text-muted">{{ member.username }}</h4>
       </div>
       <div class="col-md-8">
         <h3>Personal Information</h3>
-        <form>
+        <form @submit.prevent="onUpdateUser">
           <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
             <input
@@ -75,11 +78,12 @@
 <script setup>
 import ImageUploader from '../common/ImageUploader.vue';
 import { ref, onMounted } from 'vue';
-import { getMemberById } from '@/api/users';
+import { getMemberById, updateMember } from '@/api/users';
 import { getNoticesByMember } from '@/api/notices';
 import { getComentsByMember } from '@/api/comments';
-import { useStorageStore } from '@/store';
+import { useToastStore, useStorageStore } from '@/store';
 
+const toast = useToastStore();
 const storage = useStorageStore();
 const member = ref({
   email: '',
@@ -87,6 +91,7 @@ const member = ref({
   address: '',
   imgUrl: '',
 });
+const memberImg = ref(null);
 const notices = ref([]);
 const comments = ref([]);
 
@@ -105,6 +110,24 @@ const fetchData = async () => {
   } catch (e) {
     console.error(e);
   }
+};
+
+const onUpdateUser = async () => {
+  try {
+    await updateMember(
+      storage.getToken,
+      storage.getUserId,
+      member.value,
+      memberImg
+    );
+    toast.setToast('정보 수정이 완료되었습니다.');
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const fetchMemberImg = (file) => {
+  memberImg.value = file;
 };
 
 onMounted(fetchData);

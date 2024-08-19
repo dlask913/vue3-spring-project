@@ -27,11 +27,13 @@ import { ref } from 'vue';
 const props = defineProps({
   imageUrl: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
-const imageUrl = ref(props.imageUrl); // 초기 회원 이미지 
+const emit = defineEmits(['file-changed']);
+
+const imageUrl = ref(props.imageUrl); // 초기 회원 이미지
 const fileInput = ref(null);
 
 const onFileChange = (event) => {
@@ -40,6 +42,7 @@ const onFileChange = (event) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       imageUrl.value = e.target.result;
+      emit('file-changed', file);
     };
     reader.readAsDataURL(file);
   }
@@ -48,7 +51,6 @@ const onFileChange = (event) => {
 const triggerFileInput = () => {
   fileInput.value.click();
 };
-
 </script>
 
 <style scoped>
