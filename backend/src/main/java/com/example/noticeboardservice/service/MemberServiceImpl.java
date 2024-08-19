@@ -52,16 +52,16 @@ public class MemberServiceImpl implements MemberService {
     }
     @Override
     public int updateMember(MemberRequestDto memberRequestDto, MultipartFile memberImg) {
-        imageServiceImpl.findByTypeId(memberRequestDto.getId(), ImageType.MEMBER)
-                .ifPresent(imageDto -> imageServiceImpl.deleteImage(
-                        imageDto.getId(), memberImgLocation, imageDto.getImgName())); // 있으면 삭제
-
         ImageDto imageDto = ImageDto.builder()
                 .typeId(memberRequestDto.getId())
                 .imageType(ImageType.MEMBER)
                 .build();
 
         if(memberImg != null){ // 이미지 있을 때만 저장
+            imageServiceImpl.findByTypeId(memberRequestDto.getId(), ImageType.MEMBER)
+                    .ifPresent(image -> imageServiceImpl.deleteImage(
+                            image.getId(), memberImgLocation, image.getImgName())); // 기존 이미지 삭제
+
             imageServiceImpl.saveImage(imageDto, memberImg, memberImgLocation);
         }
 
