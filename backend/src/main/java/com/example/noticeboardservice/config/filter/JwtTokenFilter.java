@@ -1,7 +1,10 @@
 package com.example.noticeboardservice.config.filter;
 
+import com.example.noticeboardservice.exception.TokenExpiredException;
+import com.example.noticeboardservice.exception.TokenInvalidException;
 import com.example.noticeboardservice.service.MemberService;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,8 +54,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                 .setAuthentication(usernamePasswordAuthenticationToken);
                     }
                 }
+            } catch (ExpiredJwtException e) {
+                log.warn("토큰이 만료되었습니다.");
+                throw new TokenExpiredException();
             } catch (Exception e) {
                 log.warn("인증 실패 : {}", e.getMessage());
+                throw new TokenInvalidException();
             }
         } else {
             log.warn("JWT Token does not begin with Bearer String");
