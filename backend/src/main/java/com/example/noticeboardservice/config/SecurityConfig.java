@@ -31,6 +31,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(
                         request -> request
+                                .requestMatchers(HttpMethod.GET,"/member/*").authenticated() // target: GET /member/{memberId}
                                 .requestMatchers(HttpMethod.PUT).authenticated()
                                 .requestMatchers(HttpMethod.DELETE).authenticated()
                                 .requestMatchers(HttpMethod.POST,"/notice").authenticated()

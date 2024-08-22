@@ -99,7 +99,7 @@ const fetchData = async () => {
   try {
     const [memberResponse, noticesResponse, commentsResponse] =
       await Promise.all([
-        getMemberById(storage.getUserId),
+        getMemberById(storage.getToken, storage.getUserId),
         getNoticesByMember(storage.getToken),
         getComentsByMember(storage.getToken),
       ]);
@@ -108,7 +108,7 @@ const fetchData = async () => {
     comments.value = commentsResponse.data;
     member.value.imgUrl = 'http://localhost:8080' + member.value.imgUrl; // todo: baseUrl 따로 빼기
   } catch (e) {
-    console.error(e);
+    console.error(e.response.data);
   }
 };
 
@@ -122,7 +122,7 @@ const onUpdateUser = async () => {
     );
     toast.setToast('정보 수정이 완료되었습니다.');
   } catch (e) {
-    console.error(e);
+    console.error(e.response.data);
   }
 };
 

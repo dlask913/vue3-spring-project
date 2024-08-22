@@ -42,7 +42,7 @@ public class MemberController {
     }
 
     @GetMapping("/member/{memberId}")
-    @Operation(summary = "회원 정보 단일 조회 API")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "회원 정보 단일 조회 API")
     public ResponseEntity<MemberResponseDto> findMember(@PathVariable("memberId") Long memberId) {
         MemberResponseDto findMember = memberServiceImpl.findMember(memberId);
         return ResponseEntity.ok().body(findMember);

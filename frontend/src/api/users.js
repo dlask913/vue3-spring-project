@@ -4,8 +4,10 @@ export function loginMember(data) {
   return axios.post('http://localhost:8080/login', data);
 }
 
-export function getMemberById(id) {
-  return axios.get(`http://localhost:8080/member/${id}`);
+export function getMemberById(token, id) {
+  return axios.get(`http://localhost:8080/member/${id}`, {
+    headers: { Authorization: token },
+  });
 }
 
 export function createMember(data) {
