@@ -33,7 +33,7 @@ const props = defineProps({
 
 const emit = defineEmits(['file-changed']);
 
-const imageUrl = ref(props.imageUrl); // 초기 회원 이미지
+const imageUrl = ref(props.imageUrl); // 초기 이미지
 const fileInput = ref(null);
 
 const onFileChange = (event) => {

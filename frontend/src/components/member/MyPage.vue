@@ -49,7 +49,13 @@
     <div class="row mt-5">
       <div class="col-md-6">
         <h3>My Posts</h3>
-        <div class="card mb-3" v-for="notice in notices" :key="notice.id">
+        <div
+          class="card mb-3"
+          v-for="notice in notices"
+          :key="notice.id"
+          @click="moveToPage(notice.id)"
+          :style="{ cursor: isActive === notice.id ? 'default' : 'pointer' }"
+        >
           <div class="card-body">
             <h5 class="card-title">{{ notice.title }}</h5>
             <p class="card-text">{{ notice.content }}</p>
@@ -63,7 +69,15 @@
         <h3>My Comments</h3>
         <div class="card mb-3" v-for="comment in comments" :key="comment.id">
           <div class="card-body">
-            <p class="card-text">{{ comment.content }}</p>
+            <div class="d-flex justify-content-between">
+              <p class="card-text">{{ comment.content }}</p>
+              <button
+                class="btn btn-secondary btn-sm mt-2"
+                @click="moveToPage(comment.noticeId)"
+              >
+                게시글 보기
+              </button>
+            </div>
             <p class="card-text">
               <small class="text-muted"
                 >Commented on {{ comment.postDate }}</small
@@ -82,7 +96,9 @@ import { getMemberById, updateMember } from '@/api/users';
 import { getNoticesByMember } from '@/api/notices';
 import { getComentsByMember } from '@/api/comments';
 import { useToastStore, useStorageStore } from '@/store';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const toast = useToastStore();
 const storage = useStorageStore();
 const member = ref({
@@ -94,6 +110,7 @@ const member = ref({
 const memberImg = ref(null);
 const notices = ref([]);
 const comments = ref([]);
+const isActive = ref(null);
 
 const fetchData = async () => {
   try {
@@ -128,6 +145,11 @@ const onUpdateUser = async () => {
 
 const fetchMemberImg = (file) => {
   memberImg.value = file;
+};
+
+const moveToPage = (noticeId) => {
+  isActive.vlaue = noticeId;
+  router.push('/post-details/' + noticeId);
 };
 
 onMounted(fetchData);
