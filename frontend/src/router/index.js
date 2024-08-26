@@ -52,6 +52,10 @@ const router = createRouter({
       component: MyPage,
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    // 페이지 이동 시 항상 스크롤을 상단으로 설정
+    return { top: 0 };
+  },
 });
 
 export default router;
