@@ -11,6 +11,7 @@ public class NoticeRequestDto {
     String title;
     String content;
     LocalDateTime postDate;
+    LocalDateTime updateDate;
     Long memberId;
 
     @Builder
@@ -19,6 +20,7 @@ public class NoticeRequestDto {
         this.title = title;
         this.content = content;
         this.postDate = LocalDateTime.now();
+        this.updateDate = LocalDateTime.now();
         this.memberId = memberId;
     }
     public void saveNoticeId(Long noticeId){ // notice 수정 시 pathvariable 저장 용도

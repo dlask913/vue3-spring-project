@@ -8,6 +8,7 @@ public class NoticeResponseDto {
     String title;
     String content;
     String postDate;
+    String updateDate;
     Long memberId;
     String username;
     String email;

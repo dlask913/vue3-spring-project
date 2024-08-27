@@ -23,6 +23,7 @@ CREATE TABLE notice (
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     post_date DATETIME NOT NULL,
+    update_date DATETIME NOT NULL,
     view_count BIGINT DEFAULT 0,
     member_id BIGINT,
     FOREIGN KEY (member_id) REFERENCES member(id)
