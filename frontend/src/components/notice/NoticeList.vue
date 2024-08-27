@@ -23,7 +23,15 @@
           <th scope="row">
             {{ params._limit * (params._page - 1) + index + 1 }}
           </th>
-          <td>{{ notice.title }}</td>
+          <td>
+            {{ notice.title }}
+            <span v-if="isNew(notice.postDate)" class="badge bg-warning ms-2"
+              >NEW</span
+            >
+            <span v-if="isHot(notice.viewCount)" class="badge bg-danger ms-2"
+              >HOT</span
+            >
+          </td>
           <td>{{ notice.username }}</td>
           <td>{{ notice.postDate }}</td>
           <td>{{ notice.viewCount }}</td>
@@ -126,6 +134,19 @@ const searchNotices = async (option, value) => {
   } catch (error) {
     console.error(error);
   }
+};
+
+const isNew = (postDate) => {
+  const postTime = new Date(postDate).getTime();
+  const currentTime = new Date().getTime();
+  const timeDifference = currentTime - postTime;
+
+  // 24시간(1일) 이내일 경우 NEW 표시
+  return timeDifference <= 24 * 60 * 60 * 1000; // 24시간 = 24 * 60분 * 60초 * 1000밀리초
+};
+
+const isHot = (viewCount) => {
+  return viewCount >= 10; // todo: 기준값 다시 정하기.
 };
 </script>
 
