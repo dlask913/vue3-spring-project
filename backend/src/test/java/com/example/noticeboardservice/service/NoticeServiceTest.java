@@ -186,7 +186,7 @@ class NoticeServiceTest {
 
         // when
         List<NoticeResponseDto> findNotices =
-                noticeServiceImpl.searchNoticeByPage(3,5, Map.of());
+                noticeServiceImpl.searchNoticeByPage(3,5, "post_date", "desc", Map.of());
 
         // then
         assertThat(findNotices)
@@ -213,7 +213,7 @@ class NoticeServiceTest {
         params.put("username","limnj");
 
         // when - page 및 limit 은 default 값
-        List<NoticeResponseDto> findNotices = noticeServiceImpl.searchNoticeByPage(1,5, params);
+        List<NoticeResponseDto> findNotices = noticeServiceImpl.searchNoticeByPage(1,5, "post_date", "desc", params);
 
         // then
         assertThat(findNotices)
@@ -240,7 +240,7 @@ class NoticeServiceTest {
         params.put("title","인사");
 
         // when - page 및 limit 은 default 값
-        List<NoticeResponseDto> findNotices = noticeServiceImpl.searchNoticeByPage(1,5, params);
+        List<NoticeResponseDto> findNotices = noticeServiceImpl.searchNoticeByPage(1,5, "post_date", "desc", params);
 
         // then
         assertThat(findNotices)

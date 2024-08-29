@@ -69,10 +69,12 @@ public class NoticeController {
     public ResponseEntity<List<NoticeResponseDto>> searchNoticesByPage(
             @RequestParam(value = "page", defaultValue = "1") String page,
             @RequestParam(value = "limit", defaultValue = "5") String limit,
+            @RequestParam(value = "sort", defaultValue = "post_date") String sort,
+            @RequestParam(value = "order", defaultValue = "desc") String order,
             @RequestParam Map<String, String> params
     ) {
         List<NoticeResponseDto> notices = noticeServiceImpl.searchNoticeByPage(
-                Integer.parseInt(page), Integer.parseInt(limit), params);
+                Integer.parseInt(page), Integer.parseInt(limit), sort, order, params);
         return ResponseEntity.ok().body(notices);
     }
 

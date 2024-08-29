@@ -3,8 +3,8 @@
 
     <!-- 게시글 생성 -->
     <insert id="insertNotice" parameterType="NoticeRequestDto">
-        INSERT INTO notice (title, content, post_date, member_id)
-        VALUES (#{title}, #{content}, #{postDate}, #{memberId})
+        INSERT INTO notice (title, content, post_date, member_id, update_date)
+        VALUES (#{title}, #{content}, #{postDate}, #{memberId}, #{updateDate})
     </insert>
 
     <!-- 게시글 수정 -->
@@ -52,6 +52,7 @@
         <if test="params.username != null">
             AND m.username LIKE CONCAT('%', #{params.username}, '%')
         </if>
+        ORDER BY post_date DESC
     </select>
 
     <!-- 게시글 데이터 조회 By Page AND Keyword -->
@@ -67,7 +68,7 @@
         <if test="params.username != null">
             AND m.username LIKE CONCAT('%', #{params.username}, '%')
         </if>
-        ORDER BY n.id
+        ORDER BY n.${sortKey} ${order}
         LIMIT #{limit} OFFSET #{offset}
     </select>
 

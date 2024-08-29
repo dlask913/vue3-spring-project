@@ -8,8 +8,10 @@ export function getNoticesByPage(page, limit) {
   return axios.get(`/notices?page=${page}&limit=${limit}`);
 }
 
-export function getNoticesByKeyword(page, limit, option, value) {
-  return axios.get(`/notices?page=${page}&limit=${limit}&${option}=${value}`);
+export function getNoticesByKeyword(page, limit, option, value, sort, order) {
+  return axios.get(
+    `/notices?page=${page}&limit=${limit}&${option}=${value}&sort=${sort}&order=${order}`
+  );
 }
 
 export function getNoticeById(id) {

@@ -47,8 +47,8 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public List<NoticeResponseDto> searchNoticeByPage(int page, int limit, Map<String, String> params) {
-        return noticeMapper.searchNoticesByPage((page-1)*limit, limit, params); // offset index 0부터 시작하므로, -1
+    public List<NoticeResponseDto> searchNoticeByPage(int page, int limit, String sortKey, String order, Map<String, String> params) {
+        return noticeMapper.searchNoticesByPage((page-1)*limit, limit, sortKey, order, params); // offset index 0부터 시작하므로, -1
     }
 
     @Override

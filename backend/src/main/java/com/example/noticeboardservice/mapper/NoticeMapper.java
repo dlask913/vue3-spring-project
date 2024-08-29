@@ -19,6 +19,8 @@ public interface NoticeMapper {
     List<NoticeResponseDto> searchNoticesByPage(
             @Param("offset") int offset,
             @Param("limit") int limit,
+            @Param("sortKey") String sortKey,
+            @Param("order") String order,
             @Param("params") Map<String, String> params
     );
     List<NoticeResponseDto> findNoticeByMemberId(Long memberId);

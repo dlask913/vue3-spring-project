@@ -8,16 +8,27 @@
       <thead>
         <tr>
           <th scope="col">No.</th>
-          <th @click="sortNotice('title')" scope="col" style="width: 60%" class="field-indicator">
+          <th
+            @click="sortNotice('title')"
+            scope="col"
+            style="width: 60%"
+            class="field-indicator"
+          >
             제목 <i class="fas fa-sort sort-indicator" id="title-sort"></i>
           </th>
-          <th @click="sortNotice('author')" scope="col" class="field-indicator">
-            작성자 <i class="fas fa-sort sort-indicator" id="author-sort"></i>
-          </th>
-          <th @click="sortNotice('postDate')" scope="col" class="field-indicator">
+          <th scope="col" class="field-indicator">작성자</th>
+          <th
+            @click="sortNotice('post_date')"
+            scope="col"
+            class="field-indicator"
+          >
             작성일 <i class="fas fa-sort sort-indicator" id="date-sort"></i>
           </th>
-          <th @click="sortNotice('viewCount')" scope="col" class="field-indicator">
+          <th
+            @click="sortNotice('view_count')"
+            scope="col"
+            class="field-indicator"
+          >
             조회수 <i class="fas fa-sort sort-indicator" id="view-sort"></i>
           </th>
         </tr>
@@ -78,7 +89,7 @@ const searchOptions = ref([
 const selectedOption = ref('title');
 const searchValue = ref('');
 const params = ref({
-  _sort: 'createdAt',
+  _sort: 'post_date',
   _order: 'desc',
   _page: 1,
   _limit: 5,
@@ -100,7 +111,9 @@ const fetchNotices = async () => {
       params.value._page,
       params.value._limit,
       selectedOption.value,
-      searchValue.value
+      searchValue.value,
+      params.value._sort,
+      params.value._order
     );
     notices.value = data;
   } catch (error) {
@@ -136,7 +149,9 @@ const searchNotices = async (option, value) => {
       params.value._page,
       params.value._limit,
       selectedOption.value,
-      searchValue.value
+      searchValue.value,
+      params.value._sort,
+      params.value._order
     );
     notices.value = data;
   } catch (error) {
@@ -155,6 +170,17 @@ const isNew = (postDate) => {
 
 const isHot = (viewCount) => {
   return viewCount >= 10; // todo: 기준값 다시 정하기.
+};
+
+const sortNotice = (keyWord) => {
+  // 정렬
+  if (params.value._sort === keyWord) {
+    params.value._order = params.value._order === 'asc' ? 'desc' : 'asc';
+  } else {
+    params.value._order = 'asc';
+  }
+  params.value._sort = keyWord;
+  fetchNotices();
 };
 </script>
 

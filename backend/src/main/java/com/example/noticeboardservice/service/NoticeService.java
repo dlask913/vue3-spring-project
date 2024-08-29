@@ -15,6 +15,6 @@ public interface NoticeService {
     NoticeResponseDto findNotice(Long noticeId, String email);
     List<NoticeResponseDto> findAllNotices(Map<String, String> params);
     List<NoticeResponseDto> findNoticeByMemberId(Long memberId);
-    List<NoticeResponseDto> searchNoticeByPage(int page, int limit, Map<String, String> params);
+    List<NoticeResponseDto> searchNoticeByPage(int page, int limit, String sortKey, String order, Map<String, String> params);
     List<NoticeResponseDto> findNoticesByUser(String email);
 }
