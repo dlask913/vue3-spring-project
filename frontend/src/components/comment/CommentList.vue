@@ -5,7 +5,11 @@
       class="list-group-item d-flex justify-content-between align-items-start"
     >
       <div class="container" style="width: 80%">
-        <div class="fw-bold">{{ comment.username }}</div>
+        <div class="comment-header mt-2">
+          <img src="" alt="Profile Picture" class="profile-picture" />
+          <div class="fw-bold">{{ comment.username }}</div>
+        </div>
+
         <textarea
           v-if="isEdit(comment.id)"
           v-model="comment.content"
@@ -13,7 +17,7 @@
           rows="3"
         ></textarea>
         <span v-else>{{ comment.content }}</span>
-        <p class="fw-lighter">{{ comment.postDate }}</p>
+        <p class="fw-lighter mt-2">{{ comment.postDate }}</p>
       </div>
 
       <div class="d-flex justify-content-end mt-2">
@@ -31,9 +35,31 @@
           @click.prevent="onDeleteComment(comment.id)"
           >삭제</a
         >
+        <a href="#" class="me-2" @click.prevent="onReplyComment(comment.id)"
+          >댓글</a
+        >
         <HeartIcon :commentId="comment.id" />
       </div>
     </li>
+    <!-- 대댓글 UI -->
+    <ul class="list-group mt-1">
+      <hr />
+      <li
+        v-for="reply in replies"
+        :key="reply.id"
+        class="list-group-item replies"
+      >
+        <div>
+          <div class="comment-header">
+            <img src="" alt="Profile Picture" class="profile-picture" />
+            <div class="fw-bold mt-1 mb-2">{{ reply.username }}</div>
+          </div>
+          <span>{{ reply.content }}</span>
+          <p class="fw-lighter mt-2">{{ reply.postDate }}</p>
+        </div>
+        <hr />
+      </li>
+    </ul>
     <hr />
   </div>
   <CommentForm :noticeId="noticeId" @comment-saved="getComments" />
@@ -50,6 +76,19 @@ import { useRoute } from 'vue-router';
 import { useStorageStore, useToastStore } from '@/store/index';
 import CommentForm from '@/components/comment/CommentForm.vue';
 import HeartIcon from '@/components/comment/HeartIcon.vue';
+
+const replies = ref([
+  {
+    username: 'username',
+    content: 'content1',
+    postDate: '대댓글 날짜',
+  },
+  {
+    username: 'username',
+    content: 'content1',
+    postDate: '대댓글 날짜',
+  },
+]);
 
 const storage = useStorageStore();
 const toast = useToastStore();
@@ -110,5 +149,34 @@ onMounted(() => {
 <style scoped>
 .ms-2.me-auto {
   max-width: 100%; /* 최대 너비를 100%로 설정하여 가능한 한 많은 공간을 차지하도록 함 */
+}
+
+/* 대댓글 CSS */
+.replies {
+  display: flex;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  margin: 0 auto;
+  width: 80%;
+}
+
+.replies > span {
+  margin-right: 10px;
+}
+
+.replies:last-child {
+  border-bottom: none;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+}
+
+.profile-picture {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 </style>
