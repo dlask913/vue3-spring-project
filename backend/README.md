@@ -10,7 +10,7 @@
 * * *
 ### DDL script
 ```sql
-CREATE TABLE member (
+CREATE TABLE Members (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
@@ -18,43 +18,39 @@ CREATE TABLE member (
     address VARCHAR(255)
 );
 
-CREATE TABLE notice (
+CREATE TABLE Notices (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    post_date DATETIME NOT NULL,
-    update_date DATETIME NOT NULL,
+    post_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     view_count BIGINT DEFAULT 0,
-    member_id BIGINT,
-    FOREIGN KEY (member_id) REFERENCES member(id)
-    ON DELETE CASCADE
+    member_id BIGINT NOT NULL,
+    FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE
 );
 
-CREATE TABLE comment (
+CREATE TABLE Comments (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     content TEXT NOT NULL,
-    post_date DATETIME NOT NULL,
-    member_id BIGINT,
-    notice_id BIGINT,
-    FOREIGN KEY (member_id) REFERENCES member(id)
-    ON DELETE CASCADE,
-    FOREIGN KEY (notice_id) REFERENCES notice(id)
-    ON DELETE CASCADE
+    post_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    member_id BIGINT NOT NULL,
+    notice_id BIGINT NOT NULL,
+    FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE,
+    FOREIGN KEY (notice_id) REFERENCES Notices(id) ON DELETE CASCADE
 );
 
-CREATE TABLE heart (
+CREATE TABLE Hearts (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id BIGINT,
     comment_id BIGINT, 
-    FOREIGN KEY (member_id) REFERENCES member(id)
-    ON DELETE CASCADE,
-    FOREIGN KEY (comment_id) REFERENCES comment(id)
-    ON DELETE CASCADE
+    FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE,
+    FOREIGN KEY (comment_id) REFERENCES Comments(id) ON DELETE CASCADE
 );
 
-CREATE TABLE images (
+CREATE TABLE Images (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    type_id BIGINT NOT ULL,
+    type_id BIGINT NOT NULL,
     img_name VARCHAR(255) NOT NULL,
     ori_img_name VARCHAR(255) NOT NULL,
     img_url VARCHAR(255) NOT NULL,

@@ -3,13 +3,13 @@
 
     <!-- 회원 생성 -->
     <insert id="insertMember" parameterType="MemberRequestDto">
-        INSERT INTO member (username, email, password)
+        INSERT INTO Members (username, email, password)
         VALUES (#{username}, #{email}, #{password})
     </insert>
 
     <!-- 회원 정보 수정 -->
     <update id="updateMember" parameterType="MemberRequestDto">
-        UPDATE member
+        UPDATE Members
         SET username = #{username}, password = #{password}, address = #{address}
         WHERE id = #{id}
     </update>
@@ -23,7 +23,7 @@
         )
 
         SELECT A.id, A.username, A.email, A.password, A.address, B.img_url
-        FROM member A
+        FROM Members A
             LEFT JOIN memberImg B ON A.id = B.type_id
         WHERE A.id = #{id}
     </select>
@@ -31,25 +31,25 @@
     <!-- 회원 단일 조회 by Email -->
     <select id="findByEmail" resultType="MemberResponseDto" parameterType="String">
         SELECT id, username, email, password, address
-        FROM member
+        FROM Members
         WHERE email = #{email}
     </select>
 
     <!-- 회원 데이터 모두 조회 -->
     <select id="findAllMembers" resultType="MemberResponseDto">
         SELECT id, username, email, password
-        FROM member
+        FROM Members
     </select>
 
     <!-- 회원 탈퇴 -->
     <delete id="deleteMember" parameterType="long">
-        DELETE FROM member
+        DELETE FROM Members
         WHERE id = #{id}
     </delete>
 
     <!-- 회원 데이터 모두 삭제 -->
     <delete id="deleteAll">
-        DELETE FROM member
+        DELETE FROM Members
     </delete>
 
 </mapper>

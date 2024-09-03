@@ -2,24 +2,24 @@
 <mapper namespace="com.example.noticeboardservice.mapper.ImageMapper">
     <!-- 이미지 생성 -->
     <insert id="saveImage" parameterType="ImageDto">
-        INSERT INTO images (img_name, ori_img_name, img_url, file_size, upload_date, image_type, type_id)
+        INSERT INTO Images (img_name, ori_img_name, img_url, file_size, upload_date, image_type, type_id)
         VALUES (#{imgName}, #{oriImgName}, #{imgUrl}, #{fileSize}, #{uploadDate}, #{imageType}, #{typeId})
     </insert>
 
     <!-- 이미지 삭제 -->
     <delete id="deleteImage" parameterType="long">
-        DELETE FROM images
+        DELETE FROM Images
         WHERE id = #{id}
     </delete>
 
     <!-- type 및 typeId 로 이미지 조회 ( 1:1 관계 ) -->
     <select id="findByType" resultType="ImageResponseDto">
         SELECT id, img_name, img_url, upload_date, type_id, image_type
-        FROM images
+        FROM Images
         WHERE type_id = #{typeId} AND image_type = #{type}
     </select>
 
     <delete id="deleteAll">
-        DELETE FROM images
+        DELETE FROM Images
     </delete>
 </mapper>

@@ -3,13 +3,13 @@
 
     <!-- 게시글 생성 -->
     <insert id="insertNotice" parameterType="NoticeRequestDto">
-        INSERT INTO notice (title, content, post_date, member_id, update_date)
+        INSERT INTO Notices (title, content, post_date, member_id, update_date)
         VALUES (#{title}, #{content}, #{postDate}, #{memberId}, #{updateDate})
     </insert>
 
     <!-- 게시글 수정 -->
     <update id="updateNotice" parameterType="NoticeRequestDto">
-        UPDATE notice
+        UPDATE Notices
         SET title = #{title}, content = #{content}
         WHERE id = #{id}
     </update>
@@ -20,14 +20,14 @@
                 DATE_FORMAT(n.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
                 DATE_FORMAT(n.update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
                 n.member_id, m.username, m.email
-        FROM notice n
-            LEFT JOIN member m ON n.member_id = m.id
+        FROM Notices n
+            LEFT JOIN Members m ON n.member_id = m.id
         WHERE n.id = #{noticeId}
     </select>
 
     <!-- 게시글 조회수 증가 -->
     <update id="incrementViewCount" parameterType="long">
-        UPDATE notice
+        UPDATE Notices
         SET view_count = (view_count+1)
         WHERE id = #{noticeId}
     </update>
@@ -35,7 +35,7 @@
     <!-- 게시글 조회 by Member -->
     <select id="findNoticeByMemberId" resultType="NoticeResponseDto" parameterType="long">
         SELECT id, title, content, post_date, member_id, view_count
-        FROM notice
+        FROM Notices
         WHERE member_id = #{memberId}
     </select>
 
@@ -43,8 +43,8 @@
     <select id="findAllNotices" resultType="NoticeResponseDto">
         SELECT n.id, n.title, n.content, n.view_count,
             DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, n.member_id, m.username
-        FROM notice n
-            LEFT JOIN member m ON n.member_id = m.id
+        FROM Notices n
+            LEFT JOIN Members m ON n.member_id = m.id
         WHERE 1=1
         <if test="params.title != null">
             AND n.title LIKE CONCAT('%', #{params.title}, '%')
@@ -59,8 +59,8 @@
     <select id="searchNoticesByPage" resultType="NoticeResponseDto">
         SELECT n.id, n.title, n.content, n.view_count,
             DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, n.member_id, m.username
-        FROM notice n
-             LEFT JOIN member m ON n.member_id = m.id
+        FROM Notices n
+             LEFT JOIN Members m ON n.member_id = m.id
         WHERE 1=1
         <if test="params.title != null">
             AND n.title LIKE CONCAT('%', #{params.title}, '%')
@@ -74,21 +74,21 @@
 
     <!-- 게시글 삭제 -->
     <delete id="deleteNotice" parameterType="long">
-        DELETE FROM notice
+        DELETE FROM Notices
         WHERE id = #{id}
     </delete>
 
     <!-- 게시글 데이터 모두 삭제 -->
     <delete id="deleteAll">
-        DELETE FROM notice
+        DELETE FROM Notices
     </delete>
 
     <!-- 내가 쓴 게시글 모두 조회 -->
     <select id="findNoticeByEmail" resultType="NoticeResponseDto" parameterType="String">
         SELECT n.id, n.title, n.content, n.view_count,
             DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, n.member_id, m.username
-        FROM notice n
-            LEFT JOIN member m ON n.member_id = m.id
+        FROM Notices n
+            LEFT JOIN Members m ON n.member_id = m.id
         WHERE m.email = #{email}
     </select>
 </mapper>

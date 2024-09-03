@@ -4,39 +4,39 @@
     <!-- 댓글에 걸린 좋아요 모두 조회 -->
     <select id="findHeartByCommentId" parameterType="HeartDto">
         SELECT id, member_id, comment_id
-        FROM heart
+        FROM Hearts
         WHERE comment_id = #{commentId}
     </select>
 
     <!-- 좋아요 상태 조회 -->
     <select id="findHeart" parameterType="HeartDto">
         SELECT id, member_id, comment_id
-        FROM heart
+        FROM Hearts
         WHERE member_id = #{memberId} AND comment_id = #{commentId}
     </select>
 
     <!-- 좋아요 생성 -->
     <insert id="saveHeart" parameterType="HeartDto">
-        INSERT INTO heart(member_id, comment_id)
+        INSERT INTO Hearts (member_id, comment_id)
         VALUES (#{memberId}, #{commentId})
     </insert>
 
     <!-- 좋아요 취소 -->
     <delete id="deleteHeart" parameterType="long">
         DELETE
-        FROM heart
+        FROM Hearts
         WHERE id = #{id}
     </delete>
 
     <!-- 좋아요 데이터 모두 조회 -->
     <select id="findAllHearts" parameterType="HeartDto">
         SELECT id, member_id, comment_id
-        FROM heart
+        FROM Hearts
     </select>
 
     <!-- 좋아요 데이터 모두 삭제 -->
     <delete id="deleteAll">
-        DELETE FROM heart
+        DELETE FROM Hearts
     </delete>
 
 </mapper>

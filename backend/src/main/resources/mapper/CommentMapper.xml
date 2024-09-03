@@ -2,13 +2,13 @@
 <mapper namespace="com.example.noticeboardservice.mapper.CommentMapper">
     <!-- 댓글 생성 -->
     <insert id="insertComment" parameterType="CommentRequestDto">
-        INSERT INTO comment (content, post_date, member_id, notice_id)
+        INSERT INTO Comments (content, post_date, member_id, notice_id)
         VALUES (#{content}, #{postDate}, #{memberId}, #{noticeId})
     </insert>
 
     <!-- 댓글 수정 -->
     <update id="updateComment" parameterType="CommentRequestDto">
-        UPDATE comment
+        UPDATE Comments
         SET content = #{content}, post_date = #{postDate}
         WHERE id = #{id}
     </update>
@@ -16,34 +16,34 @@
     <!-- 댓글 조회 by Notice -->
     <select id="findCommentsByNoticeId" resultType="CommentResponseDto" parameterType="long">
         SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id
-        FROM comment c
-            LEFT JOIN Member m ON c.member_id = m.id
+        FROM Comments c
+            LEFT JOIN Members m ON c.member_id = m.id
         WHERE c.notice_id = #{noticeId}
     </select>
 
     <!-- 댓글 삭제 -->
     <delete id="deleteComment" parameterType="long">
-        DELETE FROM comment
+        DELETE FROM Comments
         WHERE id = #{id}
     </delete>
 
     <!-- 댓글 데이터 모두 조회 -->
     <select id="findAllComments" resultType="CommentResponseDto">
         SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id
-        FROM comment c
-            LEFT JOIN Member m ON c.member_id = m.id
+        FROM Comments c
+            LEFT JOIN Members m ON c.member_id = m.id
     </select>
 
     <!-- 댓글 데이터 모두 삭제 -->
     <delete id="deleteAll" >
-        DELETE FROM comment
+        DELETE FROM Comments
     </delete>
 
     <!-- 내가 작성한 댓글 조회 -->
     <select id="findCommentsByEmail" resultType="CommentResponseDto" parameterType="String">
         SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id
-        FROM comment c
-            LEFT JOIN Member m ON c.member_id = m.id
+        FROM Comments c
+            LEFT JOIN Members m ON c.member_id = m.id
         WHERE m.email = #{email}
     </select>
 </mapper>
