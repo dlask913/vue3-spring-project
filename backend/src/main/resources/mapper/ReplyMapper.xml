@@ -1,0 +1,39 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.noticeboardservice.mapper.ReplyMapper">
+    <!-- 대댓글 생성 -->
+    <insert id="insertReply" parameterType="ReplyRequestDto">
+        INSERT INTO Replies (content, comment_id, member_id)
+        VALUES (#{content}, #{commentId}, #{memberId})
+    </insert>
+
+    <!-- 대댓글 조회 by CommentId -->
+    <select id="findRepliesByCommentId" resultType="ReplyResponseDto" parameterType="long">
+        SELECT id, content,
+            DATE_FORMAT(post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
+            DATE_FORMAT(update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
+            comment_id, member_id
+        FROM Replies
+        WHERE comment_id = #{commentId}
+    </select>
+
+    <!-- 대댓글 수정 -->
+    <update id="updateReply" parameterType="ReplyRequestDto">
+        UPDATE Replies
+        SET content = #{content}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 대댓글 삭제 -->
+    <delete id="deleteReply" parameterType="long">
+        DELETE FROM Replies
+        WHERE id = #{id}
+    </delete>
+
+    <select id="findAllReplies" resultType="ReplyResponseDto">
+        SELECT id, content,
+            DATE_FORMAT(post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
+            DATE_FORMAT(update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
+            comment_id, member_id
+        FROM Replies
+    </select>
+</mapper>
