@@ -9,8 +9,10 @@ import java.util.List;
 @Mapper
 public interface ReplyMapper {
     int insertReply(ReplyRequestDto replyDto);
+    ReplyResponseDto findReply(Long replyId);
     List<ReplyResponseDto> findRepliesByCommentId(Long commentId);
     int updateReply(ReplyRequestDto replyDto);
     int deleteReply(Long replyId);
     List<ReplyResponseDto> findAllReplies();
+    void deleteAll();
 }

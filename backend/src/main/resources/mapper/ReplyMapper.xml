@@ -6,6 +6,16 @@
         VALUES (#{content}, #{commentId}, #{memberId})
     </insert>
 
+    <!-- 대댓글 단일 조회 -->
+    <select id="findReply" resultType="ReplyResponseDto" parameterType="long">
+        SELECT id, content,
+            DATE_FORMAT(post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
+            DATE_FORMAT(update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
+            comment_id, member_id
+        FROM Replies
+        WHERE id = #{id}
+    </select>
+
     <!-- 대댓글 조회 by CommentId -->
     <select id="findRepliesByCommentId" resultType="ReplyResponseDto" parameterType="long">
         SELECT id, content,
@@ -29,6 +39,7 @@
         WHERE id = #{id}
     </delete>
 
+    <!-- 모든 대댓글 조회 -->
     <select id="findAllReplies" resultType="ReplyResponseDto">
         SELECT id, content,
             DATE_FORMAT(post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
@@ -36,4 +47,9 @@
             comment_id, member_id
         FROM Replies
     </select>
+
+    <!-- 모든 대댓글 삭제 -->
+    <delete id="deleteAll">
+        DELETE FROM Replies
+    </delete>
 </mapper>
