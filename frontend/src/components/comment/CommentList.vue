@@ -35,31 +35,12 @@
           @click.prevent="onDeleteComment(comment.id)"
           >삭제</a
         >
-        <a href="#" class="me-2" @click.prevent="onReplyComment(comment.id)"
-          >댓글</a
-        >
+        <a href="#" class="me-2" @click.prevent="onReply(comment)">댓글</a>
         <HeartIcon :commentId="comment.id" />
       </div>
     </li>
     <!-- 대댓글 UI -->
-    <ul class="list-group mt-1">
-      <hr />
-      <li
-        v-for="reply in replies"
-        :key="reply.id"
-        class="list-group-item replies"
-      >
-        <div>
-          <div class="comment-header">
-            <img src="" alt="Profile Picture" class="profile-picture" />
-            <div class="fw-bold mt-1 mb-2">{{ reply.username }}</div>
-          </div>
-          <span>{{ reply.content }}</span>
-          <p class="fw-lighter mt-2">{{ reply.postDate }}</p>
-        </div>
-        <hr />
-      </li>
-    </ul>
+    <ReplyForm v-if="isReply(comment.id)" :commentId="comment.id" />
     <hr />
   </div>
   <CommentForm :noticeId="noticeId" @comment-saved="getComments" />
@@ -76,25 +57,14 @@ import { useRoute } from 'vue-router';
 import { useStorageStore, useToastStore } from '@/store/index';
 import CommentForm from '@/components/comment/CommentForm.vue';
 import HeartIcon from '@/components/comment/HeartIcon.vue';
-
-const replies = ref([
-  {
-    username: 'username',
-    content: 'content1',
-    postDate: '대댓글 날짜',
-  },
-  {
-    username: 'username',
-    content: 'content1',
-    postDate: '대댓글 날짜',
-  },
-]);
+import ReplyForm from '@/components/comment/ReplyForm.vue';
 
 const storage = useStorageStore();
 const toast = useToastStore();
 const route = useRoute();
 const comments = ref([]);
 const editFlag = ref(0);
+const replyFlag = ref(0);
 const noticeId = route.params.id;
 const getComments = async () => {
   try {
@@ -142,6 +112,18 @@ const onEdit = async (comment) => {
   }
 };
 
+const onReply = async (comment) => {
+  if (replyFlag.value === comment.id) {
+    replyFlag.value = 0;
+    return;
+  }
+  replyFlag.value = comment.id;
+};
+
+const isReply = (commentId) => {
+  return replyFlag.value == commentId;
+};
+
 onMounted(() => {
   getComments();
 });
@@ -149,23 +131,6 @@ onMounted(() => {
 <style scoped>
 .ms-2.me-auto {
   max-width: 100%; /* 최대 너비를 100%로 설정하여 가능한 한 많은 공간을 차지하도록 함 */
-}
-
-/* 대댓글 CSS */
-.replies {
-  display: flex;
-  border: none;
-  border-bottom: 1px solid #ddd;
-  margin: 0 auto;
-  width: 80%;
-}
-
-.replies > span {
-  margin-right: 10px;
-}
-
-.replies:last-child {
-  border-bottom: none;
 }
 
 .comment-header {
