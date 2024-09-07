@@ -94,7 +94,7 @@ import ImageUploader from '../common/ImageUploader.vue';
 import { ref, onMounted } from 'vue';
 import { getMemberById, updateMember } from '@/api/users';
 import { getNoticesByMember } from '@/api/notices';
-import { getComentsByMember } from '@/api/comments';
+import { getCommentsByMember } from '@/api/comments';
 import { useToastStore, useStorageStore } from '@/store';
 import { useRouter } from 'vue-router';
 
@@ -118,7 +118,7 @@ const fetchData = async () => {
       await Promise.all([
         getMemberById(storage.getToken, storage.getUserId),
         getNoticesByMember(storage.getToken),
-        getComentsByMember(storage.getToken),
+        getCommentsByMember(storage.getToken),
       ]);
     member.value = memberResponse.data;
     notices.value = noticesResponse.data;

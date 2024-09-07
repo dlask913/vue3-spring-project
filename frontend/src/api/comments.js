@@ -22,7 +22,7 @@ export function deleteComment(token, id) {
   });
 }
 
-export function getComentsByMember(token) {
+export function getCommentsByMember(token) {
   return axios.get(`/member/comments`, {
     headers: { Authorization: token },
   });
