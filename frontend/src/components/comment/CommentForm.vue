@@ -4,7 +4,7 @@
       <div class="form-group">
         <label class="form-label"><b>Comment</b></label>
         <textarea
-          v-model="comment.content"
+          v-model="content"
           class="form-control"
           rows="3"
           placeholder="내용을 입력하세요"
@@ -21,27 +21,22 @@
   </div>
 </template>
 <script setup>
-import { createComment } from '@/api/comments';
 import { ref } from 'vue';
 import { useStorageStore } from '@/store/index';
 
 const props = defineProps({
-  noticeId: {
+  parentId: {
     type: String,
-    required: true,
   },
 });
 
 const emit = defineEmits(['comment-saved']);
-
 const storage = useStorageStore();
-const comment = ref({
-  content: '',
-});
+const content = ref('');
 const valueError = ref('');
 
 const onSave = async () => {
-  if (!comment.value.content) {
+  if (!content.value) {
     valueError.value = '내용을 입력해주세요';
     return;
   }
@@ -50,20 +45,15 @@ const onSave = async () => {
     return;
   }
   valueError.value = '';
-  try {
-    const data = {
-      content: comment.value.content,
-      noticeId: props.noticeId,
-      memberId: storage.getUserId,
-    };
-    await createComment(storage.getToken, data);
-    comment.value.content = '';
-    emit('comment-saved');
-  } catch (error) {
-    console.error(error);
-  }
+  const data = {
+    content: content.value,
+    parentId: props.parentId,
+  };
+  emit('comment-saved', data);
+  content.value = '';
 };
 </script>
+
 <style scoped>
 .text-red {
   color: red;

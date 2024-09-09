@@ -40,15 +40,17 @@
       </div>
     </li>
     <!-- 대댓글 UI -->
-    <ReplyForm v-if="isReply(comment.id)" :commentId="comment.id" />
+    <ReplyList v-if="isReply(comment.id)" :commentId="comment.id" />
     <hr />
   </div>
-  <CommentForm :noticeId="noticeId" @comment-saved="getComments" />
+  <!-- 댓글 입력 폼 -->
+  <CommentForm :parentId="noticeId" @comment-saved="saveComment" />
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import {
+  createComment,
   deleteComment,
   getCommentsByNoticeId,
   updateComment,
@@ -57,7 +59,7 @@ import { useRoute } from 'vue-router';
 import { useStorageStore, useToastStore } from '@/store/index';
 import CommentForm from '@/components/comment/CommentForm.vue';
 import HeartIcon from '@/components/comment/HeartIcon.vue';
-import ReplyForm from '@/components/comment/ReplyForm.vue';
+import ReplyList from '@/components/comment/ReplyList.vue';
 
 const storage = useStorageStore();
 const toast = useToastStore();
@@ -66,6 +68,21 @@ const comments = ref([]);
 const editFlag = ref(0);
 const replyFlag = ref(0);
 const noticeId = route.params.id;
+
+const saveComment = async (data) => {
+  try {
+    const form = {
+      content: data.content,
+      noticeId: data.parentId,
+      memberId: storage.getUserId,
+    };
+    await createComment(storage.getToken, form);
+    getComments();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const getComments = async () => {
   try {
     const { data } = await getCommentsByNoticeId(noticeId);
