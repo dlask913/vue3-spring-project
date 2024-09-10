@@ -7,6 +7,7 @@ import lombok.Getter;
 public class ReplyResponseDto {
     Long id;
     String content;
+    String username;
     Long memberId;
     Long commentId;
     String postDate;

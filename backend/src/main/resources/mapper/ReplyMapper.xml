@@ -8,21 +8,23 @@
 
     <!-- 대댓글 단일 조회 -->
     <select id="findReply" resultType="ReplyResponseDto" parameterType="long">
-        SELECT id, content,
-            DATE_FORMAT(post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
-            DATE_FORMAT(update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
-            comment_id, member_id
-        FROM Replies
-        WHERE id = #{id}
+        SELECT r.id, r.content,
+            DATE_FORMAT(r.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
+            DATE_FORMAT(r.update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
+            r.comment_id, r.member_id, m.username
+        FROM Replies r
+            LEFT JOIN Members m ON r.member_id = m.id
+        WHERE r.id = #{id}
     </select>
 
     <!-- 대댓글 조회 by CommentId -->
     <select id="findRepliesByCommentId" resultType="ReplyResponseDto" parameterType="long">
-        SELECT id, content,
-            DATE_FORMAT(post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
-            DATE_FORMAT(update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
-            comment_id, member_id
-        FROM Replies
+        SELECT r.id, r.content,
+            DATE_FORMAT(r.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
+            DATE_FORMAT(r.update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
+            r.comment_id, r.member_id, m.username
+        FROM Replies r
+            LEFT JOIN Members m ON r.member_id = m.id
         WHERE comment_id = #{commentId}
     </select>
 
@@ -41,11 +43,12 @@
 
     <!-- 모든 대댓글 조회 -->
     <select id="findAllReplies" resultType="ReplyResponseDto">
-        SELECT id, content,
-            DATE_FORMAT(post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
-            DATE_FORMAT(update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
-            comment_id, member_id
-        FROM Replies
+        SELECT r.id, r.content,
+            DATE_FORMAT(r.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
+            DATE_FORMAT(r.update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
+            r.comment_id, r.member_id, m.username
+        FROM Replies r
+            LEFT JOIN Members m ON r.member_id = m.id
     </select>
 
     <!-- 모든 대댓글 삭제 -->
