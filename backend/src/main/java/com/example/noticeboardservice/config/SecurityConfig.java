@@ -37,6 +37,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST,"/notice").authenticated()
                                 .requestMatchers(HttpMethod.POST,"/comment").authenticated()
                                 .requestMatchers(HttpMethod.POST,"/heart").authenticated()
+                                .requestMatchers(HttpMethod.POST,"/reply").authenticated()
                                 .anyRequest().permitAll()
                 )
                 // security 6.1.0 부터 권장
