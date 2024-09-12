@@ -15,9 +15,16 @@
 
     <!-- 댓글 조회 by Notice -->
     <select id="findCommentsByNoticeId" resultType="CommentResponseDto" parameterType="long">
-        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id
+        WITH MemberImages AS (
+            SELECT type_id, img_url
+            FROM Images
+            WHERE image_type = 'MEMBER'
+        )
+
+        SELECT c.id, c.content, c.post_date, m.username, i.img_url, c.member_id, c.notice_id
         FROM Comments c
             LEFT JOIN Members m ON c.member_id = m.id
+            LEFT JOIN MemberImages i ON m.id = i.type_id
         WHERE c.notice_id = #{noticeId}
     </select>
 

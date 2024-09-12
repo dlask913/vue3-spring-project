@@ -6,7 +6,7 @@
     >
       <div class="container" style="width: 80%">
         <div class="comment-header mt-2">
-          <img src="" alt="Profile Picture" class="profile-picture" />
+          <img :src="comment.memberImgUrl" alt="Profile Picture" class="profile-picture" />
           <div class="fw-bold">{{ comment.username }}</div>
         </div>
 
@@ -130,7 +130,7 @@ const onEdit = async (comment) => {
 };
 
 const onReply = async (comment) => {
-  if (replyFlag.value === comment.id) {
+  if (replyFlag.value == comment.id) {
     replyFlag.value = 0;
     return;
   }
