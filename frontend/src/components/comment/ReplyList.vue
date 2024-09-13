@@ -107,6 +107,7 @@ const onEdit = async (data) => {
 const onDelete = async (replyId) => {
   try {
     await deleteReply(storage.getToken, replyId);
+    fetchReplis();
   } catch (e) {
     console.error(e);
   }
