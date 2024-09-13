@@ -2,6 +2,7 @@ package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.CommentMapper;
+import com.example.noticeboardservice.mapper.ImageMapper;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.NoticeMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -33,6 +34,8 @@ class CommentServiceTest {
     @AfterEach
     void tearDown() {
         commentMapper.deleteAll();
+        noticeMapper.deleteAll();
+        memberMapper.deleteAll();
     }
 
     @Test
@@ -131,6 +134,30 @@ class CommentServiceTest {
         tmp.add(commentDto3.getContent());
         assertThat(comments.stream().map(CommentResponseDto::getContent).toList())
                 .containsExactlyInAnyOrderElementsOf(tmp);
+    }
+
+    @Test
+    @DisplayName("특정 게시물에 저장되어있는 댓글 조회 시 작성자의 프로필 이미지도 출력한다.")
+    void getCommentsByNoticeWithMemberImgTest() {
+        // given
+        Long memberId = getMemberId("limnj@test.com");
+        Long noticeId = getNoticeId(NoticeRequestDto.builder()
+                .title("게시글")
+                .content("게시글 내용")
+                .memberId(memberId)
+                .build());
+        CommentRequestDto commentDto = createCommentDto(0L,"내용1", noticeId, memberId);
+        commentServiceImpl.insertComment(commentDto);
+
+        // when
+        List<CommentResponseDto> comments = commentServiceImpl.findCommentsByNoticeId(noticeId);
+
+        // then
+        CommentResponseDto findComment = comments.get(0);
+        assertThat(findComment.getContent()).isEqualTo(commentDto.getContent());
+        assertThat(findComment.getMemberId()).isEqualTo(commentDto.getMemberId());
+        assertThat(findComment.getNoticeId()).isEqualTo(commentDto.getNoticeId());
+        assertThat(findComment.getUsername()).isEqualTo("limnj1");
     }
 
     @Test
