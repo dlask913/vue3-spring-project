@@ -19,12 +19,16 @@
 
     <!-- 대댓글 조회 by CommentId -->
     <select id="findRepliesByCommentId" resultType="ReplyResponseDto" parameterType="long">
-        SELECT r.id, r.content,
-            DATE_FORMAT(r.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
-            DATE_FORMAT(r.update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
-            r.comment_id, r.member_id, m.username
+        WITH MemberImages AS (
+            SELECT type_id, img_url
+            FROM Images
+            WHERE image_type = 'MEMBER'
+        )
+
+        SELECT r.id, r.content, r.post_date, r.comment_id, r.member_id, m.username, i.img_url
         FROM Replies r
             LEFT JOIN Members m ON r.member_id = m.id
+            LEFT JOIN MemberImages i ON m.id = i.type_id
         WHERE comment_id = #{commentId}
     </select>
 

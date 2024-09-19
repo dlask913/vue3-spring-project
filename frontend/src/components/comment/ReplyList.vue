@@ -9,7 +9,7 @@
       >
         <div>
           <div class="comment-header">
-            <img src="" alt="Profile Picture" class="profile-picture" />
+            <img :src="hostUrl + reply.memberImgUrl" alt="Profile Picture" class="profile-picture" />
             <div class="fw-bold mt-1 mb-2">{{ reply.username }}</div>
           </div>
           <textarea
@@ -66,11 +66,13 @@ const props = defineProps({
 const storage = useStorageStore();
 const replies = ref([]);
 const isEdited = ref(0);
+const hostUrl = 'http://localhost:8080';
 
 const fetchReplis = async () => {
   try {
     const { data } = await getRepliesByComment(props.commentId);
     replies.value = data;
+    console.log(replies.value);
   } catch (e) {
     console.error(e);
   }

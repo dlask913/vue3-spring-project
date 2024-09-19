@@ -6,7 +6,7 @@
     >
       <div class="container" style="width: 80%">
         <div class="comment-header mt-2">
-          <img :src="comment.memberImgUrl" alt="Profile Picture" class="profile-picture" />
+          <img :src="hostUrl + comment.memberImgUrl" alt="Profile Picture" class="profile-picture" />
           <div class="fw-bold">{{ comment.username }}</div>
         </div>
 
@@ -68,6 +68,7 @@ const comments = ref([]);
 const editFlag = ref(0);
 const replyFlag = ref(0);
 const noticeId = route.params.id;
+const hostUrl = 'http://localhost:8080';
 
 const saveComment = async (data) => {
   try {

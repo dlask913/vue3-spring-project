@@ -21,7 +21,7 @@ public class CommentResponseDto {
         this.content = content;
         this.postDate = postDate;
         this.username = username;
-        this.memberImgUrl = memberImgUrl;
+        this.memberImgUrl = memberImgUrl == null ? "/image/memberDefaultImg.jpg" : memberImgUrl;
         this.memberId = memberId;
         this.noticeId = noticeId;
     }
