@@ -2,8 +2,10 @@ package com.example.noticeboardservice.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class HeartDto {
     private Long id;
     private Long memberId;

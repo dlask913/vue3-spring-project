@@ -1,7 +1,5 @@
 package com.example.noticeboardservice.controller;
 
-import com.example.noticeboardservice.dto.CommentRequestDto;
-import com.example.noticeboardservice.dto.CommentResponseDto;
 import com.example.noticeboardservice.dto.ReplyRequestDto;
 import com.example.noticeboardservice.dto.ReplyResponseDto;
 import com.example.noticeboardservice.service.ReplyService;

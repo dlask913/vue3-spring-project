@@ -3,8 +3,10 @@ package com.example.noticeboardservice.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class MemberRequestDto {
     Long id;
     @NotNull(message = "email 은 필수 값 입니다.")
