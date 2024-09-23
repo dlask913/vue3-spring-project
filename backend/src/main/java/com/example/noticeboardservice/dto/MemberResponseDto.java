@@ -1,17 +1,12 @@
 package com.example.noticeboardservice.dto;
 
-import lombok.Getter;
 
-@Getter
-public class MemberResponseDto {
-    Long id;
-    String email;
-    String username;
-    String password;
-    String address;
-    String imgUrl;
-
-    public void setDefaultImg(){
-        this.imgUrl = "/image/memberDefaultImg.jpg";
-    }
+public record MemberResponseDto (
+        Long id,
+        String email,
+        String username,
+        String password,
+        String address,
+        String imgUrl
+){
 }
