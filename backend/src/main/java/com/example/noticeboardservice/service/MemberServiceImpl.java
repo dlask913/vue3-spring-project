@@ -29,19 +29,19 @@ public class MemberServiceImpl implements MemberService {
     private String memberImgLocation;
 
     @Override
-    public LoginResponseDto login(LoginDto loginDto) {
-        MemberResponseDto memberRequestDto = findByEmail(loginDto.getEmail())
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+        MemberResponseDto memberRsponseDto = findByEmail(loginRequestDto.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
 
-        if (!(memberRequestDto.getEmail().equals(loginDto.getEmail())
-                && memberRequestDto.getPassword().equals(loginDto.getPassword()))) {
+        if (!(memberRsponseDto.email().equals(loginRequestDto.getEmail())
+                && memberRsponseDto.password().equals(loginRequestDto.getPassword()))) {
             throw new PasswordMismatchException();
         }
 
-        String token = jwtTokenUtil.generateToken(memberRequestDto.getEmail());
+        String token = jwtTokenUtil.generateToken(memberRsponseDto.email());
 
         return LoginResponseDto.builder()
-                .memberId(memberRequestDto.getId())
+                .memberId(memberRsponseDto.id())
                 .token(token)
                 .build();
     }
@@ -52,7 +52,7 @@ public class MemberServiceImpl implements MemberService {
     }
     @Override
     public int updateMember(MemberRequestDto memberRequestDto, MultipartFile memberImg) {
-        ImageDto imageDto = ImageDto.builder()
+        ImageRequestDto imageRequestDto = ImageRequestDto.builder()
                 .typeId(memberRequestDto.getId())
                 .imageType(ImageType.MEMBER)
                 .build();
@@ -60,9 +60,9 @@ public class MemberServiceImpl implements MemberService {
         if(memberImg != null){ // 이미지 있을 때만 저장
             imageServiceImpl.findByTypeId(memberRequestDto.getId(), ImageType.MEMBER)
                     .ifPresent(image -> imageServiceImpl.deleteImage(
-                            image.getId(), memberImgLocation, image.getImgName())); // 기존 이미지 삭제
+                            image.id(), memberImgLocation, image.imgName())); // 기존 이미지 삭제
 
-            imageServiceImpl.saveImage(imageDto, memberImg, memberImgLocation);
+            imageServiceImpl.saveImage(imageRequestDto, memberImg, memberImgLocation);
         }
 
         return memberMapper.updateMember(memberRequestDto);
@@ -70,14 +70,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponseDto findMember(Long memberId) {
-        MemberResponseDto findMember = Optional.ofNullable(memberMapper.findMember(memberId))
+        return Optional.ofNullable(memberMapper.findMember(memberId))
                 .orElseThrow(MemberNotFoundException::new);
-
-        if(findMember.getImgUrl() == null) { // 저장된 이미지가 없다면 디폴트 이미지로 내보내기
-            findMember.setDefaultImg();
-        }
-
-        return findMember;
     }
 
     @Override
@@ -89,7 +83,7 @@ public class MemberServiceImpl implements MemberService {
     public int deleteMember(Long memberId) {
         imageServiceImpl.findByTypeId(memberId, ImageType.MEMBER)
                 .ifPresent(imageDto -> imageServiceImpl.deleteImage(
-                        imageDto.getId(), memberImgLocation, imageDto.getImgName())); // 있으면 삭제
+                        imageDto.id(), memberImgLocation, imageDto.imgName())); // 있으면 삭제
 
         return memberMapper.deleteMember(memberId);
     }
@@ -103,7 +97,7 @@ public class MemberServiceImpl implements MemberService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         MemberResponseDto member = findByEmail(email).orElseThrow(MemberNotFoundException::new);
         return new User(
-                member.getEmail(), member.getPassword(),
+                member.email(), member.password(),
                 true, true, true, true,
                 new ArrayList<>()
         );

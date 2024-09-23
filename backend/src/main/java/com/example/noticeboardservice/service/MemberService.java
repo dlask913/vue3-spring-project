@@ -1,6 +1,6 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.LoginDto;
+import com.example.noticeboardservice.dto.LoginRequestDto;
 import com.example.noticeboardservice.dto.LoginResponseDto;
 import com.example.noticeboardservice.dto.MemberRequestDto;
 import com.example.noticeboardservice.dto.MemberResponseDto;
@@ -18,5 +18,5 @@ public interface MemberService extends UserDetailsService {
     int deleteMember(Long memberId);
     List<MemberResponseDto> findAllMembers();
 
-    LoginResponseDto login(LoginDto loginDto);
+    LoginResponseDto login(LoginRequestDto loginRequestDto);
 }

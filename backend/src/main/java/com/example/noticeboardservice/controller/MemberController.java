@@ -1,6 +1,6 @@
 package com.example.noticeboardservice.controller;
 
-import com.example.noticeboardservice.dto.LoginDto;
+import com.example.noticeboardservice.dto.LoginRequestDto;
 import com.example.noticeboardservice.dto.LoginResponseDto;
 import com.example.noticeboardservice.dto.MemberRequestDto;
 import com.example.noticeboardservice.dto.MemberResponseDto;
@@ -32,8 +32,8 @@ public class MemberController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인 API")
-    public ResponseEntity<LoginResponseDto> loginMember(@RequestBody LoginDto loginDto) {
-        LoginResponseDto response = memberServiceImpl.login(loginDto);
+    public ResponseEntity<LoginResponseDto> loginMember(@RequestBody LoginRequestDto loginRequestDto) {
+        LoginResponseDto response = memberServiceImpl.login(loginRequestDto);
         /** todo
          * HTTPOnly 로 설정하여 토큰값을 헤더에 전달하게 되면 JS 에서 접근이 불가
          * 추후 배포 시 SSL 인증 적용하여 통신 방법 변경

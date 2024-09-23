@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class ImageDto {
+public class ImageRequestDto {
     Long id;
     Long typeId;
     String imgName; // 이미지 파일명
@@ -19,7 +19,7 @@ public class ImageDto {
     ImageType imageType;
 
     @Builder
-    public ImageDto(Long typeId, String imgName, String oriImgName, String imgUrl, Long fileSize, ImageType imageType) {
+    public ImageRequestDto(Long typeId, String imgName, String oriImgName, String imgUrl, Long fileSize, ImageType imageType) {
         this.typeId = typeId;
         this.imgName = imgName;
         this.oriImgName = oriImgName;

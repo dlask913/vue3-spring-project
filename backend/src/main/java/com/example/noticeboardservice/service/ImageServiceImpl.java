@@ -1,6 +1,6 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.ImageDto;
+import com.example.noticeboardservice.dto.ImageRequestDto;
 import com.example.noticeboardservice.dto.ImageResponseDto;
 import com.example.noticeboardservice.dto.ImageType;
 import com.example.noticeboardservice.mapper.ImageMapper;
@@ -19,14 +19,14 @@ public class ImageServiceImpl implements ImageService {
     private final FileService fileService;
 
     @Override
-    public int saveImage(ImageDto imageDto, MultipartFile multipartFile, String location) {
+    public int saveImage(ImageRequestDto imageRequestDto, MultipartFile multipartFile, String location) {
         String oriImgName = multipartFile.getOriginalFilename();
         String imgName = fileService.uploadFile(location, multipartFile);
-        String imgUrl = "/images/" + imageDto.getImageType().toString().toLowerCase() + "/" + imgName;
+        String imgUrl = "/images/" + imageRequestDto.getImageType().toString().toLowerCase() + "/" + imgName;
         Long fileSize = multipartFile.getSize();
 
-        imageDto.updateImage(imgName, oriImgName, imgUrl, fileSize);
-        return imageMapper.saveImage(imageDto);
+        imageRequestDto.updateImage(imgName, oriImgName, imgUrl, fileSize);
+        return imageMapper.saveImage(imageRequestDto);
     }
 
     @Override
