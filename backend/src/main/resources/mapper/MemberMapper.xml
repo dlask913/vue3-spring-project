@@ -16,15 +16,15 @@
 
     <!-- 회원 단일 조회 -->
     <select id="findMember" resultType="MemberResponseDto" parameterType="long">
-        WITH memberImg AS (
+        WITH MemberImg AS (
             SELECT *
             FROM images
             WHERE image_type = 'MEMBER'
         )
 
-        SELECT A.id, A.username, A.email, A.password, A.address, B.img_url
+        SELECT A.id, A.username, A.email, A.password, A.address, ISNULL(B.img_url, '/image/memberDefaultImg.jpg') AS member_img_url
         FROM Members A
-            LEFT JOIN memberImg B ON A.id = B.type_id
+            LEFT JOIN MemberImg B ON A.id = B.type_id
         WHERE A.id = #{id}
     </select>
 

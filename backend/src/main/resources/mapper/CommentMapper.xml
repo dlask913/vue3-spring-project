@@ -21,7 +21,8 @@
             WHERE image_type = 'MEMBER'
         )
 
-        SELECT c.id, c.content, c.post_date, m.username, i.img_url, c.member_id, c.notice_id
+        SELECT c.id, c.content, c.post_date, m.username,
+            ISNULL(i.img_url, '/image/memberDefaultImg.jpg') AS member_img_url, c.member_id, c.notice_id
         FROM Comments c
             LEFT JOIN Members m ON c.member_id = m.id
             LEFT JOIN MemberImages i ON m.id = i.type_id
