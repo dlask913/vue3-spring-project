@@ -2,7 +2,6 @@ package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.CommentMapper;
-import com.example.noticeboardservice.mapper.ImageMapper;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.NoticeMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -42,66 +41,66 @@ class CommentServiceTest {
     @DisplayName("댓글을 생성한다")
     void savedCommentTest() {
         // given
-        Long memberId = getMemberId("limnj@test.com");
-        Long noticeId = getNoticeId(NoticeRequestDto.builder()
+        MemberResponseDto member = getMember("limnj@test.com");
+        NoticeResponseDto notice = getNotice(NoticeRequestDto.builder()
                                             .title("게시글")
                                             .content("게시글 내용")
-                                            .memberId(memberId)
+                                            .memberId(member.id())
                                             .build());
-        CommentRequestDto commentDto = createCommentDto(0L,"내용", noticeId, memberId);
+        CommentRequestDto commentDto = createCommentDto(0L,"내용", notice.id(), member.id());
 
         // when
         commentServiceImpl.insertComment(commentDto);
 
         // then
         CommentResponseDto savedComment = commentMapper.findAllComments().get(0);
-        assertThat(savedComment.getContent()).isEqualTo(commentDto.getContent());
-        assertThat(savedComment.getMemberId()).isEqualTo(commentDto.getMemberId());
-        assertThat(savedComment.getNoticeId()).isEqualTo(commentDto.getNoticeId());
+        assertThat(savedComment.content()).isEqualTo(commentDto.getContent());
+        assertThat(savedComment.memberId()).isEqualTo(commentDto.getMemberId());
+        assertThat(savedComment.noticeId()).isEqualTo(commentDto.getNoticeId());
     }
 
     @Test
     @DisplayName("댓글을 수정한다")
     void updateCommentTest() {
         // given
-        Long memberId = getMemberId("limnj@test.com");
-        Long noticeId = getNoticeId(NoticeRequestDto.builder()
+        MemberResponseDto member = getMember("limnj@test.com");
+        NoticeResponseDto notice = getNotice(NoticeRequestDto.builder()
                 .title("게시글")
                 .content("게시글 내용")
-                .memberId(memberId)
+                .memberId(member.id())
                 .build());
-        CommentRequestDto commentDto = createCommentDto(0L,"내용", noticeId, memberId);
+        CommentRequestDto commentDto = createCommentDto(0L,"내용", notice.id(), member.id());
         commentServiceImpl.insertComment(commentDto);
         CommentResponseDto savedComment = commentMapper.findAllComments().get(0);
         CommentRequestDto updateRequestDto =
-                createCommentDto(savedComment.getId(),"내용22", noticeId, memberId);
+                createCommentDto(savedComment.id(),"내용22", notice.id(), member.id());
 
         // when
         commentServiceImpl.updateComment(updateRequestDto);
 
         // then
         CommentResponseDto updateResponseDto = commentMapper.findAllComments().get(0);
-        assertThat(updateResponseDto.getContent()).isEqualTo(updateRequestDto.getContent());
-        assertThat(updateResponseDto.getMemberId()).isEqualTo(updateRequestDto.getMemberId());
-        assertThat(updateResponseDto.getNoticeId()).isEqualTo(updateRequestDto.getNoticeId());
+        assertThat(updateResponseDto.content()).isEqualTo(updateRequestDto.getContent());
+        assertThat(updateResponseDto.memberId()).isEqualTo(updateRequestDto.getMemberId());
+        assertThat(updateResponseDto.noticeId()).isEqualTo(updateRequestDto.getNoticeId());
     }
 
     @Test
     @DisplayName("댓글을 삭제한다.")
     void deleteCommentTest() {
         // given
-        Long memberId = getMemberId("limnj@test.com");
-        Long noticeId = getNoticeId(NoticeRequestDto.builder()
+        MemberResponseDto member = getMember("limnj@test.com");
+        NoticeResponseDto notice = getNotice(NoticeRequestDto.builder()
                 .title("게시글")
                 .content("게시글 내용")
-                .memberId(memberId)
+                .memberId(member.id())
                 .build());
-        CommentRequestDto commentDto = createCommentDto(0L,"내용", noticeId, memberId);
+        CommentRequestDto commentDto = createCommentDto(0L,"내용", notice.id(), member.id());
         commentServiceImpl.insertComment(commentDto);
         CommentResponseDto savedComment = commentMapper.findAllComments().get(0);
 
         // when
-        commentServiceImpl.deleteComment(savedComment.getId());
+        commentServiceImpl.deleteComment(savedComment.id());
 
         // then
         assertThat(commentMapper.findAllComments().size()).isEqualTo(0);
@@ -111,28 +110,28 @@ class CommentServiceTest {
     @DisplayName("특정 게시물에 저장되어있는 댓글들을 모두 조회한다.")
     void getCommentsByNoticeTest() {
         // given
-        Long memberId = getMemberId("limnj@test.com");
-        Long noticeId = getNoticeId(NoticeRequestDto.builder()
+        MemberResponseDto member = getMember("limnj@test.com");
+        NoticeResponseDto notice = getNotice(NoticeRequestDto.builder()
                 .title("게시글")
                 .content("게시글 내용")
-                .memberId(memberId)
+                .memberId(member.id())
                 .build());
-        CommentRequestDto commentDto1 = createCommentDto(0L,"내용1", noticeId, memberId);
-        CommentRequestDto commentDto2 = createCommentDto(0L,"내용2", noticeId, memberId);
-        CommentRequestDto commentDto3 = createCommentDto(0L,"내용3", noticeId, memberId);
+        CommentRequestDto commentDto1 = createCommentDto(0L,"내용1", notice.id(), member.id());
+        CommentRequestDto commentDto2 = createCommentDto(0L,"내용2", notice.id(), member.id());
+        CommentRequestDto commentDto3 = createCommentDto(0L,"내용3", notice.id(), member.id());
         commentServiceImpl.insertComment(commentDto1);
         commentServiceImpl.insertComment(commentDto2);
         commentServiceImpl.insertComment(commentDto3);
 
         // when
-        List<CommentResponseDto> comments = commentServiceImpl.findCommentsByNoticeId(noticeId);
+        List<CommentResponseDto> comments = commentServiceImpl.findCommentsByNoticeId(notice.id());
 
         // then
         List<String> tmp = new ArrayList<>();
         tmp.add(commentDto1.getContent());
         tmp.add(commentDto2.getContent());
         tmp.add(commentDto3.getContent());
-        assertThat(comments.stream().map(CommentResponseDto::getContent).toList())
+        assertThat(comments.stream().map(CommentResponseDto::content).toList())
                 .containsExactlyInAnyOrderElementsOf(tmp);
     }
 
@@ -140,24 +139,25 @@ class CommentServiceTest {
     @DisplayName("특정 게시물에 저장되어있는 댓글 조회 시 작성자의 프로필 이미지도 출력한다.")
     void getCommentsByNoticeWithMemberImgTest() {
         // given
-        Long memberId = getMemberId("limnj@test.com");
-        Long noticeId = getNoticeId(NoticeRequestDto.builder()
+        MemberResponseDto member = getMember("limnj@test.com");
+        NoticeResponseDto notice = getNotice(NoticeRequestDto.builder()
                 .title("게시글")
                 .content("게시글 내용")
-                .memberId(memberId)
+                .memberId(member.id())
                 .build());
-        CommentRequestDto commentDto = createCommentDto(0L,"내용1", noticeId, memberId);
+        CommentRequestDto commentDto = createCommentDto(0L,"내용1", notice.id(), member.id());
         commentServiceImpl.insertComment(commentDto);
 
         // when
-        List<CommentResponseDto> comments = commentServiceImpl.findCommentsByNoticeId(noticeId);
+        List<CommentResponseDto> comments = commentServiceImpl.findCommentsByNoticeId(notice.id());
 
         // then
         CommentResponseDto findComment = comments.get(0);
-        assertThat(findComment.getContent()).isEqualTo(commentDto.getContent());
-        assertThat(findComment.getMemberId()).isEqualTo(commentDto.getMemberId());
-        assertThat(findComment.getNoticeId()).isEqualTo(commentDto.getNoticeId());
-        assertThat(findComment.getUsername()).isEqualTo("limnj1");
+        assertThat(findComment.content()).isEqualTo(commentDto.getContent());
+        assertThat(findComment.memberId()).isEqualTo(commentDto.getMemberId());
+        assertThat(findComment.noticeId()).isEqualTo(commentDto.getNoticeId());
+        assertThat(findComment.username()).isEqualTo(member.username());
+        assertThat(findComment.memberImgUrl()).isEqualTo(member.imgUrl());
     }
 
     @Test
@@ -165,18 +165,18 @@ class CommentServiceTest {
     void getCommentsByUserTest() {
         // given
         String email = "limnj2@test.com";
-        Long memberId = getMemberId("limnj@test.com");
-        Long memberId2 = getMemberId(email);
-        Long noticeId = getNoticeId(NoticeRequestDto.builder()
+        MemberResponseDto member1 = getMember("limnj@test.com");
+        MemberResponseDto member2 = getMember(email);
+        NoticeResponseDto notice = getNotice(NoticeRequestDto.builder()
                 .title("게시글")
                 .content("게시글 내용")
-                .memberId(memberId)
+                .memberId(member1.id())
                 .build());
-        CommentRequestDto commentDto1 = createCommentDto(0L,"내용1", noticeId, memberId);
-        CommentRequestDto commentDto2 = createCommentDto(0L,"내용2", noticeId, memberId2);
-        CommentRequestDto commentDto3 = createCommentDto(0L,"내용3", noticeId, memberId2);
-        CommentRequestDto commentDto4 = createCommentDto(0L,"내용4", noticeId, memberId);
-        CommentRequestDto commentDto5 = createCommentDto(0L,"내용5", noticeId, memberId);
+        CommentRequestDto commentDto1 = createCommentDto(0L,"내용1", notice.id(), member1.id());
+        CommentRequestDto commentDto2 = createCommentDto(0L,"내용2", notice.id(), member2.id());
+        CommentRequestDto commentDto3 = createCommentDto(0L,"내용3", notice.id(), member2.id());
+        CommentRequestDto commentDto4 = createCommentDto(0L,"내용4", notice.id(), member1.id());
+        CommentRequestDto commentDto5 = createCommentDto(0L,"내용5", notice.id(), member1.id());
 
         commentServiceImpl.insertComment(commentDto1);
         commentServiceImpl.insertComment(commentDto2);
@@ -191,7 +191,7 @@ class CommentServiceTest {
         List<String> tmp = new ArrayList<>();
         tmp.add(commentDto2.getContent());
         tmp.add(commentDto3.getContent());
-        assertThat(comments.stream().map(CommentResponseDto::getContent).toList())
+        assertThat(comments.stream().map(CommentResponseDto::content).toList())
                 .containsExactlyInAnyOrderElementsOf(tmp);
     }
 
@@ -204,7 +204,7 @@ class CommentServiceTest {
                 .build();
     }
 
-    private Long getMemberId(String email){
+    private MemberResponseDto getMember(String email){
         MemberResponseDto findMember = memberMapper.findByEmail(email);
         if (findMember == null) {
             MemberRequestDto memberRequestDto = MemberRequestDto.builder()
@@ -213,15 +213,15 @@ class CommentServiceTest {
                     .username("limnj1")
                     .build();
             memberMapper.insertMember(memberRequestDto);
-            return memberMapper.findByEmail(email).getId();
+            return memberMapper.findByEmail(email);
         }
-        return findMember.getId();
+        return findMember;
     }
 
-    private Long getNoticeId(NoticeRequestDto noticeRequestDto){
+    private NoticeResponseDto getNotice(NoticeRequestDto noticeRequestDto){
         noticeMapper.insertNotice(noticeRequestDto);
         List<NoticeResponseDto> notices = noticeMapper.findAllNotices(Map.of());
-        return notices.get(0).getId();
+        return notices.get(0);
     }
 
 

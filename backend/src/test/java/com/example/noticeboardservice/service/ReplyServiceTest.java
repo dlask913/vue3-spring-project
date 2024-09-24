@@ -57,9 +57,9 @@ class ReplyServiceTest {
 
         // then
         ReplyResponseDto responseDto = replyMapper.findAllReplies().get(0);
-        Assertions.assertThat(requestDto.getContent()).isEqualTo(responseDto.getContent());
-        Assertions.assertThat(requestDto.getMemberId()).isEqualTo(responseDto.getMemberId());
-        Assertions.assertThat(requestDto.getCommentId()).isEqualTo(responseDto.getCommentId());
+        Assertions.assertThat(requestDto.getContent()).isEqualTo(responseDto.content());
+        Assertions.assertThat(requestDto.getMemberId()).isEqualTo(responseDto.memberId());
+        Assertions.assertThat(requestDto.getCommentId()).isEqualTo(responseDto.commentId());
 
     }
 
@@ -86,8 +86,9 @@ class ReplyServiceTest {
         tmp.add("requestDto1");
         tmp.add("requestDto2");
         tmp.add("requestDto3");
-        assertThat(replies.stream().map(ReplyResponseDto::getContent).toList())
+        assertThat(replies.stream().map(ReplyResponseDto::content).toList())
                 .containsExactlyInAnyOrderElementsOf(tmp);
+        assertThat(replies.get(0).memberImgUrl()).isEqualTo("/image/memberDefaultImg.jpg");
     }
 
     @Test
@@ -105,7 +106,7 @@ class ReplyServiceTest {
 
         ReplyResponseDto findReply = replyMapper.findAllReplies().get(0);
         ReplyRequestDto updateDto = ReplyRequestDto.builder()
-                .id(findReply.getId())
+                .id(findReply.id())
                 .content("댓글의 하위 수정 댓글입니다.")
                 .memberId(memberId)
                 .commentId(commentId)
@@ -115,8 +116,8 @@ class ReplyServiceTest {
         replyServiceImpl.updateReply(updateDto);
 
         // then
-        ReplyResponseDto responseDto = replyMapper.findReply(findReply.getId());
-        Assertions.assertThat(updateDto.getContent()).isEqualTo(responseDto.getContent());
+        ReplyResponseDto responseDto = replyMapper.findReply(findReply.id());
+        Assertions.assertThat(updateDto.getContent()).isEqualTo(responseDto.content());
     }
 
     @Test
@@ -133,7 +134,7 @@ class ReplyServiceTest {
         ReplyResponseDto findReply = replyMapper.findAllReplies().get(0);
 
         // when
-        replyServiceImpl.deleteReply(findReply.getId());
+        replyServiceImpl.deleteReply(findReply.id());
 
         // then
         assertThat(replyMapper.findAllReplies().size()).isEqualTo(0);
@@ -149,9 +150,9 @@ class ReplyServiceTest {
                     .username("limnj1")
                     .build();
             memberMapper.insertMember(memberRequestDto);
-            return memberMapper.findByEmail(email).getId();
+            return memberMapper.findByEmail(email).id();
         }
-        return findMember.getId();
+        return findMember.id();
     }
 
     Long getCommentId(String content, Long memberId) {
@@ -165,11 +166,11 @@ class ReplyServiceTest {
 
         CommentRequestDto commentRequestDto = CommentRequestDto.builder()
                 .content(content)
-                .noticeId(notices.get(0).getId())
+                .noticeId(notices.get(0).id())
                 .memberId(memberId)
                 .build();
         commentMapper.insertComment(commentRequestDto);
         List<CommentResponseDto> comments = commentMapper.findAllComments();
-        return comments.get(0).getId();
+        return comments.get(0).id();
     }
 }

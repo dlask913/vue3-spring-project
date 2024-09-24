@@ -46,8 +46,8 @@ class NoticeServiceTest {
 
         // then
         NoticeResponseDto findNotice = noticeMapper.findAllNotices(Map.of()).get(0);
-        assertThat(findNotice.getTitle()).isEqualTo(noticeRequestDto.getTitle());
-        assertThat(findNotice.getContent()).isEqualTo(noticeRequestDto.getContent());
+        assertThat(findNotice.title()).isEqualTo(noticeRequestDto.getTitle());
+        assertThat(findNotice.content()).isEqualTo(noticeRequestDto.getContent());
     }
 
     @Test
@@ -58,17 +58,17 @@ class NoticeServiceTest {
                 getMemberId("limnj1@test.com", "limnj"));
         noticeMapper.insertNotice(noticeRequestDto);
         NoticeResponseDto savedNotice = noticeMapper.findAllNotices(Map.of()).get(0);
-        NoticeRequestDto updateNotice = createNoticeRequestDto(savedNotice.getId(),"제목1", "내용1", noticeRequestDto.getMemberId());
+        NoticeRequestDto updateNotice = createNoticeRequestDto(savedNotice.id(),"제목1", "내용1", noticeRequestDto.getMemberId());
 
         // when
-        noticeServiceImpl.updateNotice(savedNotice.getId(), updateNotice);
+        noticeServiceImpl.updateNotice(savedNotice.id(), updateNotice);
 
         // then
         NoticeResponseDto findNotice = noticeMapper.findAllNotices(Map.of()).get(0);
-        assertThat(findNotice.getId()).isEqualTo(updateNotice.getId());
-        assertThat(findNotice.getTitle()).isEqualTo(updateNotice.getTitle());
-        assertThat(findNotice.getContent()).isEqualTo(updateNotice.getContent());
-        assertThat(findNotice.getMemberId()).isEqualTo(updateNotice.getMemberId());
+        assertThat(findNotice.id()).isEqualTo(updateNotice.getId());
+        assertThat(findNotice.title()).isEqualTo(updateNotice.getTitle());
+        assertThat(findNotice.content()).isEqualTo(updateNotice.getContent());
+        assertThat(findNotice.memberId()).isEqualTo(updateNotice.getMemberId());
     }
 
     @Test
@@ -81,7 +81,7 @@ class NoticeServiceTest {
         NoticeResponseDto findNotice = noticeMapper.findAllNotices(Map.of()).get(0);
 
         // when
-        noticeServiceImpl.deleteNotice(findNotice.getId());
+        noticeServiceImpl.deleteNotice(findNotice.id());
 
         // then
         assertThat(noticeMapper.findAllNotices(Map.of()).size()).isEqualTo(0);
@@ -99,10 +99,10 @@ class NoticeServiceTest {
         NoticeResponseDto findNotice = noticeServiceImpl.findAllNotices(Map.of()).get(0);
 
         // then
-        assertThat(findNotice.getMemberId()).isEqualTo(noticeRequestDto.getMemberId());
-        assertThat(findNotice.getTitle()).isEqualTo(noticeRequestDto.getTitle());
-        assertThat(findNotice.getContent()).isEqualTo(noticeRequestDto.getContent());
-        assertThat(findNotice.getViewCount()).isEqualTo(0); // 조회수 초기값 0
+        assertThat(findNotice.memberId()).isEqualTo(noticeRequestDto.getMemberId());
+        assertThat(findNotice.title()).isEqualTo(noticeRequestDto.getTitle());
+        assertThat(findNotice.content()).isEqualTo(noticeRequestDto.getContent());
+        assertThat(findNotice.viewCount()).isEqualTo(0); // 조회수 초기값 0
     }
 
     @Test
@@ -115,10 +115,10 @@ class NoticeServiceTest {
         NoticeResponseDto savedNotice = noticeMapper.findAllNotices(Map.of()).get(0); // 저장한 게시글 조회
 
         // when
-        NoticeResponseDto findNotice = noticeServiceImpl.findNotice(savedNotice.getId(), "test");
+        NoticeResponseDto findNotice = noticeServiceImpl.findNotice(savedNotice.id(), "test");
 
         // then
-        assertThat(findNotice.getViewCount()).isEqualTo(1); // 조회수 초기값 0
+        assertThat(findNotice.viewCount()).isEqualTo(1); // 조회수 초기값 0
     }
 
     @Test
@@ -131,10 +131,10 @@ class NoticeServiceTest {
         NoticeResponseDto savedNotice = noticeMapper.findAllNotices(Map.of()).get(0); // 저장한 게시글 조회
 
         // when
-        NoticeResponseDto findNotice = noticeServiceImpl.findNotice(savedNotice.getId(), "limnj1@test.com");
+        NoticeResponseDto findNotice = noticeServiceImpl.findNotice(savedNotice.id(), "limnj1@test.com");
 
         // then
-        assertThat(findNotice.getViewCount()).isEqualTo(0); // 조회수 초기값 0 유지
+        assertThat(findNotice.viewCount()).isEqualTo(0); // 조회수 초기값 0 유지
     }
 
     @Test
@@ -168,10 +168,10 @@ class NoticeServiceTest {
         List<NoticeResponseDto> findNotices = noticeServiceImpl.findNoticeByMemberId(getMemberId("limnj1@test.com", "limnj1"));
 
         // then
-        assertThat(findNotices.get(0).getTitle()).isEqualTo(noticeRequestDto1.getTitle());
-        assertThat(findNotices.get(0).getContent()).isEqualTo(noticeRequestDto1.getContent());
-        assertThat(findNotices.get(1).getTitle()).isEqualTo(noticeRequestDto2.getTitle());
-        assertThat(findNotices.get(1).getContent()).isEqualTo(noticeRequestDto2.getContent());
+        assertThat(findNotices.get(0).title()).isEqualTo(noticeRequestDto1.getTitle());
+        assertThat(findNotices.get(0).content()).isEqualTo(noticeRequestDto1.getContent());
+        assertThat(findNotices.get(1).title()).isEqualTo(noticeRequestDto2.getTitle());
+        assertThat(findNotices.get(1).content()).isEqualTo(noticeRequestDto2.getContent());
     }
 
     @Test
@@ -191,7 +191,7 @@ class NoticeServiceTest {
         // then
         assertThat(findNotices)
                 .hasSize(5)
-                .extracting(NoticeResponseDto::getTitle)
+                .extracting(NoticeResponseDto::title)
                 .containsExactly("제목10", "제목11", "제목12", "제목13", "제목14");
     }
 
@@ -218,7 +218,7 @@ class NoticeServiceTest {
         // then
         assertThat(findNotices)
                 .hasSize(3)
-                .extracting(NoticeResponseDto::getUsername)
+                .extracting(NoticeResponseDto::username)
                 .containsExactly("limnj0", "limnj1", "limnj2");
     }
 
@@ -245,7 +245,7 @@ class NoticeServiceTest {
         // then
         assertThat(findNotices)
                 .hasSize(3)
-                .extracting(NoticeResponseDto::getTitle)
+                .extracting(NoticeResponseDto::title)
                 .containsExactly("인사합니다.4", "인사합니다.5", "인사합니다.6");
     }
 
@@ -269,7 +269,7 @@ class NoticeServiceTest {
         // then
         assertThat(notices)
                 .hasSize(3)
-                .extracting(NoticeResponseDto::getTitle)
+                .extracting(NoticeResponseDto::title)
                 .containsExactly("제목1", "제목2", "제목4");
     }
 
@@ -282,9 +282,9 @@ class NoticeServiceTest {
                     .username(username)
                     .build();
             memberMapper.insertMember(memberRequestDto);
-            return memberMapper.findByEmail(email).getId();
+            return memberMapper.findByEmail(email).id();
         }
-        return findMember.getId();
+        return findMember.id();
     }
 
 

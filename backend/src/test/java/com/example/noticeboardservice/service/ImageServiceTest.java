@@ -43,18 +43,18 @@ class ImageServiceTest {
                 String.valueOf(MediaType.IMAGE_JPEG),
                 "memberImg!".getBytes()
         );
-        ImageDto imageDto = ImageDto.builder()
+        ImageRequestDto imageRequestDto = ImageRequestDto.builder()
                 .imageType(ImageType.MEMBER)
                 .typeId(memberId)
                 .build();
 
         // when
-        imageServiceImpl.saveImage(imageDto, memberImg, memberImgLocation);
+        imageServiceImpl.saveImage(imageRequestDto, memberImg, memberImgLocation);
 
         // then
         ImageResponseDto findImage = imageMapper.findByType(memberId, ImageType.MEMBER);
-        Assertions.assertThat(findImage.getImageType()).isEqualTo(imageDto.getImageType().toString());
-        Assertions.assertThat(findImage.getTypeId()).isEqualTo(imageDto.getTypeId());
+        Assertions.assertThat(findImage.imageType()).isEqualTo(imageRequestDto.getImageType().toString());
+        Assertions.assertThat(findImage.typeId()).isEqualTo(imageRequestDto.getTypeId());
     }
 
     @Test
@@ -68,16 +68,16 @@ class ImageServiceTest {
                 String.valueOf(MediaType.IMAGE_JPEG),
                 "memberImg!".getBytes()
         );
-        ImageDto imageDto = ImageDto.builder()
+        ImageRequestDto imageRequestDto = ImageRequestDto.builder()
                 .imageType(ImageType.MEMBER)
                 .typeId(memberId)
                 .build();
 
-        imageServiceImpl.saveImage(imageDto, memberImg, memberImgLocation); // 비즈니스 로직대로 저장
+        imageServiceImpl.saveImage(imageRequestDto, memberImg, memberImgLocation); // 비즈니스 로직대로 저장
         ImageResponseDto findImage = imageMapper.findByType(memberId, ImageType.MEMBER);
 
         // when
-        imageServiceImpl.deleteImage(findImage.getId(), memberImgLocation, findImage.getImgName());
+        imageServiceImpl.deleteImage(findImage.id(), memberImgLocation, findImage.imgName());
 
         // then
         Assertions.assertThat(imageMapper.findByType(memberId, ImageType.MEMBER)).isNull();
@@ -94,12 +94,12 @@ class ImageServiceTest {
                 String.valueOf(MediaType.IMAGE_JPEG),
                 "memberImg!".getBytes()
         );
-        ImageDto imageDto = ImageDto.builder()
+        ImageRequestDto imageRequestDto = ImageRequestDto.builder()
                 .imageType(ImageType.MEMBER)
                 .typeId(memberId)
                 .build();
 
-        imageServiceImpl.saveImage(imageDto, memberImg, memberImgLocation); // 비즈니스 로직대로 저장
+        imageServiceImpl.saveImage(imageRequestDto, memberImg, memberImgLocation); // 비즈니스 로직대로 저장
 
         // when
         ImageResponseDto findImage = imageServiceImpl
@@ -107,8 +107,8 @@ class ImageServiceTest {
                 .orElseThrow();
 
         // then
-        Assertions.assertThat(findImage.getImageType()).isEqualTo(imageDto.getImageType().toString());
-        Assertions.assertThat(findImage.getTypeId()).isEqualTo(imageDto.getTypeId());
+        Assertions.assertThat(findImage.imageType()).isEqualTo(imageRequestDto.getImageType().toString());
+        Assertions.assertThat(findImage.typeId()).isEqualTo(imageRequestDto.getTypeId());
 
     }
 
@@ -121,8 +121,8 @@ class ImageServiceTest {
                     .username(email.split("@")[0])
                     .build();
             memberMapper.insertMember(memberRequestDto);
-            return memberMapper.findByEmail(email).getId();
+            return memberMapper.findByEmail(email).id();
         }
-        return findMember.getId();
+        return findMember.id();
     }
 }
