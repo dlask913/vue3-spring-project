@@ -157,7 +157,7 @@ class CommentServiceTest {
         assertThat(findComment.memberId()).isEqualTo(commentDto.getMemberId());
         assertThat(findComment.noticeId()).isEqualTo(commentDto.getNoticeId());
         assertThat(findComment.username()).isEqualTo(member.username());
-        assertThat(findComment.memberImgUrl()).isEqualTo(member.imgUrl());
+        assertThat(findComment.memberImgUrl()).isEqualTo("/image/memberDefaultImg.jpg"); // 초기 디폴트 이미지
     }
 
     @Test

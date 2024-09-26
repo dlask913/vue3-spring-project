@@ -14,7 +14,7 @@
     </update>
 
     <!-- 댓글 조회 by Notice -->
-    <select id="findCommentsByNoticeId" resultType="CommentResponseDto" parameterType="long">
+    <select id="findCommentsByNoticeId" resultMap="CommentResponseDtoMap" parameterType="long">
         WITH MemberImages AS (
             SELECT type_id, img_url
             FROM Images
@@ -22,7 +22,7 @@
         )
 
         SELECT c.id, c.content, c.post_date, m.username,
-            ISNULL(i.img_url, '/image/memberDefaultImg.jpg') AS member_img_url, c.member_id, c.notice_id
+        COALESCE(i.img_url, '/image/memberDefaultImg.jpg') AS member_img_url, c.member_id, c.notice_id
         FROM Comments c
             LEFT JOIN Members m ON c.member_id = m.id
             LEFT JOIN MemberImages i ON m.id = i.type_id
@@ -36,8 +36,8 @@
     </delete>
 
     <!-- 댓글 데이터 모두 조회 -->
-    <select id="findAllComments" resultType="CommentResponseDto">
-        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id
+    <select id="findAllComments" resultMap="CommentResponseDtoMap">
+        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id, NULL AS member_img_url
         FROM Comments c
             LEFT JOIN Members m ON c.member_id = m.id
     </select>
@@ -48,10 +48,23 @@
     </delete>
 
     <!-- 내가 작성한 댓글 조회 -->
-    <select id="findCommentsByEmail" resultType="CommentResponseDto" parameterType="String">
-        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id
+    <select id="findCommentsByEmail" resultMap="CommentResponseDtoMap" parameterType="String">
+        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id, NULL AS member_img_url
         FROM Comments c
             LEFT JOIN Members m ON c.member_id = m.id
         WHERE m.email = #{email}
     </select>
+
+    <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
+    <resultMap id="CommentResponseDtoMap" type="com.example.noticeboardservice.dto.CommentResponseDto">
+        <constructor>
+            <arg column="id" javaType="java.lang.Long"/>
+            <arg column="content" javaType="java.lang.String"/>
+            <arg column="post_date" javaType="java.lang.String"/>
+            <arg column="username" javaType="java.lang.String"/>
+            <arg column="member_img_url" javaType="java.lang.String"/>
+            <arg column="member_id" javaType="java.lang.Long"/>
+            <arg column="notice_id" javaType="java.lang.Long"/>
+        </constructor>
+    </resultMap>
 </mapper>

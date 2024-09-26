@@ -1,6 +1,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.MemberMapper">
 
+
     <!-- 회원 생성 -->
     <insert id="insertMember" parameterType="MemberRequestDto">
         INSERT INTO Members (username, email, password)
@@ -15,29 +16,30 @@
     </update>
 
     <!-- 회원 단일 조회 -->
-    <select id="findMember" resultType="MemberResponseDto" parameterType="long">
+    <select id="findMember" resultMap="MemberResponseDtoMap" parameterType="long">
         WITH MemberImg AS (
             SELECT *
             FROM images
             WHERE image_type = 'MEMBER'
         )
 
-        SELECT A.id, A.username, A.email, A.password, A.address, ISNULL(B.img_url, '/image/memberDefaultImg.jpg') AS member_img_url
+        SELECT A.id, A.username, A.email, A.password, A.address,
+            COALESCE(B.img_url, '/image/memberDefaultImg.jpg') AS img_url
         FROM Members A
             LEFT JOIN MemberImg B ON A.id = B.type_id
         WHERE A.id = #{id}
     </select>
 
     <!-- 회원 단일 조회 by Email -->
-    <select id="findByEmail" resultType="MemberResponseDto" parameterType="String">
-        SELECT id, username, email, password, address
+    <select id="findByEmail" resultMap="MemberResponseDtoMap" parameterType="String">
+        SELECT id, username, email, password, address, NULL AS img_url
         FROM Members
         WHERE email = #{email}
     </select>
 
     <!-- 회원 데이터 모두 조회 -->
-    <select id="findAllMembers" resultType="MemberResponseDto">
-        SELECT id, username, email, password
+    <select id="findAllMembers" resultMap="MemberResponseDtoMap">
+        SELECT id, username, email, password, address, NULL AS img_url
         FROM Members
     </select>
 
@@ -52,4 +54,15 @@
         DELETE FROM Members
     </delete>
 
+    <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
+    <resultMap id="MemberResponseDtoMap" type="com.example.noticeboardservice.dto.MemberResponseDto">
+        <constructor>
+            <arg column="id" javaType="java.lang.Long"/>
+            <arg column="username" javaType="java.lang.String"/>
+            <arg column="email" javaType="java.lang.String"/>
+            <arg column="password" javaType="java.lang.String"/>
+            <arg column="address" javaType="java.lang.String"/>
+            <arg column="img_url" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
 </mapper>

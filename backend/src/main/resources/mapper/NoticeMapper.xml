@@ -15,11 +15,11 @@
     </update>
 
     <!-- 게시글 조회 -->
-    <select id="findNotice" resultType="NoticeResponseDto" parameterType="long">
-        SELECT n.id, n.title, n.content, n.view_count,
+    <select id="findNotice" resultMap="NoticeResponseDtoMap" parameterType="long">
+        SELECT n.id, n.title, n.content,
                 DATE_FORMAT(n.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
                 DATE_FORMAT(n.update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
-                n.member_id, m.username, m.email
+                n.member_id, m.username, m.email, n.view_count
         FROM Notices n
             LEFT JOIN Members m ON n.member_id = m.id
         WHERE n.id = #{noticeId}
@@ -33,16 +33,18 @@
     </update>
 
     <!-- 게시글 조회 by Member -->
-    <select id="findNoticeByMemberId" resultType="NoticeResponseDto" parameterType="long">
-        SELECT id, title, content, post_date, member_id, view_count
+    <select id="findNoticeByMemberId" resultMap="NoticeResponseDtoMap" parameterType="long">
+        SELECT id, title, content, post_date, NULL AS update_date,
+            member_id, NULL AS username, NULL AS email, view_count
         FROM Notices
         WHERE member_id = #{memberId}
     </select>
 
     <!-- 게시글 데이터 모두 조회 -->
-    <select id="findAllNotices" resultType="NoticeResponseDto">
+    <select id="findAllNotices" resultMap="NoticeResponseDtoMap">
         SELECT n.id, n.title, n.content, n.view_count,
-            DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, n.member_id, m.username
+            DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, NULL AS update_date,
+            n.member_id, m.username, NULL AS email, n.view_count
         FROM Notices n
             LEFT JOIN Members m ON n.member_id = m.id
         WHERE 1=1
@@ -56,9 +58,10 @@
     </select>
 
     <!-- 게시글 데이터 조회 By Page AND Keyword -->
-    <select id="searchNoticesByPage" resultType="NoticeResponseDto">
-        SELECT n.id, n.title, n.content, n.view_count,
-            DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, n.member_id, m.username
+    <select id="searchNoticesByPage" resultMap="NoticeResponseDtoMap">
+        SELECT n.id, n.title, n.content,
+            DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, NULL AS update_date,
+            n.member_id, m.username, NULL AS email, n.view_count
         FROM Notices n
              LEFT JOIN Members m ON n.member_id = m.id
         WHERE 1=1
@@ -84,11 +87,27 @@
     </delete>
 
     <!-- 내가 쓴 게시글 모두 조회 -->
-    <select id="findNoticeByEmail" resultType="NoticeResponseDto" parameterType="String">
-        SELECT n.id, n.title, n.content, n.view_count,
-            DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, n.member_id, m.username
+    <select id="findNoticeByEmail" resultMap="NoticeResponseDtoMap" parameterType="String">
+        SELECT n.id, n.title, n.content,
+            DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, NULL AS update_date,
+            n.member_id, m.username, NULL AS email, n.view_count
         FROM Notices n
             LEFT JOIN Members m ON n.member_id = m.id
         WHERE m.email = #{email}
     </select>
+
+    <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
+    <resultMap id="NoticeResponseDtoMap" type="com.example.noticeboardservice.dto.NoticeResponseDto">
+        <constructor>
+            <arg column="id" javaType="java.lang.Long"/>
+            <arg column="title" javaType="java.lang.String"/>
+            <arg column="content" javaType="java.lang.String"/>
+            <arg column="post_date" javaType="java.lang.String"/>
+            <arg column="update_date" javaType="java.lang.String"/>
+            <arg column="member_id" javaType="java.lang.Long"/>
+            <arg column="username" javaType="java.lang.String"/>
+            <arg column="email" javaType="java.lang.String"/>
+            <arg column="view_count" javaType="java.lang.Long"/>
+        </constructor>
+    </resultMap>
 </mapper>

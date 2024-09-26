@@ -7,26 +7,26 @@
     </insert>
 
     <!-- 대댓글 단일 조회 -->
-    <select id="findReply" resultType="ReplyResponseDto" parameterType="long">
+    <select id="findReply" resultMap="ReplyResponseDtoMap" parameterType="long">
         SELECT r.id, r.content,
             DATE_FORMAT(r.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
             DATE_FORMAT(r.update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
-            r.comment_id, r.member_id, m.username
+            r.comment_id, r.member_id, m.username, NULL AS member_img_url
         FROM Replies r
             LEFT JOIN Members m ON r.member_id = m.id
         WHERE r.id = #{id}
     </select>
 
     <!-- 대댓글 조회 by CommentId -->
-    <select id="findRepliesByCommentId" resultType="ReplyResponseDto" parameterType="long">
+    <select id="findRepliesByCommentId" resultMap="ReplyResponseDtoMap" parameterType="long">
         WITH MemberImages AS (
             SELECT type_id, img_url
             FROM Images
             WHERE image_type = 'MEMBER'
         )
 
-        SELECT r.id, r.content, r.post_date, r.comment_id, r.member_id, m.username,
-            ISNULL(i.img_url, '/image/memberDefaultImg.jpg') AS member_img_url
+        SELECT r.id, r.content, r.post_date, r.update_date, r.comment_id, r.member_id, m.username,
+            COALESCE(i.img_url, '/image/memberDefaultImg.jpg') AS member_img_url
         FROM Replies r
             LEFT JOIN Members m ON r.member_id = m.id
             LEFT JOIN MemberImages i ON m.id = i.type_id
@@ -47,11 +47,11 @@
     </delete>
 
     <!-- 모든 대댓글 조회 -->
-    <select id="findAllReplies" resultType="ReplyResponseDto">
+    <select id="findAllReplies" resultMap="ReplyResponseDtoMap">
         SELECT r.id, r.content,
             DATE_FORMAT(r.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
             DATE_FORMAT(r.update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
-            r.comment_id, r.member_id, m.username
+            r.comment_id, r.member_id, m.username, NULL AS member_img_url
         FROM Replies r
             LEFT JOIN Members m ON r.member_id = m.id
     </select>
@@ -60,4 +60,18 @@
     <delete id="deleteAll">
         DELETE FROM Replies
     </delete>
+
+    <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
+    <resultMap id="ReplyResponseDtoMap" type="com.example.noticeboardservice.dto.ReplyResponseDto">
+        <constructor>
+            <arg column="id" javaType="java.lang.Long"/>
+            <arg column="content" javaType="java.lang.String"/>
+            <arg column="username" javaType="java.lang.String"/>
+            <arg column="member_id" javaType="java.lang.Long"/>
+            <arg column="comment_id" javaType="java.lang.Long"/>
+            <arg column="post_date" javaType="java.lang.String"/>
+            <arg column="update_date" javaType="java.lang.String"/>
+            <arg column="member_img_url" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
 </mapper>

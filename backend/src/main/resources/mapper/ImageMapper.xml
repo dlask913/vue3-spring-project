@@ -1,7 +1,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.ImageMapper">
     <!-- 이미지 생성 -->
-    <insert id="saveImage" parameterType="ImageDto">
+    <insert id="saveImage" parameterType="ImageRequestDto">
         INSERT INTO Images (img_name, ori_img_name, img_url, file_size, upload_date, image_type, type_id)
         VALUES (#{imgName}, #{oriImgName}, #{imgUrl}, #{fileSize}, #{uploadDate}, #{imageType}, #{typeId})
     </insert>
@@ -13,7 +13,7 @@
     </delete>
 
     <!-- type 및 typeId 로 이미지 조회 ( 1:1 관계 ) -->
-    <select id="findByType" resultType="ImageResponseDto">
+    <select id="findByType" resultMap="ImageResponseDtoMap">
         SELECT id, img_name, img_url, upload_date, type_id, image_type
         FROM Images
         WHERE type_id = #{typeId} AND image_type = #{type}
@@ -22,4 +22,16 @@
     <delete id="deleteAll">
         DELETE FROM Images
     </delete>
+
+    <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
+    <resultMap id="ImageResponseDtoMap" type="com.example.noticeboardservice.dto.ImageResponseDto">
+        <constructor>
+            <arg column="id" javaType="java.lang.Long"/>
+            <arg column="type_id" javaType="java.lang.Long"/>
+            <arg column="img_name" javaType="java.lang.String"/>
+            <arg column="img_url" javaType="java.lang.String"/>
+            <arg column="upload_date" javaType="java.time.LocalDateTime"/>
+            <arg column="image_type" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
 </mapper>

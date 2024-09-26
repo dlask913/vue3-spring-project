@@ -35,7 +35,7 @@ public class NoticeServiceImpl implements NoticeService{
     @Override
     public NoticeResponseDto findNotice(Long noticeId, String email) {
         NoticeResponseDto findNotice = noticeMapper.findNotice(noticeId);
-        if(!findNotice.getEmail().equals(email)){ // 내가 쓴 글이 아닐 때만 조회수 증가 ( todo: 게시글 없을 때 예외 처리 )
+        if(!findNotice.email().equals(email)){ // 내가 쓴 글이 아닐 때만 조회수 증가 ( todo: 게시글 없을 때 예외 처리 )
             int result = noticeMapper.incrementViewCount(noticeId);
         }
         return noticeMapper.findNotice(noticeId);
