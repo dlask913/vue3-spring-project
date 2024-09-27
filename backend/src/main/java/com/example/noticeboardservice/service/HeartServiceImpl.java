@@ -32,10 +32,10 @@ public class HeartServiceImpl implements HeartService{
             HeartDto heartDtoTmp = HeartDto.builder()
                     .commentId(commentId)
                     .build();
-            heartDtoTmp.setCnt(hearts.size());
+            heartDtoTmp.updateCnt(hearts.size());
             return heartDtoTmp;
         }
-        findHeartByMember.get().setCnt(hearts.size()); // 로그인 했을 때
+        findHeartByMember.get().updateCnt(hearts.size()); // 로그인 했을 때
         return findHeartByMember.get();
     }
 

@@ -19,8 +19,7 @@ public class HeartDto {
         this.commentId = commentId;
     }
 
-    public void setCnt(int cnt){
+    public void updateCnt(int cnt){
         this.cnt = cnt;
     }
-
 }
