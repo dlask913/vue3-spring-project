@@ -39,6 +39,9 @@ class ReplyServiceTest {
     @AfterEach
     void tearDown() {
         replyMapper.deleteAll();
+        commentMapper.deleteAll();
+        noticeMapper.deleteAll();
+        memberMapper.deleteAll();
     }
 
     @Test
