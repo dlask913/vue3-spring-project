@@ -3,14 +3,14 @@
 
     <!-- 게시글 생성 -->
     <insert id="insertNotice" parameterType="NoticeRequestDto">
-        INSERT INTO Notices (title, content, post_date, member_id, update_date)
-        VALUES (#{title}, #{content}, #{postDate}, #{memberId}, #{updateDate})
+        INSERT INTO Notices (title, content, member_id)
+        VALUES (#{title}, #{content}, #{memberId})
     </insert>
 
     <!-- 게시글 수정 -->
     <update id="updateNotice" parameterType="NoticeRequestDto">
         UPDATE Notices
-        SET title = #{title}, content = #{content}
+        SET title = #{title}, content = #{content}, update_date = NOW()
         WHERE id = #{id}
     </update>
 

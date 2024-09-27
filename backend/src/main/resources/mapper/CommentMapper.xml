@@ -2,14 +2,14 @@
 <mapper namespace="com.example.noticeboardservice.mapper.CommentMapper">
     <!-- 댓글 생성 -->
     <insert id="insertComment" parameterType="CommentRequestDto">
-        INSERT INTO Comments (content, post_date, member_id, notice_id)
-        VALUES (#{content}, #{postDate}, #{memberId}, #{noticeId})
+        INSERT INTO Comments (content, member_id, notice_id)
+        VALUES (#{content}, #{memberId}, #{noticeId})
     </insert>
 
     <!-- 댓글 수정 -->
     <update id="updateComment" parameterType="CommentRequestDto">
         UPDATE Comments
-        SET content = #{content}, post_date = #{postDate}
+        SET content = #{content}, update_date = NOW()
         WHERE id = #{id}
     </update>
 
