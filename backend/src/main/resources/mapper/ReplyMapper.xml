@@ -61,6 +61,13 @@
         DELETE FROM Replies
     </delete>
 
+    <!-- 댓글의 대댓글 수 계산 -->
+    <select id="calculateRepliesByCommentId" parameterType="long" resultType="long">
+        SELECT COUNT(*) AS reply_count
+        FROM Replies
+        WHERE comment_id = #{commentId}
+    </select>
+
     <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
     <resultMap id="ReplyResponseDtoMap" type="com.example.noticeboardservice.dto.ReplyResponseDto">
         <constructor>

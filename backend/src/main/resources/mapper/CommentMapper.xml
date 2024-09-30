@@ -22,7 +22,8 @@
         )
 
         SELECT c.id, c.content, c.post_date, m.username,
-        COALESCE(i.img_url, '/image/memberDefaultImg.jpg') AS member_img_url, c.member_id, c.notice_id
+            COALESCE(i.img_url, '/image/memberDefaultImg.jpg') AS member_img_url, c.member_id,
+            c.notice_id, NULL AS reply_count
         FROM Comments c
             LEFT JOIN Members m ON c.member_id = m.id
             LEFT JOIN MemberImages i ON m.id = i.type_id
@@ -37,7 +38,8 @@
 
     <!-- 댓글 데이터 모두 조회 -->
     <select id="findAllComments" resultMap="CommentResponseDtoMap">
-        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id, NULL AS member_img_url
+        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id,
+            NULL AS member_img_url, NULL AS reply_count
         FROM Comments c
             LEFT JOIN Members m ON c.member_id = m.id
     </select>
@@ -49,7 +51,8 @@
 
     <!-- 내가 작성한 댓글 조회 -->
     <select id="findCommentsByEmail" resultMap="CommentResponseDtoMap" parameterType="String">
-        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id, NULL AS member_img_url
+        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id,
+            NULL AS member_img_url, NULL AS reply_count
         FROM Comments c
             LEFT JOIN Members m ON c.member_id = m.id
         WHERE m.email = #{email}
@@ -65,6 +68,7 @@
             <arg column="member_img_url" javaType="java.lang.String"/>
             <arg column="member_id" javaType="java.lang.Long"/>
             <arg column="notice_id" javaType="java.lang.Long"/>
+            <arg column="reply_count" javaType="java.lang.Long"/>
         </constructor>
     </resultMap>
 </mapper>

@@ -15,4 +15,5 @@ public interface ReplyMapper {
     int deleteReply(Long replyId);
     List<ReplyResponseDto> findAllReplies();
     void deleteAll();
+    Long calculateRepliesByCommentId(Long commentId);
 }

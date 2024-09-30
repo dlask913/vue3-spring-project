@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
+    private final ReplyService replyServiceImpl;
     @Override
     public int insertComment(CommentRequestDto commentDto) {
         return commentMapper.insertComment(commentDto);
@@ -31,7 +32,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentResponseDto> findCommentsByNoticeId(Long noticeId) {
-        return commentMapper.findCommentsByNoticeId(noticeId);
+        return commentMapper.findCommentsByNoticeId(noticeId).stream()
+                .map(comment ->{
+                    Long replyCount = replyServiceImpl.calculateRepliesByCommentId(comment.id()); // 대댓글 수 계산
+                    return comment.updatedReplyCount(replyCount); // 새로운 객체 반환
+                })
+                .toList();
     }
 
     @Override

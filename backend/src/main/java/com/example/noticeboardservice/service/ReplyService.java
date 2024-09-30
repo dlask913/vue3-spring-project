@@ -12,4 +12,5 @@ public interface ReplyService {
     List<ReplyResponseDto> findRepliesByCommentId(Long commentId);
     int updateReply(ReplyRequestDto replyDto);
     int deleteReply(Long replyId);
+    Long calculateRepliesByCommentId(Long commentId);
 }

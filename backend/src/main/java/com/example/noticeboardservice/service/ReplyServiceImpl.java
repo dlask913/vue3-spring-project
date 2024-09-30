@@ -34,4 +34,9 @@ public class ReplyServiceImpl implements ReplyService {
     public int deleteReply(Long replyId) {
         return replyMapper.deleteReply(replyId);
     }
+
+    @Override
+    public Long calculateRepliesByCommentId(Long commentId) {
+        return replyMapper.calculateRepliesByCommentId(commentId);
+    }
 }
