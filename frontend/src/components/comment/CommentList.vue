@@ -20,7 +20,7 @@
         <p class="fw-lighter mt-2">{{ comment.postDate }}</p>
       </div>
 
-      <div class="d-flex justify-content-end mt-2">
+      <div class="d-flex justify-content-end mt-2" style="min-width: 150px;">
         <a
           v-if="isMine(comment.memberId)"
           href="#"
@@ -35,12 +35,12 @@
           @click.prevent="onDeleteComment(comment.id)"
           >삭제</a
         >
-        <a href="#" class="me-2" @click.prevent="onReply(comment)">댓글</a>
+        <a href="#" class="me-2" @click.prevent="onReply(comment)">댓글({{ comment.replyCount }})</a>
         <HeartIcon :commentId="comment.id" />
       </div>
     </li>
     <!-- 대댓글 UI -->
-    <ReplyList v-if="isReply(comment.id)" :commentId="comment.id" />
+    <ReplyList v-if="isReply(comment.id)" :commentId="comment.id" @update-reply-count="updateReplyCount(index, $event)" />
     <hr />
   </div>
   <!-- 댓글 입력 폼 -->
@@ -69,6 +69,11 @@ const editFlag = ref(0);
 const replyFlag = ref(0);
 const noticeId = route.params.id;
 const hostUrl = 'http://localhost:8080';
+
+// 대댓글 개수 업데이트 함수
+const updateReplyCount = (index, replyCount) => {
+  comments.value[index].replyCount = replyCount;
+};
 
 const saveComment = async (data) => {
   try {

@@ -62,6 +62,7 @@ const props = defineProps({
     type: String,
   },
 });
+const emit = defineEmits(['update-reply-count']);
 
 const storage = useStorageStore();
 const replies = ref([]);
@@ -72,6 +73,7 @@ const fetchReplis = async () => {
   try {
     const { data } = await getRepliesByComment(props.commentId);
     replies.value = data;
+    emit('update-reply-count', replies.value.length); 
     console.log(replies.value);
   } catch (e) {
     console.error(e);
