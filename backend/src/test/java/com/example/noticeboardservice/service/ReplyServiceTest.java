@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -141,7 +140,30 @@ class ReplyServiceTest {
 
         // then
         assertThat(replyMapper.findAllReplies().size()).isEqualTo(0);
+    }
 
+    @Test
+    @DisplayName("댓글에 달린 대댓글 수를 계산한다.")
+    void calculateReplyCount() {
+        // given
+        Long memberId = getMemberId("limnj@test.com");
+        Long commentId = getCommentId("상위 댓글 입니다.", memberId);
+        final long REPLY_NUMBER = 5;
+
+        for (int i = 0; i < REPLY_NUMBER; i++) {
+            ReplyRequestDto requestDto = ReplyRequestDto.builder()
+                    .content("댓글의 하위 댓글입니다.")
+                    .memberId(memberId)
+                    .commentId(commentId)
+                    .build();
+            replyServiceImpl.insertReply(requestDto);
+        }
+
+        // when
+        Long replyCount = replyServiceImpl.calculateRepliesByCommentId(commentId);
+
+        // then
+        assertThat(replyCount).isEqualTo(REPLY_NUMBER);
     }
 
     private Long getMemberId(String email){
