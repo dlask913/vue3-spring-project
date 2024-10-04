@@ -64,7 +64,7 @@ const isEditable = computed(() => {
 });
 
 const moveToPage = () => {
-  router.push('/post/' + noticeId);
+  router.push('/post-edit/' + noticeId);
 };
 
 const onDelete = async () => {

@@ -5,7 +5,7 @@ import LoginForm from '@/components/member/LoginForm.vue';
 import NoticeList from '@/components/notice/NoticeList.vue';
 import NoticeForm from '@/components/notice/NoticeForm.vue';
 import NoticeDetails from '@/components/notice/NoticeDetails.vue';
-import Notice from '@/components/notice/Notice.vue';
+import NoticeEdit from '@/components/notice/NoticeEdit.vue';
 import MyPage from '@/components/member/MyPage.vue';
 
 const router = createRouter({
@@ -42,9 +42,9 @@ const router = createRouter({
       component: NoticeDetails,
     },
     {
-      path: '/post/:id',
-      name: 'Notice',
-      component: Notice,
+      path: '/post-edit/:id',
+      name: 'NoticeEdit',
+      component: NoticeEdit,
     },
     {
       path: '/my-page',
