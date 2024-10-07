@@ -70,4 +70,17 @@ CREATE TABLE Replies (
     FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE
 );
 
+CREATE TABLE Products (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title TEXT NOT NULL, 
+	content TEXT NOT NULL,
+    standard_price BIGINT NOT NULL DEFAULT 0,
+    auction_price BIGINT,
+    client_email TEXT,
+	post_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+	update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	owner_id BIGINT,
+	FOREIGN KEY (owner_id) REFERENCES Members(id) ON DELETE CASCADE
+);
+
 ```
