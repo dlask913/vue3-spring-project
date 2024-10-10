@@ -4,9 +4,7 @@ public record ProductResponseDto (
         Long id,
         String title,
         String content,
-        int standardPrice,
-        int auctionPrice,
-        String customerEmail,
+        Integer standardPrice,
         Long ownerId
 ){
 }

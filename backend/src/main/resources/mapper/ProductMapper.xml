@@ -1,0 +1,49 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.noticeboardservice.mapper.ProductMapper">
+    <!-- 상품 등록 -->
+    <insert id="insertProduct" parameterType="ProductRequestDto">
+        INSERT INTO Products (title, content, standard_price, owner_id)
+        VALUES (#{title}, #{content}, #{standardPrice}, #{ownerId})
+    </insert>
+
+    <!-- 상품 단일 조회 -->
+    <select id="findProduct" resultMap="ProductResponseDtoMap" parameterType="long">
+        SELECT id, title, content, standard_price, owner_id
+        FROM Products
+        WHERE id = #{id}
+    </select>
+
+    <!-- 상품 설명 수정 -->
+    <update id="updateProduct" parameterType="ProductRequestDto">
+        UPDATE Products
+        SET title = #{title}, content = #{content}, standard_price = #{standardPrice}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 상품 삭제 -->
+    <delete id="deleteProduct" parameterType="long">
+        DELETE FROM Products
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 모든 상품들 삭제 -->
+    <delete id="deleteAll">
+        DELETE FROM Products
+    </delete>
+
+    <select id="findAllProducts" resultMap="ProductResponseDtoMap">
+        SELECT id, title, content, standard_price, owner_id
+        FROM Products
+    </select>
+
+    <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
+    <resultMap id="ProductResponseDtoMap" type="com.example.noticeboardservice.dto.ProductResponseDto">
+        <constructor>
+            <arg column="id" javaType="java.lang.Long"/>
+            <arg column="title" javaType="java.lang.String"/>
+            <arg column="content" javaType="java.lang.String"/>
+            <arg column="standard_price" javaType="java.lang.Integer"/>
+            <arg column="owner_id" javaType="java.lang.Long"/>
+        </constructor>
+    </resultMap>
+</mapper>
