@@ -1,0 +1,13 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.noticeboardservice.mapper.ProductBidHistoryMapper">
+    <!-- 가격 등록 -->
+    <insert id="addBidHistory" parameterType="ProductBidDto">
+        INSERT INTO Bid_History (bid_price, client_email, product_id)
+        VALUES (#{bidPrice}, #{clientEmail}, #{productId})
+    </insert>
+
+    <!-- 모든 입찰 히스토리 삭제 ( 테스트용 ) -->
+    <delete id="deleteAll">
+        DELETE FROM Bid_History
+    </delete>
+</mapper>
