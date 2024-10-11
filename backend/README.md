@@ -83,4 +83,13 @@ CREATE TABLE Products (
 	FOREIGN KEY (owner_id) REFERENCES Members(id) ON DELETE CASCADE
 );
 
+CREATE TABLE Bid_History (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    bid_price INT,
+    client_email VARCHAR(255),
+    product_id BIGINT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES Products(id)
+);
+
 ```
