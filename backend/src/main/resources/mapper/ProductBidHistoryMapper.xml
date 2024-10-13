@@ -6,8 +6,14 @@
         VALUES (#{bidPrice}, #{clientEmail}, #{productId})
     </insert>
 
-    <!-- 모든 입찰 히스토리 삭제 ( 테스트용 ) -->
+    <!-- 모든 가격 히스토리 삭제 ( 테스트용 ) -->
     <delete id="deleteAll">
         DELETE FROM Bid_History
     </delete>
+
+    <!-- 모든 가격 히스토리 조회 ( 테스트용 ) -->
+    <select id="findAllBidHistories" resultType="ProductBidDto">
+        SELECT id, bid_price, client_email, product_id
+        FROM Bid_History
+    </select>
 </mapper>
