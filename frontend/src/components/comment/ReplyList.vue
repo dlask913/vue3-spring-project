@@ -9,7 +9,11 @@
       >
         <div>
           <div class="comment-header">
-            <img :src="hostUrl + reply.memberImgUrl" alt="Profile Picture" class="profile-picture" />
+            <img
+              :src="hostUrl + reply.memberImgUrl"
+              alt="Profile Picture"
+              class="profile-picture"
+            />
             <div class="fw-bold mt-1 mb-2">{{ reply.username }}</div>
           </div>
           <textarea
@@ -73,7 +77,7 @@ const fetchReplis = async () => {
   try {
     const { data } = await getRepliesByComment(props.commentId);
     replies.value = data;
-    emit('update-reply-count', replies.value.length); 
+    emit('update-reply-count', replies.value.length);
     console.log(replies.value);
   } catch (e) {
     console.error(e);

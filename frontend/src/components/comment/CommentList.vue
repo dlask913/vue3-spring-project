@@ -6,7 +6,11 @@
     >
       <div class="container" style="width: 80%">
         <div class="comment-header mt-2">
-          <img :src="hostUrl + comment.memberImgUrl" alt="Profile Picture" class="profile-picture" />
+          <img
+            :src="hostUrl + comment.memberImgUrl"
+            alt="Profile Picture"
+            class="profile-picture"
+          />
           <div class="fw-bold">{{ comment.username }}</div>
         </div>
 
@@ -20,7 +24,7 @@
         <p class="fw-lighter mt-2">{{ comment.postDate }}</p>
       </div>
 
-      <div class="d-flex justify-content-end mt-2" style="min-width: 150px;">
+      <div class="d-flex justify-content-end mt-2" style="min-width: 150px">
         <a
           v-if="isMine(comment.memberId)"
           href="#"
@@ -35,12 +39,18 @@
           @click.prevent="onDeleteComment(comment.id)"
           >삭제</a
         >
-        <a href="#" class="me-2" @click.prevent="onReply(comment)">댓글({{ comment.replyCount }})</a>
+        <a href="#" class="me-2" @click.prevent="onReply(comment)"
+          >댓글({{ comment.replyCount }})</a
+        >
         <HeartIcon :commentId="comment.id" />
       </div>
     </li>
     <!-- 대댓글 UI -->
-    <ReplyList v-if="isReply(comment.id)" :commentId="comment.id" @update-reply-count="updateReplyCount(index, $event)" />
+    <ReplyList
+      v-if="isReply(comment.id)"
+      :commentId="comment.id"
+      @update-reply-count="updateReplyCount(index, $event)"
+    />
     <hr />
   </div>
   <!-- 댓글 입력 폼 -->
