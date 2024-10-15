@@ -7,6 +7,8 @@ import NoticeForm from '@/components/notice/NoticeForm.vue';
 import NoticeDetails from '@/components/notice/NoticeDetails.vue';
 import NoticeEdit from '@/components/notice/NoticeEdit.vue';
 import MyPage from '@/components/member/MyPage.vue';
+import ProductForm from '@/components/product/ProductForm.vue';
+import ProductList from '@/components/product/ProductList.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -50,6 +52,16 @@ const router = createRouter({
       path: '/my-page',
       name: 'MyPage',
       component: MyPage,
+    },
+    {
+      path: '/product/new',
+      name: 'ProductForm',
+      component: ProductForm,
+    },
+    {
+      path: '/product',
+      name: 'ProductList',
+      component: ProductList,
     },
   ],
   scrollBehavior(to, from, savedPosition) {

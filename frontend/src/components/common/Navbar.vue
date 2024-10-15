@@ -18,6 +18,16 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
+            <router-link class="nav-link" :to="{ name: 'ProductList' }"
+              >상품 보기</router-link
+            >
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{ name: 'ProductForm' }"
+              >상품 등록</router-link
+            >
+          </li>
+          <li class="nav-item">
             <router-link class="nav-link" :to="{ name: 'NoticeList' }"
               >게시판</router-link
             >
