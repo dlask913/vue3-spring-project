@@ -2,13 +2,13 @@
 <mapper namespace="com.example.noticeboardservice.mapper.ProductMapper">
     <!-- 상품 등록 -->
     <insert id="insertProduct" parameterType="ProductRequestDto">
-        INSERT INTO Products (title, content, standard_price, owner_id)
-        VALUES (#{title}, #{content}, #{standardPrice}, #{ownerId})
+        INSERT INTO Products (title, content, category, standard_price, owner_id)
+        VALUES (#{title}, #{content}, #{category}, #{standardPrice}, #{ownerId})
     </insert>
 
     <!-- 상품 단일 조회 -->
     <select id="findProduct" resultMap="ProductResponseDtoMap" parameterType="long">
-        SELECT id, title, content, standard_price, owner_id
+        SELECT id, title, content, category, standard_price, owner_id
         FROM Products
         WHERE id = #{id}
     </select>
@@ -32,7 +32,7 @@
     </delete>
 
     <select id="findAllProducts" resultMap="ProductResponseDtoMap">
-        SELECT id, title, content, standard_price, owner_id
+        SELECT id, title, content, category, standard_price, owner_id
         FROM Products
     </select>
 
@@ -42,6 +42,7 @@
             <arg column="id" javaType="java.lang.Long"/>
             <arg column="title" javaType="java.lang.String"/>
             <arg column="content" javaType="java.lang.String"/>
+            <arg column="category" javaType="java.lang.String"/>
             <arg column="standard_price" javaType="java.lang.Integer"/>
             <arg column="owner_id" javaType="java.lang.Long"/>
         </constructor>
