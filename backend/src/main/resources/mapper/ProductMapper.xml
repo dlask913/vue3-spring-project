@@ -4,6 +4,10 @@
     <insert id="insertProduct" parameterType="ProductRequestDto">
         INSERT INTO Products (title, content, category, standard_price, owner_id)
         VALUES (#{title}, #{content}, #{category}, #{standardPrice}, #{ownerId})
+
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 
     <!-- 상품 단일 조회 -->

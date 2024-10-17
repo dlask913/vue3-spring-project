@@ -40,7 +40,7 @@ class ProductServiceTest {
         ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
 
         // when
-        productServiceImpl.insertProduct(requestDto);
+        productServiceImpl.insertProduct(requestDto, null);
 
         // then
         ProductResponseDto findProduct = productMapper.findAllProducts().get(0);
@@ -56,7 +56,7 @@ class ProductServiceTest {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
         ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
-        productServiceImpl.insertProduct(requestDto);
+        productServiceImpl.insertProduct(requestDto, null);
 
         Long productId = productMapper.findAllProducts().get(0).id();
         ProductRequestDto updateDto = createProductRequestDto(
@@ -79,7 +79,7 @@ class ProductServiceTest {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
         ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
-        productServiceImpl.insertProduct(requestDto);
+        productServiceImpl.insertProduct(requestDto, null);
 
         Long productId = productMapper.findAllProducts().get(0).id();
 
@@ -96,7 +96,7 @@ class ProductServiceTest {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
         ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
-        productServiceImpl.insertProduct(requestDto);
+        productServiceImpl.insertProduct(requestDto, null);
 
         Long productId = productMapper.findAllProducts().get(0).id();
 

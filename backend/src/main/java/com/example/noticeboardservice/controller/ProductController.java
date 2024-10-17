@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,8 +17,9 @@ public class ProductController {
 
     @PostMapping("/product")
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "상품 등록 API")
-    private ResponseEntity<String> createProduct(@RequestBody ProductRequestDto productDto){
-        int result = productServiceImpl.insertProduct(productDto);
+    private ResponseEntity<String> createProduct(@RequestPart("productDto") ProductRequestDto productDto,
+                                                 @RequestPart(value = "productImg", required = false) MultipartFile productImg){
+        Long result = productServiceImpl.insertProduct(productDto, productImg);
         if (result <= 0){
             return ResponseEntity.badRequest().body("상품 등록에 실패하였습니다.");
         }

@@ -1,21 +1,35 @@
 package com.example.noticeboardservice.service;
 
+import com.example.noticeboardservice.dto.ImageRequestDto;
+import com.example.noticeboardservice.dto.ImageType;
 import com.example.noticeboardservice.dto.ProductRequestDto;
 import com.example.noticeboardservice.dto.ProductResponseDto;
 import com.example.noticeboardservice.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
+    private final ImageService imageServiceImpl;
+
+    @Value("${productImgLocation}")
+    private String productImgLocation;
 
     @Override
-    public int insertProduct(ProductRequestDto productRequestDto) {
-        return productMapper.insertProduct(productRequestDto);
+    public Long insertProduct(ProductRequestDto productRequestDto, MultipartFile productImg) {
+        productMapper.insertProduct(productRequestDto);
+        ImageRequestDto imageRequestDto = ImageRequestDto.builder()
+                .typeId(productRequestDto.getId())
+                .imageType(ImageType.PRODUCT)
+                .build();
+        imageServiceImpl.saveImage(imageRequestDto, productImg, productImgLocation);
+        return productRequestDto.getId();
     }
 
     @Override

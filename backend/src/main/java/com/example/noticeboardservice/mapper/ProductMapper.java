@@ -8,7 +8,7 @@ import java.util.List;
 
 @Mapper
 public interface ProductMapper {
-    int insertProduct(ProductRequestDto productRequestDto);
+    void insertProduct(ProductRequestDto productRequestDto);
     int updateProduct(ProductRequestDto productRequestDto);
     int deleteProduct(Long productId);
     ProductResponseDto findProduct(Long productId);
