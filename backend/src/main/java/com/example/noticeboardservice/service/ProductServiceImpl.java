@@ -24,11 +24,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Long insertProduct(ProductRequestDto productRequestDto, MultipartFile productImg) {
         productMapper.insertProduct(productRequestDto);
-        ImageRequestDto imageRequestDto = ImageRequestDto.builder()
-                .typeId(productRequestDto.getId())
-                .imageType(ImageType.PRODUCT)
-                .build();
-        imageServiceImpl.saveImage(imageRequestDto, productImg, productImgLocation);
+        if (productImg != null){
+            ImageRequestDto imageRequestDto = ImageRequestDto.builder()
+                    .typeId(productRequestDto.getId())
+                    .imageType(ImageType.PRODUCT)
+                    .build();
+            imageServiceImpl.saveImage(imageRequestDto, productImg, productImgLocation);
+        }
         return productRequestDto.getId();
     }
 

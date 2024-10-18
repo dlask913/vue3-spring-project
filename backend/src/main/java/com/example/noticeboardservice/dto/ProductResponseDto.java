@@ -6,6 +6,7 @@ public record ProductResponseDto (
         String content,
         String category,
         Integer standardPrice,
+        String imgUrl,
         Long ownerId
 ){
 }

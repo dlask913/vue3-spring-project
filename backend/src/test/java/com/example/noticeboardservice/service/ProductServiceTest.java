@@ -1,9 +1,6 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.MemberRequestDto;
-import com.example.noticeboardservice.dto.MemberResponseDto;
-import com.example.noticeboardservice.dto.ProductRequestDto;
-import com.example.noticeboardservice.dto.ProductResponseDto;
+import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.ProductMapper;
 import org.assertj.core.api.Assertions;
@@ -12,6 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
 
@@ -33,8 +32,8 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("판매할 상품을 등록한다.")
-    void insertProduct() {
+    @DisplayName("판매할 상품을 이미지 없이 등록한다.")
+    void insertProductWithoutImageTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
         ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
@@ -44,15 +43,42 @@ class ProductServiceTest {
 
         // then
         ProductResponseDto findProduct = productMapper.findAllProducts().get(0);
+
         Assertions.assertThat(findProduct.title()).isEqualTo(requestDto.getTitle());
         Assertions.assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
         Assertions.assertThat(findProduct.standardPrice()).isEqualTo(requestDto.getStandardPrice());
         Assertions.assertThat(findProduct.ownerId()).isEqualTo(requestDto.getOwnerId());
+        Assertions.assertThat(findProduct.imgUrl()).isEqualTo("/image/productDefaultImg.jpg");
+    }
+
+    @Test
+    @DisplayName("판매할 상품을 이미지와 함께 등록한다.")
+    void insertProductWithImageTest() {
+        // given
+        MemberResponseDto member = getMember("limnj@test.com");
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
+        MockMultipartFile productImg = new MockMultipartFile(
+                "상품 이미지",
+                "productImg.jpg",
+                String.valueOf(MediaType.IMAGE_JPEG),
+                "productImg!".getBytes()
+        );
+
+        // when
+        productServiceImpl.insertProduct(requestDto, productImg);
+
+        // then
+        ProductResponseDto findProduct = productMapper.findAllProducts().get(0);
+        Assertions.assertThat(findProduct.title()).isEqualTo(requestDto.getTitle());
+        Assertions.assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
+        Assertions.assertThat(findProduct.standardPrice()).isEqualTo(requestDto.getStandardPrice());
+        Assertions.assertThat(findProduct.ownerId()).isEqualTo(requestDto.getOwnerId());
+        Assertions.assertThat(findProduct.imgUrl()).startsWith("/images/product/");
     }
 
     @Test
     @DisplayName("판매할 상품의 제목, 내용, 가격을 수정한다.")
-    void updateProduct() {
+    void updateProductTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
         ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
@@ -115,6 +141,7 @@ class ProductServiceTest {
                 .id(productId)
                 .title(title)
                 .content(content)
+                .category(Category.BOOKS_MEDIA)
                 .standardPrice(price)
                 .ownerId(memberId)
                 .build();

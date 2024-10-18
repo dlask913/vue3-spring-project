@@ -12,9 +12,17 @@
 
     <!-- 상품 단일 조회 -->
     <select id="findProduct" resultMap="ProductResponseDtoMap" parameterType="long">
-        SELECT id, title, content, category, standard_price, owner_id
+        WITH ProductImg AS (
+            SELECT *
+            FROM images
+            WHERE image_type = 'PRODUCT'
+        )
+
+        SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
+            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url
         FROM Products
-        WHERE id = #{id}
+            LEFT JOIN ProductImg B ON A.id = B.type_id
+        WHERE A.id = #{id}
     </select>
 
     <!-- 상품 설명 수정 -->
@@ -36,8 +44,16 @@
     </delete>
 
     <select id="findAllProducts" resultMap="ProductResponseDtoMap">
-        SELECT id, title, content, category, standard_price, owner_id
-        FROM Products
+        WITH ProductImg AS (
+            SELECT *
+            FROM images
+            WHERE image_type = 'PRODUCT'
+        )
+
+        SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
+            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url
+        FROM Products A
+            LEFT JOIN ProductImg B ON A.id = B.type_id
     </select>
 
     <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
@@ -48,6 +64,7 @@
             <arg column="content" javaType="java.lang.String"/>
             <arg column="category" javaType="java.lang.String"/>
             <arg column="standard_price" javaType="java.lang.Integer"/>
+            <arg column="img_url" javaType="java.lang.String"/>
             <arg column="owner_id" javaType="java.lang.Long"/>
         </constructor>
     </resultMap>
