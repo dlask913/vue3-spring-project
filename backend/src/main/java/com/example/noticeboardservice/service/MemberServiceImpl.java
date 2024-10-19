@@ -30,18 +30,18 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        MemberResponseDto memberRsponseDto = findByEmail(loginRequestDto.getEmail())
+        MemberResponseDto memberResponseDto = findByEmail(loginRequestDto.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
 
-        if (!(memberRsponseDto.email().equals(loginRequestDto.getEmail())
-                && memberRsponseDto.password().equals(loginRequestDto.getPassword()))) {
+        if (!(memberResponseDto.email().equals(loginRequestDto.getEmail())
+                && memberResponseDto.password().equals(loginRequestDto.getPassword()))) {
             throw new PasswordMismatchException();
         }
 
-        String token = jwtTokenUtil.generateToken(memberRsponseDto.email());
+        String token = jwtTokenUtil.generateToken(memberResponseDto.email());
 
         return LoginResponseDto.builder()
-                .memberId(memberRsponseDto.id())
+                .memberId(memberResponseDto.id())
                 .token(token)
                 .build();
     }

@@ -20,7 +20,7 @@
 
         SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
             COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url
-        FROM Products
+        FROM Products A
             LEFT JOIN ProductImg B ON A.id = B.type_id
         WHERE A.id = #{id}
     </select>
