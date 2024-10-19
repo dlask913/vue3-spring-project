@@ -19,7 +19,7 @@
         )
 
         SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
-            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url
+            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date
         FROM Products A
             LEFT JOIN ProductImg B ON A.id = B.type_id
         WHERE A.id = #{id}
@@ -51,7 +51,7 @@
         )
 
         SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
-            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url
+            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date
         FROM Products A
             LEFT JOIN ProductImg B ON A.id = B.type_id
     </select>
@@ -66,6 +66,7 @@
             <arg column="standard_price" javaType="java.lang.Integer"/>
             <arg column="img_url" javaType="java.lang.String"/>
             <arg column="owner_id" javaType="java.lang.Long"/>
+            <arg column="post_date" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
 </mapper>
