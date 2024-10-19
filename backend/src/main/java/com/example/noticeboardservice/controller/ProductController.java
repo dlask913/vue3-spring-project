@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class ProductController {
@@ -51,5 +53,12 @@ public class ProductController {
             return ResponseEntity.badRequest().body("삭제 실패하였습니다.");
         }
         return ResponseEntity.ok().body("삭제 완료되었습니다.");
+    }
+
+    @GetMapping("/products")
+    @Operation(summary = "모든 등록된 상품 조회 API")
+    private ResponseEntity<List<ProductResponseDto>> findAllProducts(){
+        List<ProductResponseDto> products = productServiceImpl.findAllProducts();
+        return ResponseEntity.ok().body(products);
     }
 }

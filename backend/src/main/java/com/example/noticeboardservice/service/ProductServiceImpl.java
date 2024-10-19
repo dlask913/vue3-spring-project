@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -47,5 +49,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto findProduct(Long productId) {
         return productMapper.findProduct(productId);
+    }
+
+    @Override
+    public List<ProductResponseDto> findAllProducts() {
+        return productMapper.findAllProducts();
     }
 }

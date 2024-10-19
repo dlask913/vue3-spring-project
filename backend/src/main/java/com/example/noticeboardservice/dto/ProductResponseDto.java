@@ -7,6 +7,7 @@ public record ProductResponseDto (
         String category,
         Integer standardPrice,
         String imgUrl,
-        Long ownerId
+        Long ownerId,
+        String postDate
 ){
 }
