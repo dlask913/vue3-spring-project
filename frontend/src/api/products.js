@@ -33,3 +33,7 @@ export function deleteProduct(token, productId) {
     headers: { Authorization: token },
   });
 }
+
+export function getCategories() {
+  return axios.get('/categories');
+}
