@@ -1,5 +1,6 @@
 package com.example.noticeboardservice.controller;
 
+import com.example.noticeboardservice.dto.Category;
 import com.example.noticeboardservice.dto.ProductRequestDto;
 import com.example.noticeboardservice.dto.ProductResponseDto;
 import com.example.noticeboardservice.service.ProductService;
@@ -60,5 +61,11 @@ public class ProductController {
     private ResponseEntity<List<ProductResponseDto>> findAllProducts(){
         List<ProductResponseDto> products = productServiceImpl.findAllProducts();
         return ResponseEntity.ok().body(products);
+    }
+
+    @GetMapping("/categories")
+    @Operation(summary = "카테고리 모든 값 조회 API")
+    public ResponseEntity<?> getCategories() {
+        return ResponseEntity.ok().body(Category.values());
     }
 }

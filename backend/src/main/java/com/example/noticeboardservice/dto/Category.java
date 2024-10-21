@@ -1,8 +1,9 @@
 package com.example.noticeboardservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
-@Getter
 public enum Category {
     ELECTRONICS("전자제품"),
     FASHION("패션/의류"),
@@ -14,5 +15,20 @@ public enum Category {
 
     Category(String description) {
         this.description = description;
+    }
+
+    @JsonCreator // 역 직렬화
+    public static Category toCategory(String value) {
+        for (Category category : Category.values()) {
+            if (category.getValue().equals(value)) {
+                return category;
+            }
+        }
+        return null;
+    }
+
+    @JsonValue // 직렬화
+    public String getValue() {
+        return description;
     }
 }
