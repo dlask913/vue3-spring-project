@@ -3,8 +3,9 @@
     <div class="row">
       <div class="col-md-4 text-center">
         <ImageUploader
-          v-if="productDefaultImgUrl"
-          :imageUrl="productDefaultImgUrl"
+          v-if="form.imgUrl"
+          :imageUrl="form.imgUrl"
+          @file-changed="fetchProductImg"
         />
         <h4 class="text-muted">username</h4>
       </div>
@@ -34,24 +35,33 @@
               class="form-control"
               id="standardPrice"
             />
+            <div v-if="valueError" class="text-red">
+              {{ valueError.standardPrice }}
+            </div>
           </div>
           <div class="mb-3">
-            <label for="phone" class="form-label">제목</label>
+            <label for="title" class="form-label">제목</label>
             <input
               v-model="form.title"
               type="text"
               class="form-control"
               id="title"
             />
+            <div v-if="valueError" class="text-red">
+              {{ valueError.title }}
+            </div>
           </div>
           <div class="mb-3">
-            <label for="address" class="form-label">내용</label>
+            <label for="content" class="form-label">내용</label>
             <textarea
               v-model="form.content"
               type="text"
               class="form-control"
               id="content"
             ></textarea>
+            <div v-if="valueError" class="text-red">
+              {{ valueError.content }}
+            </div>
           </div>
           <button type="submit" class="btn btn-primary">Save</button>
         </form>
@@ -76,13 +86,31 @@ const form = ref({
   content: '',
   category: '',
   standardPrice: 0,
+  imgUrl: 'http://localhost:8080/image/productDefaultImg.jpg',
 });
-const productImg = ref(null);
+const productImg = ref('');
 const categories = ref([]);
-const productDefaultImgUrl =
-  'http://localhost:8080/image/productDefaultImg.jpg';
+const valueError = ref({});
 
 const onSaveProduct = async () => {
+  const requiredFields = ['standardPrice', 'title', 'content'];
+  const fieldDesc = {
+    standardPrice: '가격은 필수 값입니다.',
+    title: '상품 이름은 필수 값입니다.',
+    content: '상품 설명은 필수 값입니다.',
+  };
+  const hasError = ref(false);
+  requiredFields.forEach((field) => {
+    if (!form.value[field]) {
+      valueError.value[field] = `${fieldDesc[field]}`;
+      hasError.value = true;
+    }
+  });
+
+  if (hasError.value) {
+    return;
+  }
+
   try {
     const data = {
       ...form.value,
@@ -106,7 +134,17 @@ const fetchCategories = async () => {
   }
 };
 
+const fetchProductImg = (file) => {
+  productImg.value = file;
+};
+
 fetchCategories();
 </script>
 
-<style scoped></style>
+<style scoped>
+.text-red {
+  color: red;
+  font-size: 14px;
+  margin-top: 2px;
+}
+</style>
