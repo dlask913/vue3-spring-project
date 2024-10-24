@@ -1,0 +1,14 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.noticeboardservice.mapper.CategoryMapper">
+    <!-- 카테고리 생성 -->
+    <insert id="insertCategory" parameterType="CategoryDto">
+        INSERT INTO Categories (name, description)
+        VALUES (#{name}, #{description})
+    </insert>
+
+    <!-- 카테고리 삭제 -->
+    <delete id="deleteCategory" parameterType="long">
+        DELETE FROM Categories
+        WHERE id = #{id}
+    </delete>
+</mapper>
