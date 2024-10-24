@@ -91,4 +91,10 @@ CREATE TABLE Bid_History (
     FOREIGN KEY (product_id) REFERENCES Products(id)
 );
 
+CREATE TABLE Categories (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL, 
+    description VARCHAR(50) NOT NULL
+);
+
 ```
