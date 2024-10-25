@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,8 +16,9 @@ public class CategoryController {
 
     @PostMapping("/category")
     @Operation(summary = "카테고리 생성 API")
-    public ResponseEntity<String> saveCategory(@RequestBody CategoryDto categoryDto) {
-        int result = categoryServiceImpl.insertCategory(categoryDto);
+    public ResponseEntity<String> saveCategory(@RequestPart("categoryDto") CategoryDto categoryDto,
+                                               @RequestPart(value = "categoryImg", required = true) MultipartFile categoryImg) {
+        int result = categoryServiceImpl.insertCategory(categoryDto, categoryImg);
         if (result <= 0) {
             return ResponseEntity.badRequest().body("카테고리 생성에 실패하였습니다.");
         }

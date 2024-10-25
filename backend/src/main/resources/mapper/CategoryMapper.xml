@@ -4,6 +4,10 @@
     <insert id="insertCategory" parameterType="CategoryDto">
         INSERT INTO Categories (name, description)
         VALUES (#{name}, #{description})
+
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 
     <!-- 카테고리 삭제 -->

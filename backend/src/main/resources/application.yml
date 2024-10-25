@@ -22,6 +22,7 @@ uploadPath: file:///C:/images/
 defaultImgPath: classpath:/static/default-image/
 memberImgLocation: C:/images/member
 productImgLocation: C:/images/product
+categoryImgLocation: C:/images/category
 
 ---
 spring:
