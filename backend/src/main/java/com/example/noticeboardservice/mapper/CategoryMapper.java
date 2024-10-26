@@ -6,5 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface CategoryMapper {
     int insertCategory(CategoryDto categoryDto);
-    int deleteCategory(Long id);
+    int deleteCategory(Long categoryId);
+    void deleteAll();
+    CategoryDto findByCategoryId(Long categoryId);
 }

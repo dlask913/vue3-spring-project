@@ -15,4 +15,16 @@
         DELETE FROM Categories
         WHERE id = #{id}
     </delete>
+
+    <!-- 카테고리 모두 삭제 -->
+    <delete id="deleteAll">
+        DELETE FROM Categories
+    </delete>
+
+    <!-- 카테고리 단일 조회 -->
+    <select id="findByCategoryId" parameterType="long" resultType="CategoryDto">
+        SELECT id, name, description
+        FROM Categories
+        WHERE id = #{id}
+    </select>
 </mapper>
