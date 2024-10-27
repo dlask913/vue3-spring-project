@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service @Transactional
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService{
@@ -37,5 +39,10 @@ public class CategoryServiceImpl implements CategoryService{
                 .ifPresent(imageDto -> imageServiceImpl.deleteImage(
                         imageDto.id(), categoryImgLocation, imageDto.imgName()));
         return categoryMapper.deleteCategory(categoryId);
+    }
+
+    @Override
+    public List<CategoryDto> findAllCategories() {
+        return categoryMapper.findAllCategories();
     }
 }

@@ -13,6 +13,7 @@ public class CategoryDto {
     private Long id;
     private String name;
     private String description;
+    private String imgUrl;
 
     @Builder
     public CategoryDto(String name, String description) {

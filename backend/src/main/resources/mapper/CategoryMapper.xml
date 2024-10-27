@@ -27,4 +27,17 @@
         FROM Categories
         WHERE id = #{id}
     </select>
+
+    <!-- 카테고리 모두 조회 -->
+    <select id="findAllCategories" resultType="CategoryDto">
+        WITH CategoryImg AS (
+            SELECT *
+            FROM images
+            WHERE image_type = 'CATEGORY'
+        )
+
+        SELECT A.id, A.name, A.description. B.img_url
+        FROM Categories A
+            LEFT JOIN CategoryImg B ON A.id = B.type_id
+    </select>
 </mapper>
