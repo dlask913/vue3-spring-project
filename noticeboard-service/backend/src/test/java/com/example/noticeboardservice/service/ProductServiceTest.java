@@ -141,7 +141,7 @@ class ProductServiceTest {
                 .id(productId)
                 .title(title)
                 .content(content)
-                .category(Category.BOOKS_MEDIA)
+                .category("category")
                 .standardPrice(price)
                 .ownerId(memberId)
                 .build();

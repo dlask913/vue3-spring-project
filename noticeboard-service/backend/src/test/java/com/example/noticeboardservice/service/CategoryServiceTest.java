@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -51,7 +53,7 @@ class CategoryServiceTest {
 
     @Test
     @DisplayName("카테고리를 삭제한다.")
-    void deleteCategory() {
+    void deleteCategoryTest() {
         // given
         CategoryDto requestDto = CategoryDto.builder()
                 .name("FURNITURE")
@@ -70,5 +72,29 @@ class CategoryServiceTest {
 
         // then
         assertThat(categoryMapper.findByCategoryId(requestDto.getId())).isNull();
+    }
+
+    @Test
+    @DisplayName("등록된 카테고리를 모두 조회한다.")
+    void findAllCategoriesTest(){
+        // given
+        for (int i = 0; i < 5; i++) {
+            CategoryDto requestDto = CategoryDto.builder()
+                    .name("CATEGORY"+i)
+                    .description("카테고리 설졍"+i)
+                    .build();
+            MockMultipartFile categoryImg = new MockMultipartFile(
+                    "카테고리 이미지",
+                    "categoryImg.jpg",
+                    String.valueOf(MediaType.IMAGE_JPEG),
+                    "categoryImg!".getBytes()
+            );
+            categoryServiceImpl.insertCategory(requestDto, categoryImg);
+        }
+
+        // when
+        List<CategoryDto> categories = categoryServiceImpl.findAllCategories();
+
+        // then
     }
 }

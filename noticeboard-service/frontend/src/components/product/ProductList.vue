@@ -1,6 +1,8 @@
 <template>
   <div class="container mt-5" style="width: 70%">
     <h1 class="mb-4">상품 리스트</h1>
+    <!-- 검색 기능 -->
+    <SearchBar :searchOptions="searchOptions" @handle-search="searchProducts" />
 
     <!-- 카테고리별 상품 보기 -->
     <div class="category-container">
@@ -35,12 +37,30 @@
       </div>
     </div>
   </div>
+  <!-- Pagination 추가 -->
+  <Pagination
+    :currentPage="params._page"
+    :pageCount="pageCount"
+    @page-changed="goToPage"
+  />
 </template>
 <script setup>
 import { getProducts } from '@/api/products';
 import { ref } from 'vue';
+import Pagination from '@/components/common/Pagination.vue';
+import SearchBar from '@/components/common/SearchBar.vue';
 
 const products = ref({});
+const searchOptions = ref([
+  { key: 'title', value: '제목' },
+  { key: 'username', value: '글쓴이' },
+]);
+const params = ref({
+  _sort: 'post_date',
+  _order: 'desc',
+  _page: 1,
+  _limit: 5,
+});
 
 const categories = [
         { name: '가구', image: 'http://localhost:8080/image/productDefaultImg.jpg' },
@@ -56,6 +76,9 @@ const fetchProducts = async () => {
   const { data } = await getProducts();
   products.value = data;
 };
+
+const searchProducts = async () => {};
+
 
 fetchProducts();
 </script>
