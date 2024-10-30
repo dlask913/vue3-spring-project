@@ -1,4 +1,4 @@
-package com.example.noticeboardservice.dto;
+package com.limnj.noticeboardadmin.category;
 
 import lombok.Builder;
 import lombok.Getter;
