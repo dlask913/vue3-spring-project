@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: noticeboard-admin
@@ -13,9 +16,14 @@ spring:
 # Mapper Xml Location
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.limnj.noticeboardadmin.category , com.limnj.noticeboardadmin.image
+  type-aliases-package: com.limnj.noticeboardadmin.category, com.limnj.noticeboardadmin.image
   configuration:
     map-underscore-to-camel-case: true
+
+# 이미지 경로 설정
+uploadPath: file:///C:/images/
+defaultImgPath: classpath:/static/default-image/
+categoryImgLocation: C:/images/category
 
 ---
 spring:
