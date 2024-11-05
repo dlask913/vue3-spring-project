@@ -1,7 +1,5 @@
-package com.example.noticeboardservice.service;
+package com.limnj.noticeboardadmin.category;
 
-import com.example.noticeboardservice.dto.CategoryDto;
-import com.example.noticeboardservice.mapper.CategoryMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class CategoryServiceTest {
 
     @Autowired
@@ -96,5 +96,7 @@ class CategoryServiceTest {
         List<CategoryDto> categories = categoryServiceImpl.findAllCategories();
 
         // then
+        assertThat(categories).isNotNull();
+        assertThat(categories).hasSize(5);
     }
 }
