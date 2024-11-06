@@ -7,7 +7,7 @@
     <!-- 카테고리별 상품 보기 -->
     <div class="category-container">
       <div class="category" v-for="category in categories" :key="category.name">
-        <img :src="category.image" :alt="category.name" class="category-image" />
+        <img :src="'http://localhost:8080' + category.imgUrl" :alt="category.name" class="category-image" />
         <p>{{ category.name }}</p>
       </div>
     </div>
@@ -45,7 +45,7 @@
   />
 </template>
 <script setup>
-import { getProducts } from '@/api/products';
+import { getProducts, getCategories } from '@/api/products';
 import { ref } from 'vue';
 import Pagination from '@/components/common/Pagination.vue';
 import SearchBar from '@/components/common/SearchBar.vue';
@@ -62,25 +62,27 @@ const params = ref({
   _limit: 5,
 });
 
-const categories = [
-        { name: '가구', image: 'http://localhost:8080/image/productDefaultImg.jpg' },
-        { name: '침구', image: 'http://localhost:8080/image/productDefaultImg.jpg' },
-        { name: '패브릭', image: 'http://localhost:8080/image/productDefaultImg.jpg' },
-        { name: '조명', image: 'http://localhost:8080/image/productDefaultImg.jpg' },
-        { name: '가구', image: 'http://localhost:8080/image/productDefaultImg.jpg' },
-        { name: '침구', image: 'http://localhost:8080/image/productDefaultImg.jpg' },
-        // 추가 카테고리들
-      ];
+const categories = ref([]);
 
 const fetchProducts = async () => {
   const { data } = await getProducts();
   products.value = data;
 };
 
+const fetchCategories = async () => {
+  try {
+    const { data } = await getCategories();
+    categories.value = data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const searchProducts = async () => {};
 
-
 fetchProducts();
+fetchCategories();
+
 </script>
 <style scoped>
 .card-img-top {

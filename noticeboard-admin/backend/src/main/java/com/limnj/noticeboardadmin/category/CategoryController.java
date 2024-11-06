@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class CategoryController {
@@ -32,5 +34,12 @@ public class CategoryController {
             return ResponseEntity.badRequest().body("카테고리 삭제에 실패하였습니다.");
         }
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/categories")
+    @Operation(summary = "모든 카테고리 조회 API")
+    public ResponseEntity<List<CategoryDto>> getCategories() {
+        List<CategoryDto> response = categoryServiceImpl.findAllCategories();
+        return ResponseEntity.ok().body(response);
     }
 }
