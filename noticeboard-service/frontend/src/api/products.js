@@ -14,8 +14,12 @@ export function createProduct(token, productDto, productImg) {
   });
 }
 
-export function getProducts() {
-  return axios.get('products');
+export function getProducts(option, value) {
+  return axios.get(`products?${option}=${value}`);
+}
+
+export function getProductsByKeyword(option, value, sort, order) {
+  return axios.get(`/products?${option}=${value}&sort=${sort}&order=${order}`);
 }
 
 export function getProductById(productId) {

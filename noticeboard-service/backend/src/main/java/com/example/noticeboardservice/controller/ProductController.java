@@ -1,6 +1,7 @@
 package com.example.noticeboardservice.controller;
 
 import com.example.noticeboardservice.dto.CategoryDto;
+import com.example.noticeboardservice.dto.NoticeResponseDto;
 import com.example.noticeboardservice.dto.ProductRequestDto;
 import com.example.noticeboardservice.dto.ProductResponseDto;
 import com.example.noticeboardservice.service.CategoryService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,9 +61,13 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    @Operation(summary = "모든 등록된 상품 조회 API")
-    private ResponseEntity<List<ProductResponseDto>> findAllProducts(){
-        List<ProductResponseDto> products = productServiceImpl.findAllProducts();
+    @Operation(summary = "상품 검색 및 모두 조회 API")
+    public ResponseEntity<List<ProductResponseDto>> searchNoticesByPage(
+            @RequestParam(value = "sort", defaultValue = "post_date") String sort,
+            @RequestParam(value = "order", defaultValue = "desc") String order,
+            @RequestParam Map<String, String> params
+    ) {
+        List<ProductResponseDto> products = productServiceImpl.searchProductsByKeyword(sort, order, params);
         return ResponseEntity.ok().body(products);
     }
 

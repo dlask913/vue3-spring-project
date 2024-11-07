@@ -7,7 +7,11 @@
     <!-- 카테고리별 상품 보기 -->
     <div class="category-container">
       <div class="category" v-for="category in categories" :key="category.name">
-        <img :src="'http://localhost:8080' + category.imgUrl" :alt="category.name" class="category-image" />
+        <img
+          :src="'http://localhost:8080' + category.imgUrl"
+          :alt="category.name"
+          class="category-image"
+        />
         <p>{{ category.name }}</p>
       </div>
     </div>
@@ -37,35 +41,32 @@
       </div>
     </div>
   </div>
-  <!-- Pagination 추가 -->
-  <Pagination
-    :currentPage="params._page"
-    :pageCount="pageCount"
-    @page-changed="goToPage"
-  />
 </template>
 <script setup>
-import { getProducts, getCategories } from '@/api/products';
+import {
+  getProducts,
+  getCategories,
+  getProductsByKeyword,
+} from '@/api/products';
 import { ref } from 'vue';
-import Pagination from '@/components/common/Pagination.vue';
 import SearchBar from '@/components/common/SearchBar.vue';
 
 const products = ref({});
 const searchOptions = ref([
   { key: 'title', value: '제목' },
-  { key: 'username', value: '글쓴이' },
+  { key: 'content', value: '내용' },
 ]);
+const searchValue = ref('');
+const selectedOption = ref('title');
 const params = ref({
   _sort: 'post_date',
   _order: 'desc',
-  _page: 1,
-  _limit: 5,
 });
 
 const categories = ref([]);
 
 const fetchProducts = async () => {
-  const { data } = await getProducts();
+  const { data } = await getProducts(selectedOption.value, searchValue.value);
   products.value = data;
 };
 
@@ -78,11 +79,24 @@ const fetchCategories = async () => {
   }
 };
 
-const searchProducts = async () => {};
+const searchProducts = async (option, value) => {
+  selectedOption.value = option;
+  searchValue.value = value;
+  try {
+    const { data } = await getProductsByKeyword(
+      selectedOption.value,
+      searchValue.value,
+      params.value._sort,
+      params.value._order
+    );
+    products.value = data;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 fetchProducts();
 fetchCategories();
-
 </script>
 <style scoped>
 .card-img-top {

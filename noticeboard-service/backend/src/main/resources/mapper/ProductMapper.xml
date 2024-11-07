@@ -56,6 +56,27 @@
             LEFT JOIN ProductImg B ON A.id = B.type_id
     </select>
 
+    <select id="searchProductsByKeyword" resultMap="ProductResponseDtoMap">
+        WITH ProductImg AS (
+            SELECT *
+            FROM images
+            WHERE image_type = 'PRODUCT'
+        )
+
+        SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
+            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date
+        FROM Products A
+            LEFT JOIN ProductImg B ON A.id = B.type_id
+        WHERE 1=1
+        <if test="params.title != null">
+            AND A.title LIKE CONCAT('%', #{params.title}, '%')
+        </if>
+        <if test="params.content != null">
+            AND A.content LIKE CONCAT('%', #{params.content}, '%')
+        </if>
+        ORDER BY A.${sortKey} ${order}
+    </select>
+
     <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
     <resultMap id="ProductResponseDtoMap" type="com.example.noticeboardservice.dto.ProductResponseDto">
         <constructor>

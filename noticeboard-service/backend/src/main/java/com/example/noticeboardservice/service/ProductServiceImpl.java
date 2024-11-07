@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -54,5 +55,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponseDto> findAllProducts() {
         return productMapper.findAllProducts();
+    }
+
+    @Override
+    public List<ProductResponseDto> searchProductsByKeyword(String sort, String order, Map<String, String> params) {
+        return productMapper.searchProductsByKeyword(sort, order, params);
     }
 }
