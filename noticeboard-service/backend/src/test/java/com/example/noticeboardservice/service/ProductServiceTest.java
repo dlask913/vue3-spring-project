@@ -13,6 +13,10 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 @SpringBootTest
 @ActiveProfiles(value = "test")
@@ -101,7 +105,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("등록한 상품을 삭제한다.")
-    void deleteProduct() {
+    void deleteProductTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
         ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
@@ -118,7 +122,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("특정 상품을 단일 조회한다.")
-    void findProduct() {
+    void findProductTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
         ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
@@ -134,6 +138,58 @@ class ProductServiceTest {
         Assertions.assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
         Assertions.assertThat(findProduct.standardPrice()).isEqualTo(requestDto.getStandardPrice());
         Assertions.assertThat(findProduct.ownerId()).isEqualTo(requestDto.getOwnerId());
+    }
+
+    @Test
+    @DisplayName("상품들 중 제목으로 검색해서 조회한다.")
+    void searchProductsByTitleTest() {
+        // given
+        MemberResponseDto member = getMember("limnj@test.com");
+        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", 2000, member.id());
+        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
+        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", 1000, member.id());
+        productServiceImpl.insertProduct(requestDto1, null);
+        productServiceImpl.insertProduct(requestDto2, null);
+        productServiceImpl.insertProduct(requestDto3, null);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("title", "모빌");
+        params.put("content", "");
+
+        // when
+        List<ProductResponseDto> products = productServiceImpl.searchProductsByKeyword("post_date", "desc", params);
+
+        // then
+        Assertions.assertThat(products.size()).isEqualTo(1);
+        Assertions.assertThat(products.get(0).title()).isEqualTo("모빌 팔아요");
+        Assertions.assertThat(products.get(0).content()).isEqualTo("사용한 건 1년 되었어요 ");
+        Assertions.assertThat(products.get(0).standardPrice()).isEqualTo(2000);
+    }
+
+    @Test
+    @DisplayName("상품들 중 내용으로 검색해서 조회한다.")
+    void searchProductsByContentTest() {
+        // given
+        MemberResponseDto member = getMember("limnj@test.com");
+        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", 2000, member.id());
+        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
+        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", 1000, member.id());
+        productServiceImpl.insertProduct(requestDto1, null);
+        productServiceImpl.insertProduct(requestDto2, null);
+        productServiceImpl.insertProduct(requestDto3, null);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("title", "");
+        params.put("content", "2년");
+
+        // when
+        List<ProductResponseDto> products = productServiceImpl.searchProductsByKeyword("post_date", "desc", params);
+
+        // then
+        Assertions.assertThat(products.size()).isEqualTo(1);
+        Assertions.assertThat(products.get(0).title()).isEqualTo("가구 팔아요");
+        Assertions.assertThat(products.get(0).content()).isEqualTo("사용한 건 2년 되었어요 ");
+        Assertions.assertThat(products.get(0).standardPrice()).isEqualTo(1000);
     }
 
     private static ProductRequestDto createProductRequestDto(Long productId, String title, String content, int price, Long memberId) {
