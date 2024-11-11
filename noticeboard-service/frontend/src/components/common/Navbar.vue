@@ -22,7 +22,7 @@
               >상품 보기</router-link
             >
           </li>
-          <li class="nav-item">
+          <li v-if="storage.isLogin" class="nav-item">
             <router-link class="nav-link" :to="{ name: 'ProductForm' }"
               >상품 등록</router-link
             >
