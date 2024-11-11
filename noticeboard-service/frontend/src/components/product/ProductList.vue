@@ -18,7 +18,12 @@
 
     <hr />
     <div class="row row-cols-1 row-cols-md-4 g-4 ms-2">
-      <div class="col" v-for="product in products" :key="product.id">
+      <div
+        class="col"
+        v-for="product in products"
+        :key="product.id"
+        @click="moveToPage(product.id)"
+      >
         <div class="card">
           <img
             :src="'http://localhost:8080' + product.imgUrl"
@@ -49,8 +54,10 @@ import {
   getProductsByKeyword,
 } from '@/api/products';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import SearchBar from '@/components/common/SearchBar.vue';
 
+const router = useRouter();
 const products = ref({});
 const searchOptions = ref([
   { key: 'title', value: '제목' },
@@ -93,6 +100,10 @@ const searchProducts = async (option, value) => {
   } catch (error) {
     console.error(error);
   }
+};
+
+const moveToPage = (productId) => {
+  router.push('/product-details/' + productId);
 };
 
 fetchProducts();
