@@ -20,9 +20,9 @@
               <option
                 v-for="category in categories"
                 :key="category.id"
-                :value="category"
+                :value="category.name"
               >
-                {{ category }}
+                {{ category.name }}
               </option>
             </select>
           </div>
