@@ -2,49 +2,43 @@
   <div class="container mt-5" style="width: 70%">
     <div class="row">
       <div class="col-md-4 text-center">
-        <ImageUploader v-if="product.imgUrl" :imageUrl="product.imgUrl" />
-        <h4 class="text-muted">username</h4>
+        <img :src="product.imgUrl" alt="Preview" class="product-image" />
       </div>
       <div class="col-md-8">
-        <h3>Product Information</h3>
+        <h2>{{ product.title }}</h2>
+        <label for="category" class="form-label text-muted"
+          >카테고리 >> {{ product.category }}</label
+        >
         <br />
-        <div class="mb-3">
-          <label for="category" class="form-label">카테고리</label>
-          {{ product.category }}
+
+        <div class="mb-4">
+          <h3 class="card-text mt-2">{{ product.standardPrice }} 원</h3>
+        </div>
+        <div class="mb-4">
+          <p class="card-text mt-2" style="min-height: 150px">
+            {{ product.content }}
+          </p>
         </div>
 
-        <div class="mb-3">
-          <label for="email" class="form-label">최소 금액 입력</label>
-          <p class="card-text mt-2">
-            {{ product.standardPrice }}
-          </p>
-        </div>
-        <div class="mb-3">
-          <label for="title" class="form-label">제목</label>
-          <p class="card-text mt-2">
-            {{ product.title }}
-          </p>
-        </div>
-        <div class="mb-3">
-          <label for="content" class="form-label">내용</label>
-          <p class="card-text mt-2">{{ product.content }}</p>
-        </div>
-        <button type="submit" class="btn btn-primary">참여하기</button>
+        <button type="submit" class="btn btn-primary me-2">참여하기</button>
+        <button
+          type="submit"
+          class="btn btn-secondary"
+          @click="$router.push('/product')"
+        >
+          목록보기
+        </button>
       </div>
     </div>
     <br />
-    <CommentList />
   </div>
 </template>
 <script setup>
 import { useRoute } from 'vue-router';
-import { ref, computed, onMounted } from 'vue';
-import { useStorageStore } from '@/store/index';
+import { ref, onMounted } from 'vue';
 import { getProductById } from '@/api/products';
-import CommentList from '@/components/comment/CommentList.vue';
-import ImageUploader from '../common/ImageUploader.vue';
+
 const route = useRoute();
-const storage = useStorageStore();
 const productId = route.params.id;
 
 const product = ref({
@@ -55,10 +49,6 @@ const product = ref({
   imgUrl: '',
   postDate: '',
   ownerId: '',
-});
-
-const isEditable = computed(() => {
-  return storage.getUserId == product.value.ownerId;
 });
 
 const getProduct = async () => {
@@ -73,4 +63,11 @@ const getProduct = async () => {
 
 onMounted(getProduct);
 </script>
-<style scoped></style>
+<style scoped>
+.product-image {
+  width: 300px; 
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10%;
+}
+</style>
