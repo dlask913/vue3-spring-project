@@ -66,7 +66,12 @@
       </div>
     </div>
   </nav>
-  <Modal v-show="showModal" :message="showMessage" @is-confirmed="onQuit" />
+  <Modal
+    v-show="showModal"
+    :message="showMessage"
+    :modalId="'confirmModal'"
+    @is-confirmed="onQuit"
+  />
 </template>
 
 <script setup>

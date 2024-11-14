@@ -1,7 +1,7 @@
 <template>
   <div
     class="modal fade"
-    id="confirmModal"
+    :id="modalId"
     tabindex="-1"
     aria-labelledby="confirmModalLabel"
     aria-hidden="true"
@@ -48,12 +48,18 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  modalId: {
+    type: String,
+    required: true,
+  },
 });
 
 const emit = defineEmits(['is-confirmed']);
 
 const isConfirmed = async () => {
-  emit('is-confirmed', true);
+  if (modalId == 'confirmModal') {
+    emit('is-confirmed', true);
+  }
 };
 </script>
 <style scoped></style>
