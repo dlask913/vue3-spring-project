@@ -19,6 +19,11 @@
         </div>
         <div class="modal-body">
           <span>{{ message }}</span>
+          <input
+            v-if="modalId === 'inputPrice'"
+            v-model="bidPrice"
+            class="form-control mt-2"
+          />
         </div>
         <div class="modal-footer">
           <button
@@ -43,6 +48,8 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
 const props = defineProps({
   message: {
     type: String,
@@ -55,10 +62,14 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['is-confirmed']);
+const bidPrice = ref(0);
 
 const isConfirmed = async () => {
-  if (modalId == 'confirmModal') {
+  if (props.modalId == 'confirmModal') {
     emit('is-confirmed', true);
+  }
+  if (props.modalId == 'inputPrice') {
+    emit('input-price', true, bidPrice.value);
   }
 };
 </script>

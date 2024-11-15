@@ -20,7 +20,15 @@
           </p>
         </div>
 
-        <button type="submit" class="btn btn-primary me-2">참여하기</button>
+        <button
+          type="submit"
+          class="btn btn-primary me-2"
+          @click="openModal"
+          data-bs-toggle="modal"
+          data-bs-target="#inputPrice"
+        >
+          참여하기
+        </button>
         <button
           type="submit"
           class="btn btn-secondary"
@@ -32,16 +40,30 @@
     </div>
     <br />
   </div>
+  <Modal
+    v-show="showModal"
+    :message="showMessage"
+    :modalId="'inputPrice'"
+    @input-price="onQuit"
+  />
 </template>
 <script setup>
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
-import { getProductById } from '@/api/products';
+import { useStorageStore, useToastStore } from '@/store/index';
+import { getProductById, createProductBid } from '@/api/products';
+import Modal from '@/components/common/Modal.vue';
 
 const route = useRoute();
+const storage = useStorageStore();
+const toast = useToastStore();
+
 const productId = route.params.id;
+const showModal = ref(false);
+const showMessage = ref('');
 
 const product = ref({
+  id: '',
   title: '',
   content: '',
   category: '',
@@ -61,11 +83,29 @@ const getProduct = async () => {
   }
 };
 
+const openModal = () => {
+  showModal.value = true;
+  showMessage.value = '가격을 입력해주세요.';
+};
+
+const onQuit = async (isConfirmed, bidPrice) => {
+  if (!isConfirmed) return;
+
+  const bidData = { bidPrice, productId: product.value.id };
+  try {
+    await createProductBid(storage.getToken, bidData);
+    toast.setToast('정상적으로 가격이 입력되었습니다.');
+  } catch (error) {
+    console.error(error);
+    toast.setToast('가격 입력에 실패하였습니다.', 'danger');
+  }
+};
+
 onMounted(getProduct);
 </script>
 <style scoped>
 .product-image {
-  width: 300px; 
+  width: 300px;
   height: 300px;
   object-fit: cover;
   border-radius: 10%;

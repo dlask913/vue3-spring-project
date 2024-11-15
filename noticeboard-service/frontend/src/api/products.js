@@ -41,3 +41,9 @@ export function deleteProduct(token, productId) {
 export function getCategories() {
   return axios.get('/categories');
 }
+
+export function createProductBid(token, data) {
+  return axios.post('/bid', data, {
+    headers: { Authorization: token },
+  });
+}
