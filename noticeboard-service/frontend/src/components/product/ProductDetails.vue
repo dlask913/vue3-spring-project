@@ -91,7 +91,11 @@ const openModal = () => {
 const onQuit = async (isConfirmed, bidPrice) => {
   if (!isConfirmed) return;
 
-  const bidData = { bidPrice, productId: product.value.id };
+  const bidData = {
+    bidPrice,
+    productId: product.value.id,
+    customerId: storage.getUserId,
+  };
   try {
     await createProductBid(storage.getToken, bidData);
     toast.setToast('정상적으로 가격이 입력되었습니다.');

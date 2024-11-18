@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductBidDto {
     private int bidPrice;
-    private String clientEmail;
+    private Long customerId;
     private Long productId;
 
     @Builder
-    public ProductBidDto(int bidPrice, String clientEmail, Long productId) {
+    public ProductBidDto(int bidPrice, Long customerId, Long productId) {
         this.bidPrice = bidPrice;
-        this.clientEmail = clientEmail;
+        this.customerId = customerId;
         this.productId = productId;
     }
 }

@@ -2,8 +2,8 @@
 <mapper namespace="com.example.noticeboardservice.mapper.ProductBidHistoryMapper">
     <!-- 가격 등록 -->
     <insert id="addBidHistory" parameterType="ProductBidDto">
-        INSERT INTO Bid_History (bid_price, client_email, product_id)
-        VALUES (#{bidPrice}, #{clientEmail}, #{productId})
+        INSERT INTO Bid_History (bid_price, customer_id, product_id)
+        VALUES (#{bidPrice}, #{customerId}, #{productId})
     </insert>
 
     <!-- 모든 가격 히스토리 삭제 ( 테스트용 ) -->
@@ -13,7 +13,7 @@
 
     <!-- 모든 가격 히스토리 조회 ( 테스트용 ) -->
     <select id="findAllBidHistories" resultType="ProductBidDto">
-        SELECT id, bid_price, client_email, product_id
+        SELECT id, bid_price, customer_id, product_id
         FROM Bid_History
     </select>
 </mapper>

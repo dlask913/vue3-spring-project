@@ -85,9 +85,10 @@ CREATE TABLE Products (
 CREATE TABLE Bid_History (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
     bid_price INT,
-    client_email VARCHAR(255),
+    customer_id BIGINT,
     product_id BIGINT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES Members(id),
     FOREIGN KEY (product_id) REFERENCES Products(id)
 );
 
