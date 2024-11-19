@@ -6,6 +6,15 @@
         VALUES (#{bidPrice}, #{customerId}, #{productId})
     </insert>
 
+    <!-- 상품의 가장 최근 히스토리 조회 -->
+    <select id="findLatestBidHistory" parameterType="long">
+        SELECT id, bid_price, customer_id, product_id, created_at
+        FROM Bid_History
+        WHERE product_id = #{productId}
+        ORDER BY created_at DESC
+        LIMIT 1
+    </select>
+
     <!-- 모든 가격 히스토리 삭제 ( 테스트용 ) -->
     <delete id="deleteAll">
         DELETE FROM Bid_History

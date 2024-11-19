@@ -1,9 +1,7 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.ImageRequestDto;
-import com.example.noticeboardservice.dto.ImageType;
-import com.example.noticeboardservice.dto.ProductRequestDto;
-import com.example.noticeboardservice.dto.ProductResponseDto;
+import com.example.noticeboardservice.dto.*;
+import com.example.noticeboardservice.mapper.ProductBidHistoryMapper;
 import com.example.noticeboardservice.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
+    private final ProductBidHistoryMapper productBidHistoryMapper;
     private final ImageService imageServiceImpl;
 
     @Value("${productImgLocation}")
@@ -34,6 +33,15 @@ public class ProductServiceImpl implements ProductService {
                     .build();
             imageServiceImpl.saveImage(imageRequestDto, productImg, productImgLocation);
         }
+
+        // 초기 History 추가
+        ProductBidDto initialHistory = ProductBidDto.builder()
+                .bidPrice(productRequestDto.getStandardPrice())
+                .productId(productRequestDto.getId())
+                .customerId(productRequestDto.getOwnerId())
+                .build();
+        productBidHistoryMapper.addBidHistory(initialHistory);
+
         return productRequestDto.getId();
     }
 

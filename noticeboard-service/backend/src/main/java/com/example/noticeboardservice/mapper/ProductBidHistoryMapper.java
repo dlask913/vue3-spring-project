@@ -8,6 +8,7 @@ import java.util.List;
 @Mapper
 public interface ProductBidHistoryMapper {
     int addBidHistory(ProductBidDto productBidDto);
+    ProductBidDto findLatestBidHistory(Long productId);
     void deleteAll();
     List<ProductBidDto> findAllBidHistories();
 }
