@@ -1,6 +1,8 @@
 package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.*;
+import com.example.noticeboardservice.exception.BidPriceBelowCurrentException;
+import com.example.noticeboardservice.exception.PasswordMismatchException;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.ProductBidHistoryMapper;
 import com.example.noticeboardservice.mapper.ProductMapper;
@@ -25,6 +27,8 @@ class ProductBidServiceTest {
     ProductBidHistoryMapper productBidHistoryMapper;
 
     @Autowired
+    ProductService productServiceImpl;
+    @Autowired
     ProductMapper productMapper;
     @Autowired
     MemberMapper memberMapper;
@@ -38,25 +42,44 @@ class ProductBidServiceTest {
 
     @Test
     @DisplayName("원하는 상품에 입찰하고싶은 가격을 등록한다.")
-    void addBidHistory() {
+    void addBidHistoryTest() throws InterruptedException {
         // given
         MemberResponseDto member = getMember("buyer@test.com"); // 고객
         ProductResponseDto product = getProduct(2000, "owner@test.com");
         ProductBidDto productBidDto = ProductBidDto.builder()
                 .bidPrice(3000)
-                .clientEmail(member.email())
+                .customerId(member.id())
                 .productId(product.id())
                 .build();
+
+        Thread.sleep(1000); // 히스토리 간 간격 주기
 
         // when
         productBidServiceImpl.addBidHistory(productBidDto);
 
         // then
-        ProductBidDto findProductBid = productBidHistoryMapper.findAllBidHistories().get(0);
+        ProductBidDto findProductBid = productBidHistoryMapper.findLatestBidHistory(product.id());
         Assertions.assertThat(findProductBid.getProductId()).isEqualTo(productBidDto.getProductId());
         Assertions.assertThat(findProductBid.getBidPrice()).isEqualTo(productBidDto.getBidPrice());
-        Assertions.assertThat(findProductBid.getClientEmail()).isEqualTo(productBidDto.getClientEmail());
+        Assertions.assertThat(findProductBid.getCustomerId()).isEqualTo(productBidDto.getCustomerId());
+    }
 
+    @Test
+    @DisplayName("가장 최신의 가격보다 낮은 가격은 입력이 불가능하다.")
+    void addBidPriceBelowCurrentTest() {
+        // given
+        MemberResponseDto member = getMember("buyer@test.com"); // 고객
+        ProductResponseDto product = getProduct(2000, "owner@test.com");
+        ProductBidDto productBidDto = ProductBidDto.builder()
+                .bidPrice(1500)
+                .customerId(member.id())
+                .productId(product.id())
+                .build();
+
+        // when // then
+        assertThrows(BidPriceBelowCurrentException.class, () -> {
+            productBidServiceImpl.addBidHistory(productBidDto);
+        }, "현재 가격보다 높은 가격을 입력해주세요.");
     }
 
     private ProductResponseDto getProduct(int standardPrice, String ownerEmail) {
@@ -65,9 +88,10 @@ class ProductBidServiceTest {
                 .title("title")
                 .content("content")
                 .standardPrice(standardPrice)
+                .category("FURNITURE")
                 .ownerId(member.id())
                 .build();
-        productMapper.insertProduct(productDto);
+        productServiceImpl.insertProduct(productDto, null); // 초기 bidHistory 생성
         return productMapper.findAllProducts().get(0);
     }
 

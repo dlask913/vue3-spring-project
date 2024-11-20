@@ -2,6 +2,7 @@ package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.MemberMapper;
+import com.example.noticeboardservice.mapper.ProductBidHistoryMapper;
 import com.example.noticeboardservice.mapper.ProductMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -28,10 +29,14 @@ class ProductServiceTest {
     ProductService productServiceImpl;
 
     @Autowired
+    ProductBidHistoryMapper productBidHistoryMapper;
+
+    @Autowired
     MemberMapper memberMapper;
 
     @AfterEach
     void tearDown() {
+        productBidHistoryMapper.deleteAll();
         productMapper.deleteAll();
     }
 
@@ -54,6 +59,24 @@ class ProductServiceTest {
         Assertions.assertThat(findProduct.ownerId()).isEqualTo(requestDto.getOwnerId());
         Assertions.assertThat(findProduct.imgUrl()).isEqualTo("/image/productDefaultImg.jpg");
     }
+
+    @Test
+    @DisplayName("상품을 등록하면 초기 가격 히스토리가 등록된다.")
+    void checkPriceWhenProductInsertTest() {
+        // given
+        MemberResponseDto member = getMember("limnj@test.com");
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
+
+        // when
+        productServiceImpl.insertProduct(requestDto, null);
+
+        // then
+        ProductBidDto latestBidHistory = productBidHistoryMapper.findLatestBidHistory(requestDto.getId());
+        Assertions.assertThat(latestBidHistory.getProductId()).isEqualTo(requestDto.getId());
+        Assertions.assertThat(latestBidHistory.getBidPrice()).isEqualTo(requestDto.getStandardPrice());
+        Assertions.assertThat(latestBidHistory.getCustomerId()).isEqualTo(requestDto.getOwnerId());
+    }
+
 
     @Test
     @DisplayName("판매할 상품을 이미지와 함께 등록한다.")

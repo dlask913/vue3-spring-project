@@ -22,7 +22,7 @@
 
     <!-- 모든 가격 히스토리 조회 ( 테스트용 ) -->
     <select id="findAllBidHistories" resultType="ProductBidDto">
-        SELECT id, bid_price, customer_id, product_id
+        SELECT id, bid_price, customer_id, product_id, created_at
         FROM Bid_History
     </select>
 </mapper>
