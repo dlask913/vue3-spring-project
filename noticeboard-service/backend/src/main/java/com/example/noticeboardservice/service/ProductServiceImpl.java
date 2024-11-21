@@ -56,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponseDto findProduct(Long productId) {
+    public ProductDetailsResponseDto findProduct(Long productId) {
         return productMapper.findProduct(productId);
     }
 

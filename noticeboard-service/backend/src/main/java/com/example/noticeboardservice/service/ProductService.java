@@ -1,5 +1,6 @@
 package com.example.noticeboardservice.service;
 
+import com.example.noticeboardservice.dto.ProductDetailsResponseDto;
 import com.example.noticeboardservice.dto.ProductRequestDto;
 import com.example.noticeboardservice.dto.ProductResponseDto;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ public interface ProductService {
     Long insertProduct(ProductRequestDto productRequestDto, MultipartFile productImg);
     int updateProduct(ProductRequestDto productRequestDto);
     int deleteProduct(Long productId);
-    ProductResponseDto findProduct(Long productId);
+    ProductDetailsResponseDto findProduct(Long productId);
     List<ProductResponseDto> findAllProducts();
     List<ProductResponseDto> searchProductsByKeyword(String sort, String order, Map<String, String> params);
 }

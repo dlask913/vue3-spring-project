@@ -154,13 +154,15 @@ class ProductServiceTest {
         Long productId = productMapper.findAllProducts().get(0).id();
 
         // when
-        ProductResponseDto findProduct = productServiceImpl.findProduct(productId);
+        ProductDetailsResponseDto findProduct = productServiceImpl.findProduct(productId);
 
         // then
         Assertions.assertThat(findProduct.title()).isEqualTo(requestDto.getTitle());
         Assertions.assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
         Assertions.assertThat(findProduct.standardPrice()).isEqualTo(requestDto.getStandardPrice());
+        Assertions.assertThat(findProduct.latestPrice()).isEqualTo(requestDto.getStandardPrice()); // 초기 가격은 처음 기준 가격
         Assertions.assertThat(findProduct.ownerId()).isEqualTo(requestDto.getOwnerId());
+        Assertions.assertThat(findProduct.customerId()).isEqualTo(requestDto.getOwnerId()); // 초기 가격의 주인은 소유자
     }
 
     @Test

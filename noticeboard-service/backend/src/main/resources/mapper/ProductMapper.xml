@@ -11,7 +11,7 @@
     </insert>
 
     <!-- 상품 단일 조회 -->
-    <select id="findProduct" resultMap="ProductResponseDtoMap" parameterType="long">
+    <select id="findProduct" resultMap="ProductDetailsResponseDtoMap" parameterType="long">
         WITH ProductImg AS (
             SELECT *
             FROM images
@@ -19,10 +19,14 @@
         )
 
         SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
-            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date
+            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date,
+            c.bid_price AS latest_price, c.customer_id
         FROM Products A
             LEFT JOIN ProductImg B ON A.id = B.type_id
+            LEFT JOIN Bid_History C ON A.id = C.product_id
         WHERE A.id = #{id}
+        ORDER BY created_at DESC
+        LIMIT 1
     </select>
 
     <!-- 상품 설명 수정 -->
@@ -87,6 +91,21 @@
             <arg column="standard_price" javaType="java.lang.Integer"/>
             <arg column="img_url" javaType="java.lang.String"/>
             <arg column="owner_id" javaType="java.lang.Long"/>
+            <arg column="post_date" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="ProductDetailsResponseDtoMap" type="com.example.noticeboardservice.dto.ProductDetailsResponseDto">
+        <constructor>
+            <arg column="id" javaType="java.lang.Long"/>
+            <arg column="title" javaType="java.lang.String"/>
+            <arg column="content" javaType="java.lang.String"/>
+            <arg column="category" javaType="java.lang.String"/>
+            <arg column="standard_price" javaType="java.lang.Integer"/>
+            <arg column="latest_price" javaType="java.lang.Integer"/>
+            <arg column="img_url" javaType="java.lang.String"/>
+            <arg column="owner_id" javaType="java.lang.Long"/>
+            <arg column="customer_id" javaType="java.lang.Long"/>
             <arg column="post_date" javaType="java.lang.String"/>
         </constructor>
     </resultMap>

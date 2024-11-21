@@ -1,9 +1,6 @@
 package com.example.noticeboardservice.controller;
 
-import com.example.noticeboardservice.dto.CategoryDto;
-import com.example.noticeboardservice.dto.NoticeResponseDto;
-import com.example.noticeboardservice.dto.ProductRequestDto;
-import com.example.noticeboardservice.dto.ProductResponseDto;
+import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.service.CategoryService;
 import com.example.noticeboardservice.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,8 +32,8 @@ public class ProductController {
 
     @GetMapping("/product/{productId}")
     @Operation(summary = "상품 상세 조회 API")
-    private ResponseEntity<ProductResponseDto> findProductById(@PathVariable("productId") Long productId) {
-        ProductResponseDto product = productServiceImpl.findProduct(productId);
+    private ResponseEntity<ProductDetailsResponseDto> findProductById(@PathVariable("productId") Long productId) {
+        ProductDetailsResponseDto product = productServiceImpl.findProduct(productId);
         return ResponseEntity.ok().body(product);
     }
 
