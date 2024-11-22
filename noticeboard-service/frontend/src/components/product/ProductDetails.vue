@@ -1,10 +1,11 @@
 <template>
   <div class="container mt-5" style="width: 70%">
     <div class="row">
-      <div class="col-md-4 text-center">
+      <div class="col-12 col-md-4 text-center">
         <img :src="product.imgUrl" alt="Preview" class="product-image" />
       </div>
-      <div class="col-md-8">
+
+      <div class="col-12 col-md-8">
         <h2>{{ product.title }}</h2>
         <label for="category" class="form-label text-muted"
           >카테고리 >> {{ product.category }}</label
@@ -12,7 +13,7 @@
         <br />
 
         <div class="mb-4">
-          <h3 class="card-text mt-2">{{ product.standardPrice }} 원</h3>
+          <h3 class="card-text mt-2">{{ product.latestPrice }} 원</h3>
         </div>
         <div class="mb-4">
           <p class="card-text mt-2" style="min-height: 150px">
@@ -67,10 +68,12 @@ const product = ref({
   title: '',
   content: '',
   category: '',
-  standardPrice: '',
+  standardPrice: '', 
+  latestPrice: '',// 가장 최신 가격
   imgUrl: '',
   postDate: '',
   ownerId: '',
+  customerId: '',
 });
 
 const getProduct = async () => {
@@ -90,6 +93,10 @@ const openModal = () => {
 
 const onQuit = async (isConfirmed, bidPrice) => {
   if (!isConfirmed) return;
+  if(bidPrice <= product.value.standardPrice){
+    toast.setToast('현재 가격보다 더 높은 가격을 입력해주세요.', 'danger');
+    return;
+  }
 
   const bidData = {
     bidPrice,
@@ -99,6 +106,7 @@ const onQuit = async (isConfirmed, bidPrice) => {
   try {
     await createProductBid(storage.getToken, bidData);
     toast.setToast('정상적으로 가격이 입력되었습니다.');
+    getProduct();
   } catch (error) {
     console.error(error);
     toast.setToast('가격 입력에 실패하였습니다.', 'danger');

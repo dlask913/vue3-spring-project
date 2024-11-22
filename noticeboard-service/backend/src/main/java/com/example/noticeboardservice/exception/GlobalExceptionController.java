@@ -26,4 +26,13 @@ public class GlobalExceptionController {
         return ResponseEntity.status(responseError.getStatus()).body(responseError);
     }
 
+    @ExceptionHandler(BidPriceBelowCurrentException.class)
+    public ResponseEntity<ExceptionDto> handleBidPriceBelowCurrentException(BidPriceBelowCurrentException e) {
+        final ExceptionDto responseError = ExceptionDto.builder()
+                .status(e.getStatus())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(responseError.getStatus()).body(responseError);
+    }
+
 }
