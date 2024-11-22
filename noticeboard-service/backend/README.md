@@ -92,6 +92,9 @@ CREATE TABLE Bid_History (
     FOREIGN KEY (product_id) REFERENCES Products(id)
 );
 
+CREATE INDEX idx_bid_productid_createdat ON Bid_History (product_id, created_at DESC);
+
+
 CREATE TABLE Categories (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL, 
