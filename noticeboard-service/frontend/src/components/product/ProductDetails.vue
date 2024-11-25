@@ -68,8 +68,8 @@ const product = ref({
   title: '',
   content: '',
   category: '',
-  standardPrice: '', 
-  latestPrice: '',// 가장 최신 가격
+  standardPrice: '',
+  latestPrice: '', // 가장 최신 가격
   imgUrl: '',
   postDate: '',
   ownerId: '',
@@ -93,7 +93,7 @@ const openModal = () => {
 
 const onQuit = async (isConfirmed, bidPrice) => {
   if (!isConfirmed) return;
-  if(bidPrice <= product.value.standardPrice){
+  if (bidPrice <= product.value.standardPrice) {
     toast.setToast('현재 가격보다 더 높은 가격을 입력해주세요.', 'danger');
     return;
   }
@@ -117,8 +117,8 @@ onMounted(getProduct);
 </script>
 <style scoped>
 .product-image {
-  width: 300px;
-  height: 300px;
+  width: 20vw; /* 뷰포트 너비의 20% */
+  height: 20vw; /* 비율 유지 */
   object-fit: cover;
   border-radius: 10%;
 }
