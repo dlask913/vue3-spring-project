@@ -22,7 +22,7 @@
 </template>
 <script setup>
 import { ref } from 'vue';
-import { useStorageStore } from '@/store/index';
+import { useStorageStore, useToastStore } from '@/store/index';
 
 const props = defineProps({
   parentId: {
@@ -32,6 +32,8 @@ const props = defineProps({
 
 const emit = defineEmits(['comment-saved']);
 const storage = useStorageStore();
+const toast = useToastStore();
+
 const content = ref('');
 const valueError = ref('');
 
@@ -41,7 +43,7 @@ const onSave = async () => {
     return;
   }
   if (!storage.isLogin) {
-    alert('로그인을 한 사용자만 댓글을 작성할 수 있습니다.');
+    toast.setToast('로그인을 한 사용자만 댓글을 작성할 수 있습니다.', 'danger');
     return;
   }
   valueError.value = '';

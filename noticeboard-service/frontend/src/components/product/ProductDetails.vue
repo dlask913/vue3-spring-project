@@ -93,6 +93,10 @@ const openModal = () => {
 
 const onQuit = async (isConfirmed, bidPrice) => {
   if (!isConfirmed) return;
+  if (!storage.isLogin) {
+    toast.setToast('로그인한 유저만 참여가 가능합니다.', 'danger');
+    return;
+  }
   if (bidPrice <= product.value.standardPrice) {
     toast.setToast('현재 가격보다 더 높은 가격을 입력해주세요.', 'danger');
     return;

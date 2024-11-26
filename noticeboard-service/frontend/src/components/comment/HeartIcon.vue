@@ -11,7 +11,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { getHeartStatus, saveHeart, removeHeart } from '@/api/hearts';
-import { useStorageStore } from '@/store/index';
+import { useStorageStore, useToastStore } from '@/store/index';
 
 const props = defineProps({
   commentId: {
@@ -21,11 +21,17 @@ const props = defineProps({
 });
 
 const storage = useStorageStore();
+const toast = useToastStore();
+
 const isLike = ref(false);
 const heartId = ref(0);
 const heartCnt = ref(0);
 
 const toggleHeart = async () => {
+  if (!storage.isLogin) {
+    toast.setToast('로그인한 사용자만 좋아요를 누를 수 있습니다.', 'danger');
+    return;
+  }
   try {
     if (!isLike.value) {
       const request = {
