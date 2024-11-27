@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @SpringBootTest
 @ActiveProfiles(value = "test")
@@ -45,7 +47,7 @@ class ProductServiceTest {
     void insertProductWithoutImageTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
 
         // when
         productServiceImpl.insertProduct(requestDto, null);
@@ -65,7 +67,7 @@ class ProductServiceTest {
     void checkPriceWhenProductInsertTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
 
         // when
         productServiceImpl.insertProduct(requestDto, null);
@@ -83,7 +85,7 @@ class ProductServiceTest {
     void insertProductWithImageTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
         MockMultipartFile productImg = new MockMultipartFile(
                 "상품 이미지",
                 "productImg.jpg",
@@ -108,12 +110,12 @@ class ProductServiceTest {
     void updateProductTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
         productServiceImpl.insertProduct(requestDto, null);
 
         Long productId = productMapper.findAllProducts().get(0).id();
         ProductRequestDto updateDto = createProductRequestDto(
-                productId, "고양이 장난감 팔아요", "강아지 장난감은 다 팔렸어요", 220, requestDto.getOwnerId());
+                productId, "고양이 장난감 팔아요", "강아지 장난감은 다 팔렸어요", "FURNITURE", 220, requestDto.getOwnerId());
 
         // when
         productServiceImpl.updateProduct(updateDto);
@@ -131,7 +133,7 @@ class ProductServiceTest {
     void deleteProductTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
         productServiceImpl.insertProduct(requestDto, null);
 
         Long productId = productMapper.findAllProducts().get(0).id();
@@ -148,7 +150,7 @@ class ProductServiceTest {
     void findProductTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
         productServiceImpl.insertProduct(requestDto, null);
 
         Long productId = productMapper.findAllProducts().get(0).id();
@@ -170,9 +172,9 @@ class ProductServiceTest {
     void searchProductsByTitleTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", 2000, member.id());
-        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
-        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", 1000, member.id());
+        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", "FURNITURE", 2000, member.id());
+        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
+        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", "FURNITURE", 1000, member.id());
         productServiceImpl.insertProduct(requestDto1, null);
         productServiceImpl.insertProduct(requestDto2, null);
         productServiceImpl.insertProduct(requestDto3, null);
@@ -196,9 +198,9 @@ class ProductServiceTest {
     void searchProductsByContentTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", 2000, member.id());
-        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", 1000, member.id());
-        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", 1000, member.id());
+        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", "FURNIURE", 2000, member.id());
+        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", "DEVICE", 1000, member.id());
+        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member.id());
         productServiceImpl.insertProduct(requestDto1, null);
         productServiceImpl.insertProduct(requestDto2, null);
         productServiceImpl.insertProduct(requestDto3, null);
@@ -214,15 +216,38 @@ class ProductServiceTest {
         Assertions.assertThat(products.size()).isEqualTo(1);
         Assertions.assertThat(products.get(0).title()).isEqualTo("가구 팔아요");
         Assertions.assertThat(products.get(0).content()).isEqualTo("사용한 건 2년 되었어요 ");
+        Assertions.assertThat(products.get(0).category()).isEqualTo("DEVICE");
         Assertions.assertThat(products.get(0).standardPrice()).isEqualTo(1000);
     }
 
-    private static ProductRequestDto createProductRequestDto(Long productId, String title, String content, int price, Long memberId) {
+    @Test
+    @DisplayName("카테고리별 상품을 조회한다.")
+    void findProductsByCategoryTest() {
+        // given
+        MemberResponseDto member = getMember("limnj@test.com");
+        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", "FURNITURE",  2000, member.id());
+        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
+        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member.id());
+        productServiceImpl.insertProduct(requestDto1, null);
+        productServiceImpl.insertProduct(requestDto2, null);
+        productServiceImpl.insertProduct(requestDto3, null);
+
+        // when
+        List<ProductResponseDto> products = productServiceImpl.findProductsByCategory("FURNITURE");
+
+        // then
+        assertThat(products)
+                .hasSize(2)
+                .extracting(ProductResponseDto::title)
+                .containsExactly("모빌 팔아요", "가구 팔아요");
+    }
+
+    private static ProductRequestDto createProductRequestDto(Long productId, String title, String content, String category, int price, Long memberId) {
         return ProductRequestDto.builder()
                 .id(productId)
                 .title(title)
                 .content(content)
-                .category("category")
+                .category(category)
                 .standardPrice(price)
                 .ownerId(memberId)
                 .build();
