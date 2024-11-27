@@ -74,4 +74,11 @@ public class ProductController {
         List<CategoryDto> categories = categoryServiceImpl.findAllCategories();
         return ResponseEntity.ok().body(categories);
     }
+
+    @GetMapping("/products/{category}")
+    @Operation(summary = "카테고리별 상품 조회 API")
+    private ResponseEntity<List<ProductResponseDto>> findProductsByCategory(@PathVariable("category") String category) {
+        List<ProductResponseDto> products = productServiceImpl.findProductsByCategory(category);
+        return ResponseEntity.ok().body(products);
+    }
 }

@@ -84,6 +84,21 @@
         ORDER BY A.${sortKey} ${order}
     </select>
 
+    <!-- 카테고리별 상품 조회 -->
+    <select id="findProductsByCategory" parameterType="string" resultMap="ProductResponseDtoMap">
+        WITH ProductImg AS (
+            SELECT *
+            FROM images
+            WHERE image_type = 'PRODUCT'
+        )
+
+        SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
+            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date
+        FROM Products A
+            LEFT JOIN ProductImg B ON A.id = B.type_id
+        WHERE category = #{category}
+    </select>
+
     <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
     <resultMap id="ProductResponseDtoMap" type="com.example.noticeboardservice.dto.ProductResponseDto">
         <constructor>

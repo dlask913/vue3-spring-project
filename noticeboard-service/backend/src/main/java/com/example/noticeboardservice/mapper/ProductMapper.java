@@ -22,4 +22,5 @@ public interface ProductMapper {
             @Param("order") String order,
             @Param("params") Map<String, String> params
     );
+    List<ProductResponseDto> findProductsByCategory(String category);
 }

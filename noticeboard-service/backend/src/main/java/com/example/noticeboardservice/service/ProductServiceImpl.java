@@ -69,4 +69,9 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductResponseDto> searchProductsByKeyword(String sort, String order, Map<String, String> params) {
         return productMapper.searchProductsByKeyword(sort, order, params);
     }
+
+    @Override
+    public List<ProductResponseDto> findProductsByCategory(String category) {
+        return productMapper.findProductsByCategory(category);
+    }
 }
