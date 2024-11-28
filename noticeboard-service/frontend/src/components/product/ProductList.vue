@@ -11,6 +11,7 @@
           :src="'http://localhost:8080' + category.imgUrl"
           :alt="category.name"
           class="category-image"
+          @click="searchProductsByCategory(category.name)"
         />
         <p>{{ category.name }}</p>
       </div>
@@ -32,9 +33,9 @@
           />
           <div class="card-body">
             <h5 class="card-title">{{ product.title }}</h5>
-            <p class="card-text">
-              {{ product.content }}
-            </p>
+            <label for="category" class="form-label text-muted fs-6"
+              >카테고리 >> {{ product.category }}</label
+            >
             <h4>{{ product.standardPrice }} 원</h4>
             <p class="card-text">
               <small class="text-muted"
@@ -52,6 +53,7 @@ import {
   getProducts,
   getCategories,
   getProductsByKeyword,
+  getProductsByCategory,
 } from '@/api/products';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -99,6 +101,15 @@ const searchProducts = async (option, value) => {
     products.value = data;
   } catch (error) {
     console.error(error);
+  }
+};
+
+const searchProductsByCategory = async (categoryName) => {
+  try {
+    const { data } = await getProductsByCategory(categoryName);
+    products.value = data;
+  } catch (e) {
+    console.error(e);
   }
 };
 
