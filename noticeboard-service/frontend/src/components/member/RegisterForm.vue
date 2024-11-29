@@ -42,6 +42,11 @@
               {{ passwordConfirmError }}
             </div>
           </div>
+          <!-- 주소 입력 필드 -->
+          <div class="form-group mt-3" @click="openPopup">
+            <label class="form-label">주소</label>
+            <input type="text" class="form-control" />
+          </div>
           <div class="form-group mt-5 mb-5">
             <button
               type="submit"
@@ -55,6 +60,12 @@
       </div>
     </div>
   </form>
+  <AddressPopup
+    :addresses="kakaoPlaces"
+    :isOpen="isPopupOpen"
+    @close="closePopup"
+    @select="handleSelect"
+  />
 </template>
 
 <script setup>
@@ -62,9 +73,11 @@ import { createMember } from '@/api/users';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToastStore } from '@/store/index';
+import AddressPopup from './AddressPopup.vue';
 
 const toast = useToastStore();
 const router = useRouter();
+
 const member = ref({
   email: '',
   username: '',
@@ -119,6 +132,50 @@ const passwordConfirm = (e) => {
     passwordConfirmError.value = '';
   }
 };
+
+const kakaoPlaces = ref([
+  {
+    id: '18577297',
+    x: '127.11045685440104',
+    y: '37.39544768093775',
+    road_address_name: '경기 성남시 분당구 판교역로 166',
+  },
+  {
+    id: '18059921',
+    x: '126.57066130083415',
+    y: '33.450682729588145',
+    road_address_name: '제주특별자치도 제주시 첨단로 242',
+  },
+  {
+    id: '22251293',
+    x: '126.570875463183',
+    y: '33.4526219140826',
+    road_address_name: '제주특별자치도 제주시 첨단로 216-19',
+  },
+  {
+    id: '1437795442',
+    x: '127.11036420512991',
+    y: '37.39541713271851',
+    road_address_name: '경기 성남시 분당구 판교역로 166',
+  },
+  {
+    id: '143299114',
+    x: '127.1100869772751',
+    y: '37.39581744474611',
+    road_address_name: '경기 성남시 분당구 판교역로 166',
+  },
+]);
+
+const isPopupOpen = ref(false);
+const selectedAddress = ref(null);
+
+const handleSelect = (address) => {
+  selectedAddress.value = address;
+  closePopup();
+};
+
+const openPopup = () => (isPopupOpen.value = true);
+const closePopup = () => (isPopupOpen.value = false);
 </script>
 
 <style scoped>
