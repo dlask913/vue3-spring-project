@@ -8,9 +8,9 @@
 </template>
 
 <script setup>
-import Navbar from '@/components/common/Navbar.vue';
-import Toast from '@/components/common/Toast.vue';
-import Footer from '@/components/common/Footer.vue';
+import Navbar from '@/components/common/Navbar.vue'
+import Toast from '@/components/common/Toast.vue'
+import Footer from '@/components/common/Footer.vue'
 </script>
 
 <style></style>

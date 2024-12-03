@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   addresses: {
@@ -59,23 +59,23 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
-});
+})
 
-const emit = defineEmits(['close', 'select']);
+const emit = defineEmits(['close', 'select'])
 
-const searchQuery = ref('');
+const searchQuery = ref('')
 
 const filteredAddresses = computed(() => {
-  if (!searchQuery.value.trim()) return props.addresses;
-  return addresses.filter((address) =>
+  if (!searchQuery.value.trim()) return props.addresses
+  return addresses.filter(address =>
     props.address.road_address_name
       .toLowerCase()
-      .includes(searchQuery.value.toLowerCase())
-  );
-});
+      .includes(searchQuery.value.toLowerCase()),
+  )
+})
 
-const closePopup = () => emit('close');
-const selectAddress = (address) => emit('select', address);
+const closePopup = () => emit('close')
+const selectAddress = address => emit('select', address)
 </script>
 
 <style scoped>

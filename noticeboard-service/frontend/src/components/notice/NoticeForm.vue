@@ -40,60 +40,60 @@
 </template>
 
 <script setup>
-import { createNotice, updateNotice, getNoticeById } from '@/api/notices';
-import { useRoute, useRouter } from 'vue-router';
-import { ref } from 'vue';
-import { useStorageStore, useToastStore } from '@/store/index';
+import { createNotice, updateNotice, getNoticeById } from '@/api/notices'
+import { useRoute, useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { useStorageStore, useToastStore } from '@/store/index'
 
 const props = defineProps({
   editing: {
     type: Boolean,
     default: false,
   },
-});
+})
 
-const route = useRoute();
-const router = useRouter();
-const storage = useStorageStore();
-const toast = useToastStore();
+const route = useRoute()
+const router = useRouter()
+const storage = useStorageStore()
+const toast = useToastStore()
 const form = ref({
   title: '',
   content: '',
-});
-const noticeId = route.params.id;
+})
+const noticeId = route.params.id
 
 const onSaveNotice = async () => {
   try {
     const data = {
       ...form.value,
       memberId: storage.getUserId,
-    };
-    if (props.editing) {
-      await updateNotice(storage.getToken, noticeId, data);
-      toast.setToast('게시글 수정 완료!');
-    } else {
-      await createNotice(storage.getToken, data);
-      toast.setToast('게시글 저장 완료!');
     }
-    router.push('/post');
+    if (props.editing) {
+      await updateNotice(storage.getToken, noticeId, data)
+      toast.setToast('게시글 수정 완료!')
+    } else {
+      await createNotice(storage.getToken, data)
+      toast.setToast('게시글 저장 완료!')
+    }
+    router.push('/post')
   } catch (error) {
-    console.error(error);
-    toast.setToast('게시글 저장 실패!', 'danger');
+    console.error(error)
+    toast.setToast('게시글 저장 실패!', 'danger')
   }
-};
+}
 
 const getTodo = async () => {
   try {
-    const { data } = await getNoticeById(noticeId);
-    form.value.title = data.title;
-    form.value.content = data.content;
+    const { data } = await getNoticeById(noticeId)
+    form.value.title = data.title
+    form.value.content = data.content
   } catch (error) {
-    toast.setToast('게시글 데이터를 가져오지 못했습니다.', 'danger');
+    toast.setToast('게시글 데이터를 가져오지 못했습니다.', 'danger')
   }
-};
+}
 
 if (props.editing) {
-  getTodo();
+  getTodo()
 }
 </script>
 <style></style>

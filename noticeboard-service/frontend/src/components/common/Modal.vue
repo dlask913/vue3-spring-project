@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 const props = defineProps({
   message: {
@@ -59,18 +59,18 @@ const props = defineProps({
     type: String,
     required: true,
   },
-});
+})
 
-const emit = defineEmits(['is-confirmed']);
-const bidPrice = ref(0);
+const emit = defineEmits(['is-confirmed'])
+const bidPrice = ref(0)
 
 const isConfirmed = async () => {
   if (props.modalId == 'confirmModal') {
-    emit('is-confirmed', true);
+    emit('is-confirmed', true)
   }
   if (props.modalId == 'inputPrice') {
-    emit('input-price', true, bidPrice.value);
+    emit('input-price', true, bidPrice.value)
   }
-};
+}
 </script>
 <style scoped></style>

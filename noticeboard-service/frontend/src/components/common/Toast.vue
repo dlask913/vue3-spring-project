@@ -9,9 +9,9 @@
 </template>
 
 <script setup>
-import { useToastStore } from '@/store/index';
+import { useToastStore } from '@/store/index'
 
-const toast = useToastStore();
+const toast = useToastStore()
 </script>
 
 <style scoped>

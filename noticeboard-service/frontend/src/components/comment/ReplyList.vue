@@ -51,87 +51,87 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue'
 import {
   createReply,
   updateReply,
   deleteReply,
   getRepliesByComment,
-} from '@/api/replies';
-import CommentForm from '@/components/comment/CommentForm.vue';
-import { useStorageStore } from '@/store';
+} from '@/api/replies'
+import CommentForm from '@/components/comment/CommentForm.vue'
+import { useStorageStore } from '@/store'
 
 const props = defineProps({
   commentId: {
     type: String,
   },
-});
-const emit = defineEmits(['update-reply-count']);
+})
+const emit = defineEmits(['update-reply-count'])
 
-const storage = useStorageStore();
-const replies = ref([]);
-const isEdited = ref(0);
-const hostUrl = 'http://localhost:8080';
+const storage = useStorageStore()
+const replies = ref([])
+const isEdited = ref(0)
+const hostUrl = 'http://localhost:8080'
 
 const fetchReplis = async () => {
   try {
-    const { data } = await getRepliesByComment(props.commentId);
-    replies.value = data;
-    emit('update-reply-count', replies.value.length);
-    console.log(replies.value);
+    const { data } = await getRepliesByComment(props.commentId)
+    replies.value = data
+    emit('update-reply-count', replies.value.length)
+    console.log(replies.value)
   } catch (e) {
-    console.error(e);
+    console.error(e)
   }
-};
+}
 
-const saveReply = async (data) => {
+const saveReply = async data => {
   try {
     const form = {
       content: data.content,
       commentId: data.parentId,
       memberId: storage.getUserId,
-    };
-    await createReply(storage.getToken, form);
-    fetchReplis();
+    }
+    await createReply(storage.getToken, form)
+    fetchReplis()
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
-const onEdit = async (data) => {
+const onEdit = async data => {
   if (isEdited.value === 0) {
-    isEdited.value = data.id;
-    return;
+    isEdited.value = data.id
+    return
   }
 
   try {
-    await updateReply(storage.getToken, data.id, data);
-    isEdited.value = 0;
+    await updateReply(storage.getToken, data.id, data)
+    isEdited.value = 0
   } catch (e) {
-    console.error(e);
+    console.error(e)
   }
-};
+}
 
-const onDelete = async (replyId) => {
+const onDelete = async replyId => {
   try {
-    await deleteReply(storage.getToken, replyId);
-    fetchReplis();
+    await deleteReply(storage.getToken, replyId)
+    fetchReplis()
   } catch (e) {
-    console.error(e);
+    console.error(e)
   }
-};
+}
 
-const isMine = (memberId) => {
-  return storage.getUserId == memberId;
-};
+const isMine = memberId => {
+  return storage.getUserId == memberId
+}
 
-const isEdit = (replyId) => {
-  return isEdited.value == replyId;
-};
+const isEdit = replyId => {
+  return isEdited.value == replyId
+}
 
 onMounted(() => {
-  fetchReplis();
-});
+  fetchReplis()
+})
 </script>
 
 <style scoped>

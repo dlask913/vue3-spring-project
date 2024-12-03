@@ -7,7 +7,6 @@
           :imageUrl="form.imgUrl"
           @file-changed="fetchProductImg"
         />
-        <h4 class="text-muted">username</h4>
       </div>
       <div class="col-md-8">
         <h3>Product Information</h3>
@@ -71,15 +70,15 @@
 </template>
 
 <script setup>
-import ImageUploader from '../common/ImageUploader.vue';
-import { createProduct, getCategories } from '@/api/products';
-import { useRouter } from 'vue-router';
-import { ref } from 'vue';
-import { useStorageStore, useToastStore } from '@/store/index';
+import ImageUploader from '../common/ImageUploader.vue'
+import { createProduct, getCategories } from '@/api/products'
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { useStorageStore, useToastStore } from '@/store/index'
 
-const storage = useStorageStore();
-const router = useRouter();
-const toast = useToastStore();
+const storage = useStorageStore()
+const router = useRouter()
+const toast = useToastStore()
 
 const form = ref({
   title: '',
@@ -87,58 +86,58 @@ const form = ref({
   category: '',
   standardPrice: 0,
   imgUrl: 'http://localhost:8080/image/productDefaultImg.jpg',
-});
-const productImg = ref('');
-const categories = ref([]);
-const valueError = ref({});
+})
+const productImg = ref('')
+const categories = ref([])
+const valueError = ref({})
 
 const onSaveProduct = async () => {
-  const requiredFields = ['standardPrice', 'title', 'content'];
+  const requiredFields = ['standardPrice', 'title', 'content']
   const fieldDesc = {
     standardPrice: '가격은 필수 값입니다.',
     title: '상품 이름은 필수 값입니다.',
     content: '상품 설명은 필수 값입니다.',
-  };
-  const hasError = ref(false);
-  requiredFields.forEach((field) => {
+  }
+  const hasError = ref(false)
+  requiredFields.forEach(field => {
     if (!form.value[field]) {
-      valueError.value[field] = `${fieldDesc[field]}`;
-      hasError.value = true;
+      valueError.value[field] = `${fieldDesc[field]}`
+      hasError.value = true
     }
-  });
+  })
 
   if (hasError.value) {
-    return;
+    return
   }
 
   try {
     const data = {
       ...form.value,
       ownerId: storage.getUserId,
-    };
-    await createProduct(storage.getToken, data, productImg);
-    toast.setToast('상품 등록 완료!');
-    router.push('/product');
+    }
+    await createProduct(storage.getToken, data, productImg)
+    toast.setToast('상품 등록 완료!')
+    router.push('/product')
   } catch (error) {
-    console.error(error);
-    toast.setToast('상품 등록 실패!', 'danger');
+    console.error(error)
+    toast.setToast('상품 등록 실패!', 'danger')
   }
-};
+}
 
 const fetchCategories = async () => {
   try {
-    const { data } = await getCategories();
-    categories.value = data;
+    const { data } = await getCategories()
+    categories.value = data
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
-const fetchProductImg = (file) => {
-  productImg.value = file;
-};
+const fetchProductImg = file => {
+  productImg.value = file
+}
 
-fetchCategories();
+fetchCategories()
 </script>
 
 <style scoped>

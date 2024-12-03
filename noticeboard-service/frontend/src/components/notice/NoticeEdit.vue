@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import NoticeForm from '@/components/notice/NoticeForm.vue';
+import NoticeForm from '@/components/notice/NoticeForm.vue'
 </script>
 
 <style></style>

@@ -1,4 +1,4 @@
-import axios from '@/axios';
+import axios from '@/axios'
 
 export function getHeartStatus(token, memberId, commentId) {
   return axios.get(`/heart`, {
@@ -7,17 +7,17 @@ export function getHeartStatus(token, memberId, commentId) {
       commentId: commentId,
     },
     headers: { Authorization: token },
-  });
+  })
 }
 
 export function saveHeart(token, data) {
   return axios.post(`/heart`, data, {
     headers: { Authorization: token },
-  });
+  })
 }
 
 export function removeHeart(token, id) {
   return axios.delete(`/heart/${id}`, {
     headers: { Authorization: token },
-  });
+  })
 }

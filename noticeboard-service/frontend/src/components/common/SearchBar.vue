@@ -30,20 +30,15 @@
   </form>
 </template>
 <script setup>
-import { ref } from 'vue';
-const props = defineProps({
-  searchOptions: {
-    type: Array,
-  },
-});
+import { ref } from 'vue'
 
-const emit = defineEmits(['handle-search']);
+const emit = defineEmits(['handle-search'])
 
-const searchValue = ref('');
-const selectedOption = ref('title');
+const searchValue = ref('')
+const selectedOption = ref('title')
 
 const handleSearch = () => {
-  emit('handle-search', selectedOption.value, searchValue.value);
-};
+  emit('handle-search', selectedOption.value, searchValue.value)
+}
 </script>
 <style></style>

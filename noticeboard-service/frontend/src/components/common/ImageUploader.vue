@@ -22,35 +22,35 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 const props = defineProps({
   imageUrl: {
     type: String,
     required: true,
   },
-});
+})
 
-const emit = defineEmits(['file-changed']);
+const emit = defineEmits(['file-changed'])
 
-const imageUrl = ref(props.imageUrl); // 초기 이미지
-const fileInput = ref(null);
+const imageUrl = ref(props.imageUrl) // 초기 이미지
+const fileInput = ref(null)
 
-const onFileChange = (event) => {
-  const file = event.target.files[0];
+const onFileChange = event => {
+  const file = event.target.files[0]
   if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imageUrl.value = e.target.result;
-      emit('file-changed', file);
-    };
-    reader.readAsDataURL(file);
+    const reader = new FileReader()
+    reader.onload = e => {
+      imageUrl.value = e.target.result
+      emit('file-changed', file)
+    }
+    reader.readAsDataURL(file)
   }
-};
+}
 
 const triggerFileInput = () => {
-  fileInput.value.click();
-};
+  fileInput.value.click()
+}
 </script>
 
 <style scoped>

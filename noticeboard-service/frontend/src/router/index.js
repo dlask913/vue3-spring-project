@@ -1,15 +1,15 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import Home from '@/components/common/Home.vue';
-import RegisterForm from '@/components/member/RegisterForm.vue';
-import LoginForm from '@/components/member/LoginForm.vue';
-import NoticeList from '@/components/notice/NoticeList.vue';
-import NoticeForm from '@/components/notice/NoticeForm.vue';
-import NoticeDetails from '@/components/notice/NoticeDetails.vue';
-import NoticeEdit from '@/components/notice/NoticeEdit.vue';
-import MyPage from '@/components/member/MyPage.vue';
-import ProductForm from '@/components/product/ProductForm.vue';
-import ProductList from '@/components/product/ProductList.vue';
-import ProductDetails from '@/components/product/ProductDetails.vue';
+import { createRouter, createWebHistory } from 'vue-router'
+import Home from '@/components/common/Home.vue'
+import RegisterForm from '@/components/member/RegisterForm.vue'
+import LoginForm from '@/components/member/LoginForm.vue'
+import NoticeList from '@/components/notice/NoticeList.vue'
+import NoticeForm from '@/components/notice/NoticeForm.vue'
+import NoticeDetails from '@/components/notice/NoticeDetails.vue'
+import NoticeEdit from '@/components/notice/NoticeEdit.vue'
+import MyPage from '@/components/member/MyPage.vue'
+import ProductForm from '@/components/product/ProductForm.vue'
+import ProductList from '@/components/product/ProductList.vue'
+import ProductDetails from '@/components/product/ProductDetails.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -72,8 +72,8 @@ const router = createRouter({
   ],
   scrollBehavior(to, from, savedPosition) {
     // 페이지 이동 시 항상 스크롤을 상단으로 설정
-    return { top: 0 };
+    return { top: 0 }
   },
-});
+})
 
-export default router;
+export default router

@@ -69,69 +69,69 @@
 </template>
 
 <script setup>
-import { createMember } from '@/api/users';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useToastStore } from '@/store/index';
-import AddressPopup from './AddressPopup.vue';
+import { createMember } from '@/api/users'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useToastStore } from '@/store/index'
+import AddressPopup from './AddressPopup.vue'
 
-const toast = useToastStore();
-const router = useRouter();
+const toast = useToastStore()
+const router = useRouter()
 
 const member = ref({
   email: '',
   username: '',
   passwordTemp: '',
   password: '',
-});
+})
 const valueError = ref({
   emailError: '',
   usernameError: '',
   passwordError: '',
-});
+})
 
 const onSave = async () => {
-  const requiredFields = ['email', 'username', 'password'];
+  const requiredFields = ['email', 'username', 'password']
   const fieldDesc = {
     email: '이메일은 필수 값입니다.',
     username: '이름은 필수 값입니다.',
     password: '비밀번호는 필수 값입니다.',
-  };
-  const hasError = ref(false);
+  }
+  const hasError = ref(false)
 
-  requiredFields.forEach((field) => {
+  requiredFields.forEach(field => {
     if (!member.value[field]) {
-      valueError.value[field] = `${fieldDesc[field]}`;
-      hasError.value = true;
+      valueError.value[field] = `${fieldDesc[field]}`
+      hasError.value = true
     }
-  });
+  })
 
   if (member.value.password != member.value.passwordTemp) {
-    hasError.value = true;
+    hasError.value = true
   }
 
   if (hasError.value) {
-    return;
+    return
   }
   try {
-    const data = { ...member.value };
-    createMember(data);
-    toast.setToast('회원가입 완료!');
-    router.push('/');
+    const data = { ...member.value }
+    createMember(data)
+    toast.setToast('회원가입 완료!')
+    router.push('/')
   } catch (error) {
-    console.error(error);
-    toast.setToast('회원가입 실패!', 'danger');
+    console.error(error)
+    toast.setToast('회원가입 실패!', 'danger')
   }
-};
+}
 
-const passwordConfirmError = ref('');
-const passwordConfirm = (e) => {
+const passwordConfirmError = ref('')
+const passwordConfirm = e => {
   if (e.target.value != member.value.passwordTemp) {
-    passwordConfirmError.value = '비밀번호가 일치하지 않습니다.';
+    passwordConfirmError.value = '비밀번호가 일치하지 않습니다.'
   } else {
-    passwordConfirmError.value = '';
+    passwordConfirmError.value = ''
   }
-};
+}
 
 const kakaoPlaces = ref([
   {
@@ -164,18 +164,18 @@ const kakaoPlaces = ref([
     y: '37.39581744474611',
     road_address_name: '경기 성남시 분당구 판교역로 166',
   },
-]);
+])
 
-const isPopupOpen = ref(false);
-const selectedAddress = ref(null);
+const isPopupOpen = ref(false)
+const selectedAddress = ref(null)
 
-const handleSelect = (address) => {
-  selectedAddress.value = address;
-  closePopup();
-};
+const handleSelect = address => {
+  selectedAddress.value = address
+  closePopup()
+}
 
-const openPopup = () => (isPopupOpen.value = true);
-const closePopup = () => (isPopupOpen.value = false);
+const openPopup = () => (isPopupOpen.value = true)
+const closePopup = () => (isPopupOpen.value = false)
 </script>
 
 <style scoped>

@@ -54,71 +54,71 @@ import {
   getCategories,
   getProductsByKeyword,
   getProductsByCategory,
-} from '@/api/products';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import SearchBar from '@/components/common/SearchBar.vue';
+} from '@/api/products'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import SearchBar from '@/components/common/SearchBar.vue'
 
-const router = useRouter();
-const products = ref({});
+const router = useRouter()
+const products = ref({})
 const searchOptions = ref([
   { key: 'title', value: '제목' },
   { key: 'content', value: '내용' },
-]);
-const searchValue = ref('');
-const selectedOption = ref('title');
+])
+const searchValue = ref('')
+const selectedOption = ref('title')
 const params = ref({
   _sort: 'post_date',
   _order: 'desc',
-});
+})
 
-const categories = ref([]);
+const categories = ref([])
 
 const fetchProducts = async () => {
-  const { data } = await getProducts(selectedOption.value, searchValue.value);
-  products.value = data;
-};
+  const { data } = await getProducts(selectedOption.value, searchValue.value)
+  products.value = data
+}
 
 const fetchCategories = async () => {
   try {
-    const { data } = await getCategories();
-    categories.value = data;
+    const { data } = await getCategories()
+    categories.value = data
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
 const searchProducts = async (option, value) => {
-  selectedOption.value = option;
-  searchValue.value = value;
+  selectedOption.value = option
+  searchValue.value = value
   try {
     const { data } = await getProductsByKeyword(
       selectedOption.value,
       searchValue.value,
       params.value._sort,
-      params.value._order
-    );
-    products.value = data;
+      params.value._order,
+    )
+    products.value = data
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
-const searchProductsByCategory = async (categoryName) => {
+const searchProductsByCategory = async categoryName => {
   try {
-    const { data } = await getProductsByCategory(categoryName);
-    products.value = data;
+    const { data } = await getProductsByCategory(categoryName)
+    products.value = data
   } catch (e) {
-    console.error(e);
+    console.error(e)
   }
-};
+}
 
-const moveToPage = (productId) => {
-  router.push('/product-details/' + productId);
-};
+const moveToPage = productId => {
+  router.push('/product-details/' + productId)
+}
 
-fetchProducts();
-fetchCategories();
+fetchProducts()
+fetchCategories()
 </script>
 <style scoped>
 .card-img-top {

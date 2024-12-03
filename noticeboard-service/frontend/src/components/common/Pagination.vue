@@ -44,13 +44,13 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-});
+})
 
-const emit = defineEmits(['page-changed']);
+const emit = defineEmits(['page-changed'])
 
-const goToPage = (page) => {
-  if (page < 1 || page > props.pageCount) return; // 페이지 범위를 벗어나는 경우
-  emit('page-changed', page);
-};
+const goToPage = page => {
+  if (page < 1 || page > props.pageCount) return // 페이지 범위를 벗어나는 경우
+  emit('page-changed', page)
+}
 </script>
 <style></style>

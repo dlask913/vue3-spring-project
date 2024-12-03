@@ -58,108 +58,108 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue'
 import {
   createComment,
   deleteComment,
   getCommentsByNoticeId,
   updateComment,
-} from '@/api/comments';
-import { useRoute } from 'vue-router';
-import { useStorageStore, useToastStore } from '@/store/index';
-import CommentForm from '@/components/comment/CommentForm.vue';
-import HeartIcon from '@/components/comment/HeartIcon.vue';
-import ReplyList from '@/components/comment/ReplyList.vue';
+} from '@/api/comments'
+import { useRoute } from 'vue-router'
+import { useStorageStore, useToastStore } from '@/store/index'
+import CommentForm from '@/components/comment/CommentForm.vue'
+import HeartIcon from '@/components/comment/HeartIcon.vue'
+import ReplyList from '@/components/comment/ReplyList.vue'
 
-const storage = useStorageStore();
-const toast = useToastStore();
-const route = useRoute();
-const comments = ref([]);
-const editFlag = ref(0);
-const replyFlag = ref(0);
-const noticeId = route.params.id;
-const hostUrl = 'http://localhost:8080';
+const storage = useStorageStore()
+const toast = useToastStore()
+const route = useRoute()
+const comments = ref([])
+const editFlag = ref(0)
+const replyFlag = ref(0)
+const noticeId = route.params.id
+const hostUrl = 'http://localhost:8080'
 
 // 대댓글 개수 업데이트 함수
 const updateReplyCount = (index, replyCount) => {
-  comments.value[index].replyCount = replyCount;
-};
+  comments.value[index].replyCount = replyCount
+}
 
-const saveComment = async (data) => {
+const saveComment = async data => {
   try {
     const form = {
       content: data.content,
       noticeId: data.parentId,
       memberId: storage.getUserId,
-    };
-    await createComment(storage.getToken, form);
-    getComments();
+    }
+    await createComment(storage.getToken, form)
+    getComments()
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
 const getComments = async () => {
   try {
-    const { data } = await getCommentsByNoticeId(noticeId);
-    comments.value = data;
+    const { data } = await getCommentsByNoticeId(noticeId)
+    comments.value = data
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
-const isMine = (memberId) => {
-  return storage.getUserId == memberId;
-};
+const isMine = memberId => {
+  return storage.getUserId == memberId
+}
 
-const onDeleteComment = async (commentId) => {
+const onDeleteComment = async commentId => {
   try {
-    await deleteComment(storage.getToken, commentId);
-    getComments();
-    toast.setToast('댓글 삭제 완료!');
+    await deleteComment(storage.getToken, commentId)
+    getComments()
+    toast.setToast('댓글 삭제 완료!')
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
-const isEdit = (commentId) => {
-  return editFlag.value == commentId;
-};
+const isEdit = commentId => {
+  return editFlag.value == commentId
+}
 
-const onEdit = async (comment) => {
+const onEdit = async comment => {
   if (editFlag.value === 0) {
-    editFlag.value = comment.id;
-    return;
+    editFlag.value = comment.id
+    return
   }
 
   try {
     const form = {
       id: comment.id,
       content: comment.content,
-    };
-    await updateComment(storage.getToken, comment.id, form);
-    editFlag.value = 0;
-    getComments();
+    }
+    await updateComment(storage.getToken, comment.id, form)
+    editFlag.value = 0
+    getComments()
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
-const onReply = async (comment) => {
+const onReply = async comment => {
   if (replyFlag.value == comment.id) {
-    replyFlag.value = 0;
-    return;
+    replyFlag.value = 0
+    return
   }
-  replyFlag.value = comment.id;
-};
+  replyFlag.value = comment.id
+}
 
-const isReply = (commentId) => {
-  return replyFlag.value == commentId;
-};
+const isReply = commentId => {
+  return replyFlag.value == commentId
+}
 
 onMounted(() => {
-  getComments();
-});
+  getComments()
+})
 </script>
 <style scoped>
 .ms-2.me-auto {

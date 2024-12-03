@@ -21,39 +21,39 @@
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
-import { useStorageStore, useToastStore } from '@/store/index';
+import { ref } from 'vue'
+import { useStorageStore, useToastStore } from '@/store/index'
 
 const props = defineProps({
   parentId: {
     type: String,
   },
-});
+})
 
-const emit = defineEmits(['comment-saved']);
-const storage = useStorageStore();
-const toast = useToastStore();
+const emit = defineEmits(['comment-saved'])
+const storage = useStorageStore()
+const toast = useToastStore()
 
-const content = ref('');
-const valueError = ref('');
+const content = ref('')
+const valueError = ref('')
 
 const onSave = async () => {
   if (!content.value) {
-    valueError.value = '내용을 입력해주세요';
-    return;
+    valueError.value = '내용을 입력해주세요'
+    return
   }
   if (!storage.isLogin) {
-    toast.setToast('로그인을 한 사용자만 댓글을 작성할 수 있습니다.', 'danger');
-    return;
+    toast.setToast('로그인을 한 사용자만 댓글을 작성할 수 있습니다.', 'danger')
+    return
   }
-  valueError.value = '';
+  valueError.value = ''
   const data = {
     content: content.value,
     parentId: props.parentId,
-  };
-  emit('comment-saved', data);
-  content.value = '';
-};
+  }
+  emit('comment-saved', data)
+  content.value = ''
+}
 </script>
 
 <style scoped>

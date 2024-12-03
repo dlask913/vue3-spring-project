@@ -31,52 +31,53 @@
   </div>
 </template>
 <script setup>
-import { getNoticeById, deleteNotice } from '@/api/notices';
-import { useRoute, useRouter } from 'vue-router';
-import { ref, computed, onMounted } from 'vue';
-import { useStorageStore, useToastStore } from '@/store/index';
-import CommentList from '@/components/comment/CommentList.vue';
+import { getNoticeById, deleteNotice } from '@/api/notices'
+import { useRoute, useRouter } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import { useStorageStore, useToastStore } from '@/store/index'
+import CommentList from '@/components/comment/CommentList.vue'
 
-const route = useRoute();
-const router = useRouter();
-const storage = useStorageStore();
-const toast = useToastStore();
+const route = useRoute()
+const router = useRouter()
+const storage = useStorageStore()
+const toast = useToastStore()
 const notice = ref({
   title: '',
   content: '',
   username: '',
   postDate: '',
   memberId: '',
-});
-const noticeId = route.params.id;
+})
+const noticeId = route.params.id
 
 const getNotice = async () => {
   try {
-    const { data } = await getNoticeById(noticeId);
-    notice.value = data;
+    const { data } = await getNoticeById(noticeId)
+    notice.value = data
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
 const isEditable = computed(() => {
-  return storage.getUserId == notice.value.memberId;
-});
+  return storage.getUserId == notice.value.memberId
+})
 
 const moveToPage = () => {
-  router.push('/post-edit/' + noticeId);
-};
+  router.push('/post-edit/' + noticeId)
+}
 
 const onDelete = async () => {
   try {
-    await deleteNotice(storage.getToken, noticeId);
-    router.push('/post');
-    toast.setToast('게시글이 삭제되었습니다.');
-  } catch (error) {
-    toast.setToast('게시글 삭제에 실패하였습니다.', 'danger');
+    await deleteNotice(storage.getToken, noticeId)
+    router.push('/post')
+    toast.setToast('게시글이 삭제되었습니다.')
+  } catch (e) {
+    console.error(e)
+    toast.setToast('게시글 삭제에 실패하였습니다.', 'danger')
   }
-};
+}
 
-onMounted(getNotice);
+onMounted(getNotice)
 </script>
 <style></style>

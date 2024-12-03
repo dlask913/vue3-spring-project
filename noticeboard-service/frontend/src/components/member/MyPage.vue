@@ -90,27 +90,27 @@
   </div>
 </template>
 <script setup>
-import ImageUploader from '../common/ImageUploader.vue';
-import { ref, onMounted } from 'vue';
-import { getMemberById, updateMember } from '@/api/users';
-import { getNoticesByMember } from '@/api/notices';
-import { getCommentsByMember } from '@/api/comments';
-import { useToastStore, useStorageStore } from '@/store';
-import { useRouter } from 'vue-router';
+import ImageUploader from '../common/ImageUploader.vue'
+import { ref, onMounted } from 'vue'
+import { getMemberById, updateMember } from '@/api/users'
+import { getNoticesByMember } from '@/api/notices'
+import { getCommentsByMember } from '@/api/comments'
+import { useToastStore, useStorageStore } from '@/store'
+import { useRouter } from 'vue-router'
 
-const router = useRouter();
-const toast = useToastStore();
-const storage = useStorageStore();
+const router = useRouter()
+const toast = useToastStore()
+const storage = useStorageStore()
 const member = ref({
   email: '',
   username: '',
   address: '',
   imgUrl: '',
-});
-const memberImg = ref(null);
-const notices = ref([]);
-const comments = ref([]);
-const isActive = ref(null);
+})
+const memberImg = ref(null)
+const notices = ref([])
+const comments = ref([])
+const isActive = ref(null)
 
 const fetchData = async () => {
   try {
@@ -119,15 +119,15 @@ const fetchData = async () => {
         getMemberById(storage.getToken, storage.getUserId),
         getNoticesByMember(storage.getToken),
         getCommentsByMember(storage.getToken),
-      ]);
-    member.value = memberResponse.data;
-    notices.value = noticesResponse.data;
-    comments.value = commentsResponse.data;
-    member.value.imgUrl = 'http://localhost:8080' + member.value.imgUrl; // todo: baseUrl 따로 빼기
+      ])
+    member.value = memberResponse.data
+    notices.value = noticesResponse.data
+    comments.value = commentsResponse.data
+    member.value.imgUrl = 'http://localhost:8080' + member.value.imgUrl // todo: baseUrl 따로 빼기
   } catch (e) {
-    console.error(e.response.data);
+    console.error(e.response.data)
   }
-};
+}
 
 const onUpdateUser = async () => {
   try {
@@ -135,24 +135,24 @@ const onUpdateUser = async () => {
       storage.getToken,
       storage.getUserId,
       member.value,
-      memberImg
-    );
-    toast.setToast('정보 수정이 완료되었습니다.');
+      memberImg,
+    )
+    toast.setToast('정보 수정이 완료되었습니다.')
   } catch (e) {
-    console.error(e.response.data);
+    console.error(e.response.data)
   }
-};
+}
 
-const fetchMemberImg = (file) => {
-  memberImg.value = file;
-};
+const fetchMemberImg = file => {
+  memberImg.value = file
+}
 
-const moveToPage = (noticeId) => {
-  isActive.vlaue = noticeId;
-  router.push('/post-details/' + noticeId);
-};
+const moveToPage = noticeId => {
+  isActive.value.vlaue = noticeId
+  router.push('/post-details/' + noticeId)
+}
 
-onMounted(fetchData);
+onMounted(fetchData)
 </script>
 <style scoped>
 .profile-image {

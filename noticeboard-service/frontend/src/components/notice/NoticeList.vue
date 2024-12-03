@@ -72,38 +72,38 @@
 </template>
 
 <script setup>
-import { getNotices, getNoticesByKeyword } from '@/api/notices';
-import { ref, computed, onMounted } from 'vue';
-import { useStorageStore } from '@/store';
-import { useRouter } from 'vue-router';
-import Pagination from '@/components/common/Pagination.vue';
-import SearchBar from '@/components/common/SearchBar.vue';
+import { getNotices, getNoticesByKeyword } from '@/api/notices'
+import { ref, computed, onMounted } from 'vue'
+import { useStorageStore } from '@/store'
+import { useRouter } from 'vue-router'
+import Pagination from '@/components/common/Pagination.vue'
+import SearchBar from '@/components/common/SearchBar.vue'
 
-const router = useRouter();
-const storage = useStorageStore();
-const notices = ref([]);
+const router = useRouter()
+const storage = useStorageStore()
+const notices = ref([])
 const searchOptions = ref([
   { key: 'title', value: '제목' },
   { key: 'username', value: '글쓴이' },
-]);
-const selectedOption = ref('title');
-const searchValue = ref('');
+])
+const selectedOption = ref('title')
+const searchValue = ref('')
 const params = ref({
   _sort: 'post_date',
   _order: 'desc',
   _page: 1,
   _limit: 5,
-});
-const totalCount = ref(1);
+})
+const totalCount = ref(1)
 
 const fetchInit = async () => {
   try {
-    const { data } = await getNotices(selectedOption.value, searchValue.value);
-    totalCount.value = data.length || 1;
+    const { data } = await getNotices(selectedOption.value, searchValue.value)
+    totalCount.value = data.length || 1
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
 const fetchNotices = async () => {
   try {
@@ -113,37 +113,37 @@ const fetchNotices = async () => {
       selectedOption.value,
       searchValue.value,
       params.value._sort,
-      params.value._order
-    );
-    notices.value = data;
+      params.value._order,
+    )
+    notices.value = data
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
-const moveToPage = (noticeId) => {
-  router.push('/post-details/' + noticeId);
-};
+const moveToPage = noticeId => {
+  router.push('/post-details/' + noticeId)
+}
 
 onMounted(() => {
-  fetchInit();
-  fetchNotices();
-});
+  fetchInit()
+  fetchNotices()
+})
 
 const pageCount = computed(() =>
-  Math.ceil(totalCount.value / params.value._limit)
-);
+  Math.ceil(totalCount.value / params.value._limit),
+)
 
-const goToPage = (page) => {
-  params.value._page = page;
-  fetchNotices();
-};
+const goToPage = page => {
+  params.value._page = page
+  fetchNotices()
+}
 
 const searchNotices = async (option, value) => {
-  selectedOption.value = option;
-  searchValue.value = value;
-  fetchInit();
-  params.value._page = 1;
+  selectedOption.value = option
+  searchValue.value = value
+  fetchInit()
+  params.value._page = 1
   try {
     const { data } = await getNoticesByKeyword(
       params.value._page,
@@ -151,37 +151,37 @@ const searchNotices = async (option, value) => {
       selectedOption.value,
       searchValue.value,
       params.value._sort,
-      params.value._order
-    );
-    notices.value = data;
+      params.value._order,
+    )
+    notices.value = data
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
-const isNew = (postDate) => {
-  const postTime = new Date(postDate).getTime();
-  const currentTime = new Date().getTime();
-  const timeDifference = currentTime - postTime;
+const isNew = postDate => {
+  const postTime = new Date(postDate).getTime()
+  const currentTime = new Date().getTime()
+  const timeDifference = currentTime - postTime
 
   // 24시간(1일) 이내일 경우 NEW 표시
-  return timeDifference <= 24 * 60 * 60 * 1000; // 24시간 = 24 * 60분 * 60초 * 1000밀리초
-};
+  return timeDifference <= 24 * 60 * 60 * 1000 // 24시간 = 24 * 60분 * 60초 * 1000밀리초
+}
 
-const isHot = (viewCount) => {
-  return viewCount >= 10; // todo: 기준값 다시 정하기.
-};
+const isHot = viewCount => {
+  return viewCount >= 10 // todo: 기준값 다시 정하기.
+}
 
-const sortNotice = (keyWord) => {
+const sortNotice = keyWord => {
   // 정렬
   if (params.value._sort === keyWord) {
-    params.value._order = params.value._order === 'asc' ? 'desc' : 'asc';
+    params.value._order = params.value._order === 'asc' ? 'desc' : 'asc'
   } else {
-    params.value._order = 'asc';
+    params.value._order = 'asc'
   }
-  params.value._sort = keyWord;
-  fetchNotices();
-};
+  params.value._sort = keyWord
+  fetchNotices()
+}
 </script>
 
 <style scoped>

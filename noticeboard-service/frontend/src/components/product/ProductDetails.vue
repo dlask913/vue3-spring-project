@@ -49,19 +49,19 @@
   />
 </template>
 <script setup>
-import { useRoute } from 'vue-router';
-import { ref, onMounted } from 'vue';
-import { useStorageStore, useToastStore } from '@/store/index';
-import { getProductById, createProductBid } from '@/api/products';
-import Modal from '@/components/common/Modal.vue';
+import { useRoute } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useStorageStore, useToastStore } from '@/store/index'
+import { getProductById, createProductBid } from '@/api/products'
+import Modal from '@/components/common/Modal.vue'
 
-const route = useRoute();
-const storage = useStorageStore();
-const toast = useToastStore();
+const route = useRoute()
+const storage = useStorageStore()
+const toast = useToastStore()
 
-const productId = route.params.id;
-const showModal = ref(false);
-const showMessage = ref('');
+const productId = route.params.id
+const showModal = ref(false)
+const showMessage = ref('')
 
 const product = ref({
   id: '',
@@ -74,50 +74,50 @@ const product = ref({
   postDate: '',
   ownerId: '',
   customerId: '',
-});
+})
 
 const getProduct = async () => {
   try {
-    const { data } = await getProductById(productId);
-    product.value = data;
-    product.value.imgUrl = 'http://localhost:8080' + product.value.imgUrl;
+    const { data } = await getProductById(productId)
+    product.value = data
+    product.value.imgUrl = 'http://localhost:8080' + product.value.imgUrl
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
 const openModal = () => {
-  showModal.value = true;
-  showMessage.value = '가격을 입력해주세요.';
-};
+  showModal.value = true
+  showMessage.value = '가격을 입력해주세요.'
+}
 
 const onQuit = async (isConfirmed, bidPrice) => {
-  if (!isConfirmed) return;
+  if (!isConfirmed) return
   if (!storage.isLogin) {
-    toast.setToast('로그인한 유저만 참여가 가능합니다.', 'danger');
-    return;
+    toast.setToast('로그인한 유저만 참여가 가능합니다.', 'danger')
+    return
   }
   if (bidPrice <= product.value.standardPrice) {
-    toast.setToast('현재 가격보다 더 높은 가격을 입력해주세요.', 'danger');
-    return;
+    toast.setToast('현재 가격보다 더 높은 가격을 입력해주세요.', 'danger')
+    return
   }
 
   const bidData = {
     bidPrice,
     productId: product.value.id,
     customerId: storage.getUserId,
-  };
-  try {
-    await createProductBid(storage.getToken, bidData);
-    toast.setToast('정상적으로 가격이 입력되었습니다.');
-    getProduct();
-  } catch (error) {
-    console.error(error);
-    toast.setToast('가격 입력에 실패하였습니다.', 'danger');
   }
-};
+  try {
+    await createProductBid(storage.getToken, bidData)
+    toast.setToast('정상적으로 가격이 입력되었습니다.')
+    getProduct()
+  } catch (error) {
+    console.error(error)
+    toast.setToast('가격 입력에 실패하였습니다.', 'danger')
+  }
+}
 
-onMounted(getProduct);
+onMounted(getProduct)
 </script>
 <style scoped>
 .product-image {
