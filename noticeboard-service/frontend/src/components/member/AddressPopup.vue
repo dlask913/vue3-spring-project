@@ -23,9 +23,15 @@
             class="form-control mb-3"
             placeholder="주소 검색"
           />
+          <button
+            class="btn btn-outline-success"
+            @click="searchAddress(searchQuery)"
+          >
+            검색하기
+          </button>
           <ul class="list-group">
             <li
-              v-for="address in filteredAddresses"
+              v-for="address in kakaoPlaces"
               :key="address.id"
               class="list-group-item list-group-item-action"
               @click="selectAddress(address)"
@@ -48,34 +54,30 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-
-const props = defineProps({
-  addresses: {
-    type: Array,
-    required: true,
-  },
+import { ref } from 'vue'
+import { searchAddressByKakao } from '@/api/users'
+defineProps({
   isOpen: {
     type: Boolean,
     required: true,
   },
 })
-
-const emit = defineEmits(['close', 'select'])
+const emit = defineEmits(['close-popup', 'select-address'])
 
 const searchQuery = ref('')
+const kakaoPlaces = ref([])
 
-const filteredAddresses = computed(() => {
-  if (!searchQuery.value.trim()) return props.addresses
-  return addresses.filter(address =>
-    props.address.road_address_name
-      .toLowerCase()
-      .includes(searchQuery.value.toLowerCase()),
-  )
-})
+const searchAddress = async query => {
+  try {
+    const { data } = searchAddressByKakao(query)
+    kakaoPlaces.value = data
+  } catch (error) {
+    console.error(error)
+  }
+}
 
-const closePopup = () => emit('close')
-const selectAddress = address => emit('select', address)
+const closePopup = () => emit('close-popup')
+const selectAddress = address => emit('select-address', address)
 </script>
 
 <style scoped>

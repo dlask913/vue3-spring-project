@@ -34,3 +34,8 @@ export function deleteMember(token, id) {
     headers: { Authorization: token },
   })
 }
+
+// 회원 주소 검색
+export function searchAddressByKakao(query) {
+  return axios.get(`/search?query=${query}`)
+}
