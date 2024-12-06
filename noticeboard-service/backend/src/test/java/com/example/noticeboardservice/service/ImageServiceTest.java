@@ -24,7 +24,7 @@ class ImageServiceTest {
     ImageMapper imageMapper;
     @Autowired
     MemberMapper memberMapper;
-    @Value("${memberImgLocation}")
+    @Value("${member-img-location}")
     String memberImgLocation;
 
     @AfterEach

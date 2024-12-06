@@ -1,9 +1,6 @@
 package com.example.noticeboardservice.controller;
 
-import com.example.noticeboardservice.dto.LoginRequestDto;
-import com.example.noticeboardservice.dto.LoginResponseDto;
-import com.example.noticeboardservice.dto.MemberRequestDto;
-import com.example.noticeboardservice.dto.MemberResponseDto;
+import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

@@ -20,7 +20,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductBidHistoryMapper productBidHistoryMapper;
     private final ImageService imageServiceImpl;
 
-    @Value("${productImgLocation}")
+    @Value("${product-img-location}")
     private String productImgLocation;
 
     @Override

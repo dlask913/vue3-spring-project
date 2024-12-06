@@ -25,7 +25,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
     private final JwtTokenUtil jwtTokenUtil;
     private final ImageService imageServiceImpl;
-    @Value("${memberImgLocation}")
+    @Value("${member-img-location}")
     private String memberImgLocation;
 
     @Override

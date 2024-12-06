@@ -8,9 +8,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    @Value("${uploadPath}")
+    @Value("${upload-path}")
     String uploadPath;
-    @Value("${defaultImgPath}")
+    @Value("${default-img-path}")
     String defaultImgPath;
 
     @Override
