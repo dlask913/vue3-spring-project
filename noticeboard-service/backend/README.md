@@ -101,4 +101,15 @@ CREATE TABLE Categories (
     description VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE Address (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id BIGINT NOT NULL,
+    address_name VARCHAR(255),
+    road_address_name VARCHAR(255),
+    place_name VARCHAR(255),
+    latitude DECIMAL(10, 8) NOT NULL,
+    longitude DECIMAL(11, 8) NOT NULL,
+    FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE
+);
+
 ```
