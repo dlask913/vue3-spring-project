@@ -21,8 +21,11 @@ public class KakaoMapController {
 
     @GetMapping("/map")
     @Operation(summary = "회원 주소 검색 API")
-    public ResponseEntity<List<kakaoResponseDto.AddressResponseDto>> searchKeyword(@RequestParam(value = "query") String query) {
-        kakaoResponseDto response = kakaoMapServiceImpl.searchAddressByKeyword(query);
+    public ResponseEntity<List<kakaoResponseDto.AddressResponseDto>> searchKeyword(
+            @RequestParam(value = "query") String query,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "limit", defaultValue = "10") int limit) {
+        kakaoResponseDto response = kakaoMapServiceImpl.searchAddressByKeyword(query, page, limit);
         return ResponseEntity.ok().body(response.getDocuments());
     }
 }

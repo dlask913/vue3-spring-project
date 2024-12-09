@@ -12,5 +12,5 @@ public interface KakaoMapService {
      * @param keyword 검색어
      * @return kakaoResponseDto
      */
-    kakaoResponseDto searchAddressByKeyword(String keyword);
+    kakaoResponseDto searchAddressByKeyword(String keyword, int page, int size);
 }

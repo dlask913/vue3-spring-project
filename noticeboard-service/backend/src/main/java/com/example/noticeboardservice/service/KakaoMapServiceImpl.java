@@ -25,14 +25,17 @@ public class KakaoMapServiceImpl implements KakaoMapService{
     private String REST_API_KEY;
 
     @Override
-    public kakaoResponseDto searchAddressByKeyword(String keyword){
+    public kakaoResponseDto searchAddressByKeyword(String keyword, int page, int size){
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "KakaoAK " + REST_API_KEY);
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        String requestUrl = "https://dapi.kakao.com/v2/local/search/keyword.json";
+        String requestUrl = String.format(
+                "https://dapi.kakao.com/v2/local/search/keyword.json?query=%s&page=%d&size=%d",
+                keyword, page, size
+        );
         ResponseEntity<String> response = restTemplate.exchange(
-                requestUrl + "?query=" + keyword,
+                requestUrl,
                 HttpMethod.GET,
                 entity,
                 String.class
