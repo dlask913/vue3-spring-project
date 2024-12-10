@@ -2,6 +2,7 @@ package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.kakaoResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,9 @@ public class KakaoMapServiceImpl implements KakaoMapService{
         kakaoResponseDto kakaoResponseDto;
         try {
             kakaoResponseDto = objectMapper.readValue(response.getBody(), kakaoResponseDto.class);
+            JsonNode rootNode = objectMapper.readTree(response.getBody());
+            int totalCount = rootNode.path("meta").path("total_count").asInt();
+            kakaoResponseDto.saveTotalCount(totalCount);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

@@ -1,9 +1,6 @@
 package com.example.noticeboardservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
 import java.util.List;
@@ -11,6 +8,7 @@ import java.util.List;
 @Getter
 public class kakaoResponseDto{
     private List<AddressResponseDto> documents;
+    private int totalCount;
 
     @Getter
     public static class AddressResponseDto {
@@ -27,5 +25,9 @@ public class kakaoResponseDto{
         String phone; // 전화번호
         double x; // 경도 (Longitude)
         double y;// 위도 (Latitude)
+    }
+
+    public void saveTotalCount(int totalCount) {
+        this.totalCount = totalCount;
     }
 }
