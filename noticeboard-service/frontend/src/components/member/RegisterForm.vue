@@ -45,7 +45,11 @@
           <!-- 주소 입력 필드 -->
           <div class="form-group mt-3" @click="openPopup">
             <label class="form-label">주소</label>
-            <input type="text" class="form-control" v-model="selectedAddress" />
+            <input
+              type="text"
+              class="form-control"
+              v-model="selectedAddress.addressName"
+            />
           </div>
           <div class="form-group mt-5 mb-5">
             <button
@@ -87,6 +91,13 @@ const valueError = ref({
   emailError: '',
   usernameError: '',
   passwordError: '',
+})
+const selectedAddress = ref({
+  memberId: '',
+  addressName: '',
+  roadAddressName: '',
+  longitude: '',
+  latitude: '',
 })
 
 const onSave = async () => {
@@ -133,10 +144,12 @@ const passwordConfirm = e => {
 }
 
 const isPopupOpen = ref(false)
-const selectedAddress = ref('')
 
 const handleSelect = address => {
-  selectedAddress.value = address
+  selectedAddress.value.addressName = address.address_name
+  selectedAddress.value.roadAddressName = address.roadAddressName
+  selectedAddress.value.latitude = address.x
+  selectedAddress.value.longitude = address.y
   closePopup()
 }
 
