@@ -36,6 +36,6 @@ export function deleteMember(token, id) {
 }
 
 // 회원 주소 검색
-export function searchAddressByKakao(query) {
-  return axios.get(`/search?query=${query}`)
+export function searchAddressByKakao(query, page, limit) {
+  return axios.get(`/map?query=${query}&page=${page}&limit=${limit}`)
 }
