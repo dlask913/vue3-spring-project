@@ -74,12 +74,10 @@ const params = ref({
   _limit: 10,
 })
 const totalCount = ref(1)
-
 const searchQuery = ref('')
 const kakaoPlaces = ref([])
 
 const searchAddress = async query => {
-  params.value._page = 1
   try {
     const { data } = await searchAddressByKakao(
       query,
