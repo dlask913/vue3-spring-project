@@ -1,10 +1,12 @@
 package com.example.noticeboardservice.controller;
 
+import com.example.noticeboardservice.config.filter.JwtTokenFilter;
 import com.example.noticeboardservice.dto.LoginRequestDto;
 import com.example.noticeboardservice.dto.LoginResponseDto;
 import com.example.noticeboardservice.dto.MemberRequestDto;
 import com.example.noticeboardservice.dto.MemberResponseDto;
 import com.example.noticeboardservice.service.MemberService;
+import com.example.noticeboardservice.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MemberController.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false) // Security 필터 비활성화
 public class MemberControllerTest {
 
     @Autowired
@@ -29,6 +31,10 @@ public class MemberControllerTest {
 
     @MockBean
     private MemberService memberServiceImpl;
+    @MockBean
+    private JwtTokenUtil jwtTokenUtil;
+    @MockBean
+    private JwtTokenFilter jwtTokenFilter;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
