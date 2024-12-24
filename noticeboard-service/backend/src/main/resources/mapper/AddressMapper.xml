@@ -1,0 +1,8 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.noticeboardservice.mapper.AddressMapper">
+    <!-- 주소 데이터 생성 -->
+    <insert id="insertAddress" parameterType="AddressRequestDto">
+        INSERT INTO Addresses (member_id, address_name, road_address_name, latitude, longitude)
+        VALUES (#{memberId}, #{addressName}, #{roadAddressName}, #{longitude}, #{latitude})
+    </insert>
+</mapper>

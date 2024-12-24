@@ -15,10 +15,10 @@ public class MemberRequestDto {
     String username;
     @NotNull(message = "password 은 필수 값 입니다.")
     String password;
-    String address;
+    AddressRequestDto address;
 
     @Builder
-    public MemberRequestDto(Long id, String email, String username, String password, String address) {
+    public MemberRequestDto(Long id, String email, String username, String password, AddressRequestDto address) {
         this.id = id;
         this.email = email;
         this.username = username;

@@ -25,6 +25,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
     private final JwtTokenUtil jwtTokenUtil;
     private final ImageService imageServiceImpl;
+    private final AddressService addressServiceImpl;
     @Value("${member-img-location}")
     private String memberImgLocation;
 
@@ -48,7 +49,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public int registerMember(MemberRequestDto memberRequestDto) {
-        return memberMapper.insertMember(memberRequestDto);
+        int memberResult = memberMapper.insertMember(memberRequestDto);
+        int addressResult = addressServiceImpl.insertAddress(memberRequestDto.getAddress());
+        return memberResult & addressResult;
     }
     @Override
     public int updateMember(MemberRequestDto memberRequestDto, MultipartFile memberImg) {

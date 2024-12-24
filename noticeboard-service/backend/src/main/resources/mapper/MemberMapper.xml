@@ -11,7 +11,7 @@
     <!-- 회원 정보 수정 -->
     <update id="updateMember" parameterType="MemberRequestDto">
         UPDATE Members
-        SET username = #{username}, password = #{password}, address = #{address}
+        SET username = #{username}, password = #{password}
         WHERE id = #{id}
     </update>
 
@@ -23,7 +23,7 @@
             WHERE image_type = 'MEMBER'
         )
 
-        SELECT A.id, A.username, A.email, A.password, A.address,
+        SELECT A.id, A.username, A.email, A.password,
             COALESCE(B.img_url, '/image/memberDefaultImg.jpg') AS img_url
         FROM Members A
             LEFT JOIN MemberImg B ON A.id = B.type_id
@@ -32,14 +32,14 @@
 
     <!-- 회원 단일 조회 by Email -->
     <select id="findByEmail" resultMap="MemberResponseDtoMap" parameterType="String">
-        SELECT id, username, email, password, address, NULL AS img_url
+        SELECT id, username, email, password, NULL AS img_url
         FROM Members
         WHERE email = #{email}
     </select>
 
     <!-- 회원 데이터 모두 조회 -->
     <select id="findAllMembers" resultMap="MemberResponseDtoMap">
-        SELECT id, username, email, password, address, NULL AS img_url
+        SELECT id, username, email, password, NULL AS img_url
         FROM Members
     </select>
 
@@ -61,7 +61,6 @@
             <arg column="username" javaType="java.lang.String"/>
             <arg column="email" javaType="java.lang.String"/>
             <arg column="password" javaType="java.lang.String"/>
-            <arg column="address" javaType="java.lang.String"/>
             <arg column="img_url" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
