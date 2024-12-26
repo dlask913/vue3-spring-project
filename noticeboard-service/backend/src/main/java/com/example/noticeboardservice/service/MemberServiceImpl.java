@@ -50,8 +50,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public int registerMember(MemberRequestDto memberRequestDto) {
         int memberResult = memberMapper.insertMember(memberRequestDto);
-        int addressResult = addressServiceImpl.insertAddress(memberRequestDto.getAddress());
-        return memberResult & addressResult;
+
+        AddressRequestDto address = memberRequestDto.getAddress();
+        address.saveMemberId(memberRequestDto.getId());
+        int addressResult = addressServiceImpl.insertAddress(address);
+
+        return (memberResult > 0 && addressResult > 0) ? 1 : 0;
     }
     @Override
     public int updateMember(MemberRequestDto memberRequestDto, MultipartFile memberImg) {
