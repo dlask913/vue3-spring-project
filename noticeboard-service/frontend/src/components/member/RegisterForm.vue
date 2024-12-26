@@ -86,6 +86,7 @@ const member = ref({
   username: '',
   passwordTemp: '',
   password: '',
+  address: {},
 })
 const valueError = ref({
   emailError: '',
@@ -150,6 +151,7 @@ const handleSelect = address => {
   selectedAddress.value.roadAddressName = address.roadAddressName
   selectedAddress.value.latitude = address.x
   selectedAddress.value.longitude = address.y
+  member.value.address = selectedAddress.value // 주소 객체 저장
   closePopup()
 }
 
