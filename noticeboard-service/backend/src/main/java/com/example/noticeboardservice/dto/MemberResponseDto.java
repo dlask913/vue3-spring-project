@@ -6,6 +6,7 @@ public record MemberResponseDto (
         String username,
         String email,
         String password,
-        String imgUrl
+        String imgUrl,
+        String address
 ){
 }
