@@ -14,7 +14,7 @@ public interface MemberService extends UserDetailsService {
     int registerMember(MemberRequestDto memberRequestDto);
     int updateMember(MemberRequestDto memberRequestDto, MultipartFile memberImg);
     MemberResponseDto findMember(Long memberId);
-    Optional<MemberResponseDto> findByEmail(String email);
+    Optional<MemberResponseDto> findMemberByEmail(String email);
     int deleteMember(Long memberId);
     List<MemberResponseDto> findAllMembers();
 

@@ -1,6 +1,7 @@
 package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.*;
+import com.example.noticeboardservice.exception.MemberDuplicateException;
 import com.example.noticeboardservice.exception.MemberNotFoundException;
 import com.example.noticeboardservice.exception.PasswordMismatchException;
 import com.example.noticeboardservice.mapper.MemberMapper;
@@ -31,7 +32,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        MemberResponseDto memberResponseDto = findByEmail(loginRequestDto.getEmail())
+        MemberResponseDto memberResponseDto = findMemberByEmail(loginRequestDto.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
 
         if (!(memberResponseDto.email().equals(loginRequestDto.getEmail())
@@ -49,6 +50,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public int registerMember(MemberRequestDto memberRequestDto) {
+        if(findMemberByEmail(memberRequestDto.getEmail()).isPresent()){ // 이메일 중복 체크
+            throw new MemberDuplicateException();
+        }
+
         int memberResult = memberMapper.insertMember(memberRequestDto);
 
         AddressRequestDto address = memberRequestDto.getAddress();
@@ -82,8 +87,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Optional<MemberResponseDto> findByEmail(String email) {
-        return Optional.ofNullable(memberMapper.findByEmail(email));
+    public Optional<MemberResponseDto> findMemberByEmail(String email) {
+        return Optional.ofNullable(memberMapper.findMemberByEmail(email));
     }
 
     @Override
@@ -102,7 +107,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        MemberResponseDto member = findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        MemberResponseDto member = findMemberByEmail(email).orElseThrow(MemberNotFoundException::new);
         return new User(
                 member.email(), member.password(),
                 true, true, true, true,

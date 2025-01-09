@@ -13,6 +13,6 @@ public interface MemberMapper {
     MemberResponseDto findMember(Long memberId);
     int deleteMember(Long memberId);
     List<MemberResponseDto> findAllMembers();
-    MemberResponseDto findByEmail(String email);
+    MemberResponseDto findMemberByEmail(String email);
     void deleteAll();
 }

@@ -35,4 +35,12 @@ public class GlobalExceptionController {
         return ResponseEntity.status(responseError.getStatus()).body(responseError);
     }
 
+    @ExceptionHandler(MemberDuplicateException.class)
+    public ResponseEntity<ExceptionDto> handleMemberDuplicateException(MemberDuplicateException e) {
+        final ExceptionDto responseError = ExceptionDto.builder()
+                .status(e.getStatus())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(responseError.getStatus()).body(responseError);
+    }
 }
