@@ -3,6 +3,7 @@ package com.example.noticeboardservice.service;
 import com.example.noticeboardservice.dto.LoginRequestDto;
 import com.example.noticeboardservice.dto.MemberRequestDto;
 import com.example.noticeboardservice.dto.MemberResponseDto;
+import com.example.noticeboardservice.exception.MemberDuplicateException;
 import com.example.noticeboardservice.exception.MemberNotFoundException;
 import com.example.noticeboardservice.exception.PasswordMismatchException;
 import com.example.noticeboardservice.mapper.MemberMapper;
@@ -42,7 +43,7 @@ class MemberServiceTest {
         memberServiceImpl.registerMember(memberRequestDto);
 
         // then
-        MemberResponseDto findMember = memberMapper.findByEmail(memberRequestDto.getEmail());
+        MemberResponseDto findMember = memberMapper.findMemberByEmail(memberRequestDto.getEmail());
         Assertions.assertThat(findMember.email()).isEqualTo(memberRequestDto.getEmail());
         Assertions.assertThat(findMember.password()).isEqualTo(memberRequestDto.getPassword());
         Assertions.assertThat(findMember.username()).isEqualTo(memberRequestDto.getUsername());
@@ -86,14 +87,14 @@ class MemberServiceTest {
         // given
         MemberRequestDto memberRequestDto = createMemberDto(0L, "register@test.com", "1234", "limnj1");
         memberServiceImpl.registerMember(memberRequestDto);
-        MemberResponseDto findMember = memberServiceImpl.findByEmail(memberRequestDto.getEmail()).orElseThrow();
+        MemberResponseDto findMember = memberServiceImpl.findMemberByEmail(memberRequestDto.getEmail()).orElseThrow();
         MemberRequestDto updateDto = createMemberDto(findMember.id(), findMember.email(), "12345", "limnj2");
 
         // when
         memberServiceImpl.updateMember(updateDto, null);
 
         // then
-        MemberResponseDto updateMember = memberMapper.findByEmail(memberRequestDto.getEmail());
+        MemberResponseDto updateMember = memberMapper.findMemberByEmail(memberRequestDto.getEmail());
         Assertions.assertThat(updateMember.password()).isEqualTo(updateDto.getPassword());
         Assertions.assertThat(updateMember.username()).isEqualTo(updateDto.getUsername());
     }
@@ -104,7 +105,7 @@ class MemberServiceTest {
         // given
         MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
         memberServiceImpl.registerMember(memberRequestDto);
-        MemberResponseDto findMember = memberMapper.findByEmail(memberRequestDto.getEmail());
+        MemberResponseDto findMember = memberMapper.findMemberByEmail(memberRequestDto.getEmail());
 
         // when
         memberServiceImpl.deleteMember(findMember.id());
@@ -119,7 +120,7 @@ class MemberServiceTest {
         // given
         MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
         memberServiceImpl.registerMember(memberRequestDto);
-        MemberResponseDto member = memberMapper.findByEmail(memberRequestDto.getEmail());
+        MemberResponseDto member = memberMapper.findMemberByEmail(memberRequestDto.getEmail());
 
         // when
         MemberResponseDto findMember = memberServiceImpl.findMember(member.id());
@@ -137,7 +138,7 @@ class MemberServiceTest {
         // given
         MemberRequestDto memberRequestDto = createMemberDto(0L, "register@test.com", "1234", "limnj1");
         memberServiceImpl.registerMember(memberRequestDto);
-        MemberResponseDto findMember = memberServiceImpl.findByEmail(memberRequestDto.getEmail()).orElseThrow();
+        MemberResponseDto findMember = memberServiceImpl.findMemberByEmail(memberRequestDto.getEmail()).orElseThrow();
         MemberRequestDto updateDto = createMemberDto(findMember.id(), memberRequestDto.getEmail(), memberRequestDto.getPassword(), memberRequestDto.getUsername());
         MockMultipartFile memberImg = new MockMultipartFile(
                 "회원 이미지",
@@ -152,6 +153,20 @@ class MemberServiceTest {
         // then
         MemberResponseDto updateMember = memberMapper.findMember(findMember.id());
         Assertions.assertThat(updateMember.imgUrl()).startsWith("/images/member/");
+    }
+
+    @Test
+    @DisplayName("회원 가입 시 이미 사용중인 이메일은 사용할 수 없다.")
+    void MemberDuplicateExceptionTest() {
+        // given
+        MemberRequestDto memberRequestDto1 = createMemberDto(0L,"register1@test.com", "1234", "limnj1");
+        MemberRequestDto memberRequestDto2 = createMemberDto(0L,"register1@test.com", "1234", "limnj1");
+        memberMapper.insertMember(memberRequestDto1);
+
+        // when // then
+        assertThrows(MemberDuplicateException.class, () -> {
+            memberServiceImpl.registerMember(memberRequestDto2);
+        }, "이미 사용중인 이메일입니다.");
     }
 
     private static MemberRequestDto createMemberDto(Long memberId, String email, String password, String username) {

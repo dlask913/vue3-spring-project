@@ -78,7 +78,7 @@ public class MemberControllerTest {
     public void findMemberTest() throws Exception {
         // given
         Long memberId = 1L;
-        MemberResponseDto responseDto = new MemberResponseDto(1L, "limnj", "limnj@test.com", "1234", "memberImg");
+        MemberResponseDto responseDto = new MemberResponseDto(1L, "limnj", "limnj@test.com", "1234", "memberImg", "address");
         Mockito.when(memberServiceImpl.findMember(memberId)).thenReturn(responseDto);
 
         // when // then

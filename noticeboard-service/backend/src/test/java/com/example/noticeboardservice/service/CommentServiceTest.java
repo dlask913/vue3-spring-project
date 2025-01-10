@@ -205,7 +205,7 @@ class CommentServiceTest {
     }
 
     private MemberResponseDto getMember(String email){
-        MemberResponseDto findMember = memberMapper.findByEmail(email);
+        MemberResponseDto findMember = memberMapper.findMemberByEmail(email);
         if (findMember == null) {
             MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                     .email(email)
@@ -213,7 +213,7 @@ class CommentServiceTest {
                     .username("limnj1")
                     .build();
             memberMapper.insertMember(memberRequestDto);
-            return memberMapper.findByEmail(email);
+            return memberMapper.findMemberByEmail(email);
         }
         return findMember;
     }

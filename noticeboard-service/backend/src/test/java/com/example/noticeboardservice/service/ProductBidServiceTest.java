@@ -2,7 +2,6 @@ package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.exception.BidPriceBelowCurrentException;
-import com.example.noticeboardservice.exception.PasswordMismatchException;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.ProductBidHistoryMapper;
 import com.example.noticeboardservice.mapper.ProductMapper;
@@ -13,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -96,7 +93,7 @@ class ProductBidServiceTest {
     }
 
     private MemberResponseDto getMember(String email){
-        MemberResponseDto findMember = memberMapper.findByEmail(email);
+        MemberResponseDto findMember = memberMapper.findMemberByEmail(email);
         if (findMember == null) {
             MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                     .email(email)
@@ -104,7 +101,7 @@ class ProductBidServiceTest {
                     .username("limnj1")
                     .build();
             memberMapper.insertMember(memberRequestDto);
-            return memberMapper.findByEmail(email);
+            return memberMapper.findMemberByEmail(email);
         }
         return findMember;
     }

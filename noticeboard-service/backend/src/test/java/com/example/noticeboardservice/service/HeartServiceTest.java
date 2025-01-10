@@ -120,7 +120,7 @@ class HeartServiceTest {
     }
 
     private Long getMemberId(String email){
-        MemberResponseDto findMember = memberMapper.findByEmail(email);
+        MemberResponseDto findMember = memberMapper.findMemberByEmail(email);
         if (findMember == null) {
             MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                     .email(email)
@@ -128,7 +128,7 @@ class HeartServiceTest {
                     .username("limnj1")
                     .build();
             memberMapper.insertMember(memberRequestDto);
-            return memberMapper.findByEmail(email).id();
+            return memberMapper.findMemberByEmail(email).id();
         }
         return findMember.id();
     }

@@ -113,7 +113,7 @@ class ImageServiceTest {
     }
 
     private Long getMemberId(String email){
-        MemberResponseDto findMember = memberMapper.findByEmail(email);
+        MemberResponseDto findMember = memberMapper.findMemberByEmail(email);
         if (findMember == null) {
             MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                     .email(email)
@@ -121,7 +121,7 @@ class ImageServiceTest {
                     .username(email.split("@")[0])
                     .build();
             memberMapper.insertMember(memberRequestDto);
-            return memberMapper.findByEmail(email).id();
+            return memberMapper.findMemberByEmail(email).id();
         }
         return findMember.id();
     }

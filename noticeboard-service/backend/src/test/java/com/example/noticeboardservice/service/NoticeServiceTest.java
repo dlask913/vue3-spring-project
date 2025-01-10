@@ -274,7 +274,7 @@ class NoticeServiceTest {
     }
 
     private Long getMemberId(String email, String username){
-        MemberResponseDto findMember = memberMapper.findByEmail(email);
+        MemberResponseDto findMember = memberMapper.findMemberByEmail(email);
         if (findMember == null) {
             MemberRequestDto memberRequestDto = MemberRequestDto.builder()
                     .email(email)
@@ -282,7 +282,7 @@ class NoticeServiceTest {
                     .username(username)
                     .build();
             memberMapper.insertMember(memberRequestDto);
-            return memberMapper.findByEmail(email).id();
+            return memberMapper.findMemberByEmail(email).id();
         }
         return findMember.id();
     }
