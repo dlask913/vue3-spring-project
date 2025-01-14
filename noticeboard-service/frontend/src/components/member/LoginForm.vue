@@ -88,11 +88,6 @@ const onLogin = async () => {
     router.push('/')
   } catch (error) {
     console.error(error)
-    if (error.response.data.status == 500) {
-      toast.setToast('알 수 없는 오류가 발생하였습니다.', 'danger')
-    } else {
-      toast.setToast(error.response.data.message, 'danger')
-    }
   }
 }
 </script>

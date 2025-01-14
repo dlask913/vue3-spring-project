@@ -130,13 +130,7 @@ const onSave = async () => {
     toast.setToast('회원가입 완료!')
     router.push('/')
   } catch (error) {
-    const { status, data } = error.response
-    if (status === 400 && data.message === '이미 사용중인 이메일입니다.') {
-      toast.setToast(data.message, 'danger')
-    } else {
-      console.error(error)
-      toast.setToast('회원가입 실패!', 'danger')
-    }
+    console.error(error)
   }
 }
 
