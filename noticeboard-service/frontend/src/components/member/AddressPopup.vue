@@ -23,6 +23,7 @@
               type="text"
               class="form-control mb-3 me-3"
               placeholder="주소 검색"
+              @keyup.enter="searchAddress(searchQuery)"
             />
             <button
               class="btn btn-outline-success col-auto same-height"
