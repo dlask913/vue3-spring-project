@@ -79,8 +79,11 @@ const product = ref({
 const getProduct = async () => {
   try {
     const { data } = await getProductById(productId)
-    product.value = data
-    product.value.imgUrl = 'http://localhost:8080' + product.value.imgUrl
+    product.value = {
+      ...data,
+      imgUrl: `http://localhost:8080${data.imgUrl}`,
+      latestPrice: data.latestPrice ?? data.standardPrice, // latestPrice 가 null 이나 undefined 면 standardPrice 할당
+    };
   } catch (error) {
     console.error(error)
   }
