@@ -68,12 +68,18 @@
             SELECT *
             FROM images
             WHERE image_type = 'PRODUCT'
+        ),
+        RankedBids AS (
+            SELECT product_id, bid_price, customer_id,
+            ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY created_at DESC) AS latest
+            FROM Bid_History
         )
 
-        SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
-            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date
+        SELECT A.id, A.title, A.content, A.category, COALESCE(C.bid_price, A.standard_price) AS standard_price,
+            A.owner_id, COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date
         FROM Products A
             LEFT JOIN ProductImg B ON A.id = B.type_id
+            LEFT JOIN RankedBids C ON A.id = C.product_id AND C.latest = 1
         WHERE 1=1
         <if test="params.title != null">
             AND A.title LIKE CONCAT('%', #{params.title}, '%')
