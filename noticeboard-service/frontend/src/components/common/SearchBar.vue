@@ -33,6 +33,12 @@
 import { ref } from 'vue'
 
 const emit = defineEmits(['handle-search'])
+const props = defineProps({
+  searchOptions: {
+    type: Array,
+    required: true,
+  },
+})
 
 const searchValue = ref('')
 const selectedOption = ref('title')
