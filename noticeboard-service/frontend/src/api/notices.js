@@ -14,8 +14,10 @@ export function getNoticesByKeyword(page, limit, option, value, sort, order) {
   )
 }
 
-export function getNoticeById(id) {
-  return axios.get(`/notice/${id}`)
+export function getNoticeById(token, id) {
+  return axios.get(`/notice/${id}`, {
+    headers: { Authorization: token },
+  })
 }
 
 export function createNotice(token, data) {

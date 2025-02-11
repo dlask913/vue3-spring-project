@@ -52,7 +52,7 @@ const noticeId = route.params.id
 
 const getNotice = async () => {
   try {
-    const { data } = await getNoticeById(noticeId)
+    const { data } = await getNoticeById(storage.getToken, noticeId)
     notice.value = data
   } catch (error) {
     console.error(error)

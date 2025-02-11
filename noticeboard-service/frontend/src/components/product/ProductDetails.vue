@@ -83,7 +83,7 @@ const getProduct = async () => {
       ...data,
       imgUrl: `http://localhost:8080${data.imgUrl}`,
       latestPrice: data.latestPrice ?? data.standardPrice, // latestPrice 가 null 이나 undefined 면 standardPrice 할당
-    };
+    }
   } catch (error) {
     console.error(error)
   }
