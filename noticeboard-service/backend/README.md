@@ -94,7 +94,6 @@ CREATE TABLE Bid_History (
 
 CREATE INDEX idx_bid_productid_createdat ON Bid_History (product_id, created_at DESC);
 
-
 CREATE TABLE Categories (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL, 
@@ -109,6 +108,15 @@ CREATE TABLE Addresses (
     latitude DECIMAL(10, 8) NOT NULL,
     longitude DECIMAL(11, 8) NOT NULL,
     FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Messages (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    sender_id BIGINT NOT NULL,
+    receiver_id BIGINT NOT NULL,
+    content VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES Members(id) ON DELETE CASCADE
 );
 
 ```
