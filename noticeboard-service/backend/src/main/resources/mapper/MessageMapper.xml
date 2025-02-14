@@ -16,4 +16,13 @@
         DELETE FROM Messages
         WHERE id = #{id}
     </delete>
+    <!-- 모든 쪽지 조회 -->
+    <select id="findAllMessages" resultType="MessageDto">
+        SELECT id, sender_id, receiver_id, content
+        FROM Messages
+    </select>
+    <!-- 모든 쪽지 삭제 -->
+    <delete id="deleteAllMessages">
+        DELETE FROM Messages
+    </delete>
 </mapper>

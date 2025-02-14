@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MessageServiceImpl implements MessageService{
     private final MessageMapper messageMapper;
     @Override
-    public int saveMessage(MessageDto messageDto) {
+    public int sendMessage(MessageDto messageDto) {
         return messageMapper.insertMessage(messageDto);
     }
 

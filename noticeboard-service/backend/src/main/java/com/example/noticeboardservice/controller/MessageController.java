@@ -16,7 +16,7 @@ public class MessageController {
     @PostMapping("/message")
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "쪽지 저장 API")
     private ResponseEntity<String> saveMessage(@RequestBody MessageDto messageDto) {
-        int result = messageServiceImpl.saveMessage(messageDto);
+        int result = messageServiceImpl.sendMessage(messageDto);
         if (result <= 0){
             return ResponseEntity.badRequest().body("메시지 전송에 실패하였습니다.");
         }
