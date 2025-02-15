@@ -78,8 +78,8 @@ class ReplyControllerTest {
         mockMvc.perform(get("/replies/{commentId}", commentId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].content").value("content"));
+                .andExpect(jsonPath("$[0].id").value(responseDtos.get(0).id()))
+                .andExpect(jsonPath("$[0].content").value(responseDtos.get(0).id()));
 
         Mockito.verify(replyServiceImpl, Mockito.times(1)).findRepliesByCommentId(commentId);
     }

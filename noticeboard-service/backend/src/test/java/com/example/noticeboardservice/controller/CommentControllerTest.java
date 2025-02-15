@@ -75,9 +75,9 @@ class CommentControllerTest {
         mockMvc.perform(get("/comment/1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].content").value("content"))
-                .andExpect(jsonPath("$[0].username").value("limnj"));
+                .andExpect(jsonPath("$[0].id").value(responseDto.id()))
+                .andExpect(jsonPath("$[0].content").value(responseDto.content()))
+                .andExpect(jsonPath("$[0].username").value(responseDto.username()));
 
         Mockito.verify(commentServiceImpl, Mockito.times(1)).findCommentsByNoticeId(anyLong());
     }
@@ -106,10 +106,9 @@ class CommentControllerTest {
         Mockito.when(commentServiceImpl.deleteComment(anyLong())).thenReturn(1);
 
         // when // then
-        mockMvc.perform(delete("/comment/1")
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/comment/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("삭제 완료되었습니다.")); // todo: 한글 깨짐
+                .andExpect(content().string("삭제 완료되었습니다."));
 
         Mockito.verify(commentServiceImpl, Mockito.times(1)).deleteComment(anyLong());
     }
@@ -122,16 +121,16 @@ class CommentControllerTest {
         Mockito.when(commentServiceImpl.findCommentsByUser(any(String.class))).thenReturn(List.of(responseDto));
 
         Authentication mockAuthentication = Mockito.mock(Authentication.class);
-        Mockito.when(mockAuthentication.getName()).thenReturn("limnj");
+        Mockito.when(mockAuthentication.getName()).thenReturn(responseDto.username());
 
         // when // then
         mockMvc.perform(get("/member/comments")
                         .principal(mockAuthentication)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].content").value("content"))
-                .andExpect(jsonPath("$[0].username").value("limnj"));
+                .andExpect(jsonPath("$[0].id").value(responseDto.id()))
+                .andExpect(jsonPath("$[0].content").value(responseDto.content()))
+                .andExpect(jsonPath("$[0].username").value(responseDto.username()));
 
         Mockito.verify(commentServiceImpl, Mockito.times(1)).findCommentsByUser(any(String.class));
     }

@@ -127,17 +127,17 @@ class NoticeControllerTest {
     @DisplayName("모든 게시글을 조회한다")
     void getAllNoticesTest() throws Exception {
         // given
-        List<NoticeResponseDto> mockResponse = Collections.singletonList(
+        List<NoticeResponseDto> responseDto = Collections.singletonList(
                 new NoticeResponseDto(1L, "title", "content", "2024-12-18", "2024-12-18", 1L, "limnj", "limnj@test.com", 10L));
-        Mockito.when(noticeServiceImpl.findAllNotices(anyMap())).thenReturn(mockResponse);
+        Mockito.when(noticeServiceImpl.findAllNotices(anyMap())).thenReturn(responseDto);
 
         // when // then
         mockMvc.perform(get("/notices/all")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].title").value("title"))
-                .andExpect(jsonPath("$[0].content").value("content"));
+                .andExpect(jsonPath("$[0].id").value(responseDto.get(0).id()))
+                .andExpect(jsonPath("$[0].title").value(responseDto.get(0).title()))
+                .andExpect(jsonPath("$[0].content").value(responseDto.get(0).content()));
 
         Mockito.verify(noticeServiceImpl, Mockito.times(1)).findAllNotices(anyMap());
     }
@@ -146,21 +146,21 @@ class NoticeControllerTest {
     @DisplayName("내가 쓴 게시글을 조회한다")
     void findCommentsByUserTest() throws Exception {
         // given
-        List<NoticeResponseDto> mockResponse = Collections.singletonList(
+        List<NoticeResponseDto> responseDto = Collections.singletonList(
                 new NoticeResponseDto(1L, "title", "content", "2024-12-18", "2024-12-18", 1L, "limnj", "limnj@test.com", 10L));
-        Mockito.when(noticeServiceImpl.findNoticesByUser(anyString())).thenReturn(mockResponse);
+        Mockito.when(noticeServiceImpl.findNoticesByUser(anyString())).thenReturn(responseDto);
 
         Authentication mockAuthentication = Mockito.mock(Authentication.class);
-        Mockito.when(mockAuthentication.getName()).thenReturn("limnj@test.com");
+        Mockito.when(mockAuthentication.getName()).thenReturn(responseDto.get(0).email());
 
         // when // then
         mockMvc.perform(get("/member/notices")
                         .principal(mockAuthentication)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].title").value("title"))
-                .andExpect(jsonPath("$[0].content").value("content"));
+                .andExpect(jsonPath("$[0].id").value(responseDto.get(0).id()))
+                .andExpect(jsonPath("$[0].title").value(responseDto.get(0).title()))
+                .andExpect(jsonPath("$[0].content").value(responseDto.get(0).content()));
 
         Mockito.verify(noticeServiceImpl, Mockito.times(1)).findNoticesByUser(anyString());
     }

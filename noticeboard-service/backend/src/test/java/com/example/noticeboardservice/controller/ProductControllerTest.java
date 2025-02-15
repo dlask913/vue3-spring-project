@@ -74,22 +74,21 @@ class ProductControllerTest {
         ProductDetailsResponseDto responseDto =
                 new ProductDetailsResponseDto(1L, "상품 제목", "상품 내용","FURNITURE",10000, 9500,"productImg",1L,2L,"2024-12-21");
 
-        Mockito.when(productServiceImpl.findProduct(1L)).thenReturn(responseDto);
+        Mockito.when(productServiceImpl.findProduct(anyLong())).thenReturn(responseDto);
 
         // when // then
-        mockMvc.perform(get("/product/{productId}", 1L)
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/product/{productId}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.title").value("상품 제목"))
-                .andExpect(jsonPath("$.content").value("상품 내용"))
-                .andExpect(jsonPath("$.category").value("FURNITURE"))
-                .andExpect(jsonPath("$.standardPrice").value(10000))
-                .andExpect(jsonPath("$.latestPrice").value(9500))
-                .andExpect(jsonPath("$.imgUrl").value("productImg"))
-                .andExpect(jsonPath("$.ownerId").value(1L))
-                .andExpect(jsonPath("$.customerId").value(2L))
-                .andExpect(jsonPath("$.postDate").value("2024-12-21"));
+                .andExpect(jsonPath("$.id").value(responseDto.id()))
+                .andExpect(jsonPath("$.title").value(responseDto.title()))
+                .andExpect(jsonPath("$.content").value(responseDto.content()))
+                .andExpect(jsonPath("$.category").value(responseDto.category()))
+                .andExpect(jsonPath("$.standardPrice").value(responseDto.standardPrice()))
+                .andExpect(jsonPath("$.latestPrice").value(responseDto.latestPrice()))
+                .andExpect(jsonPath("$.imgUrl").value(responseDto.imgUrl()))
+                .andExpect(jsonPath("$.ownerId").value(responseDto.ownerId()))
+                .andExpect(jsonPath("$.customerId").value(responseDto.customerId()))
+                .andExpect(jsonPath("$.postDate").value(responseDto.postDate()));
 
         Mockito.verify(productServiceImpl, Mockito.times(1)).findProduct(1L);
     }
