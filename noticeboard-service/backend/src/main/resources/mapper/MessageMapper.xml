@@ -25,4 +25,16 @@
     <delete id="deleteAllMessages">
         DELETE FROM Messages
     </delete>
+    <!-- 받은 메시지 모두 조회 -->
+    <select id="findReceivedMessagesByMemberId" parameterType="long" resultType="MessageDto">
+        SELECT id, sender_id, receiver_id, content
+        FROM Messages
+        WHERE receiver_id=#{memberId}
+    </select>
+    <!-- 보낸 메시지 모두 조회 -->
+    <select id="findSentMessagesByMemberId" parameterType="long" resultType="MessageDto">
+        SELECT id, sender_id, receiver_id, content
+        FROM Messages
+        WHERE sender_id=#{memberId}
+    </select>
 </mapper>

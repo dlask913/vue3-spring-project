@@ -1,25 +1,20 @@
 package com.example.noticeboardservice.controller;
 
 import com.example.noticeboardservice.config.filter.JwtTokenFilter;
-import com.example.noticeboardservice.dto.CommentRequestDto;
 import com.example.noticeboardservice.dto.MessageDto;
-import com.example.noticeboardservice.dto.NoticeResponseDto;
 import com.example.noticeboardservice.service.MessageService;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

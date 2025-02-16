@@ -12,4 +12,6 @@ public interface MessageMapper {
     MessageDto findMessageByMessageId(Long messageId);
     List<MessageDto> findAllMessages();
     void deleteAllMessages();
+    List<MessageDto> findReceivedMessagesByMemberId(Long memberId);
+    List<MessageDto> findSentMessagesByMemberId(Long memberId);
 }
