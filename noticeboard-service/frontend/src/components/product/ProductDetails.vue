@@ -30,6 +30,10 @@
         >
           참여하기
         </button>
+        <button class="btn btn-primary me-2" @click="isPopupOpen = true">
+          메시지 작성
+        </button>
+        <MessagePopup v-model:is-open="isPopupOpen" @send="handleMessageSend" />
         <button
           type="submit"
           class="btn btn-secondary"
@@ -54,6 +58,7 @@ import { ref, onMounted } from 'vue'
 import { useStorageStore, useToastStore } from '@/store/index'
 import { getProductById, createProductBid } from '@/api/products'
 import Modal from '@/components/common/Modal.vue'
+import MessagePopup from '@/components/common/MessagePopup.vue'
 
 const route = useRoute()
 const storage = useStorageStore()
@@ -62,6 +67,7 @@ const toast = useToastStore()
 const productId = route.params.id
 const showModal = ref(false)
 const showMessage = ref('')
+const isPopupOpen = ref(false)
 
 const product = ref({
   id: '',
@@ -118,6 +124,10 @@ const onQuit = async (isConfirmed, bidPrice) => {
     console.error(error)
     toast.setToast('가격 입력에 실패하였습니다.', 'danger')
   }
+}
+
+const handleMessageSend = message => {
+  alert(`${message}`)
 }
 
 onMounted(getProduct)

@@ -6,7 +6,7 @@
     aria-labelledby="confirmModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="confirmModalLabel">알림</h1>
