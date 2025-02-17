@@ -13,7 +13,7 @@
     </div>
     <div class="d-flex justify-content-end mt-4">
       <button class="btn btn-secondary me-2" @click="$router.push('/post')">
-        뒤로 가기
+        목록
       </button>
       <button
         v-if="isEditable"
