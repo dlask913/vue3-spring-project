@@ -33,7 +33,11 @@
         <button class="btn btn-primary me-2" @click="isPopupOpen = true">
           메시지 작성
         </button>
-        <MessagePopup v-model:is-open="isPopupOpen" @send="handleMessageSend" />
+        <MessagePopup
+          v-model:is-open="isPopupOpen"
+          v-model:receiver-id="product.ownerId"
+          @send="handleMessageSend"
+        />
         <button
           type="submit"
           class="btn btn-secondary"
@@ -124,10 +128,6 @@ const onQuit = async (isConfirmed, bidPrice) => {
     console.error(error)
     toast.setToast('가격 입력에 실패하였습니다.', 'danger')
   }
-}
-
-const handleMessageSend = message => {
-  alert(`${message}`)
 }
 
 onMounted(getProduct)

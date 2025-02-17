@@ -19,5 +19,6 @@ const toast = useToastStore()
   position: fixed;
   top: 10px;
   right: 10px;
+  z-index: 1100; /* 모달보다 높은 값 */
 }
 </style>

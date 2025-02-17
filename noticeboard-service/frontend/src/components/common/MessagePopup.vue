@@ -24,7 +24,9 @@
             ></textarea>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-primary" @click="sendMessage">전송</button>
+            <button class="btn btn-primary" @click="handleMessageSend">
+              전송
+            </button>
             <button class="btn btn-secondary" @click="closePopup">취소</button>
           </div>
         </div>
@@ -35,18 +37,39 @@
 
 <script setup>
 import { ref, defineEmits, defineProps } from 'vue'
+import { sendMessage } from '@/api/messages'
+import { useStorageStore, useToastStore } from '@/store/index'
 
-const props = defineProps({ isOpen: Boolean })
-const emit = defineEmits(['update:isOpen', 'send'])
+const props = defineProps({ isOpen: Boolean, receiverId: String })
+const emit = defineEmits(['update:isOpen'])
+const storage = useStorageStore()
+const toast = useToastStore()
 const message = ref('')
 
 const closePopup = () => {
   emit('update:isOpen', false) // 부모 컴포넌트의 isPopupOpen 필드를 false 로 변경
 }
 
-const sendMessage = () => {
-  if (!message.value.trim()) return
-  emit('send', message.value)
+const handleMessageSend = async () => {
+  if (!storage.isLogin) {
+    toast.setToast('로그인해주세요.', 'danger')
+    return
+  }
+  if (!message.value.trim()) {
+    toast.setToast('메시지를 입력해주세요.', 'danger')
+    return
+  }
+
+  const data = ref({
+    senderId: storage.userId,
+    receiverId: props.receiverId,
+    content: message.value,
+  })
+  try {
+    await sendMessage(storage.getToken, data.value)
+  } catch (e) {
+    console.error(e)
+  }
   message.value = ''
   closePopup()
 }
