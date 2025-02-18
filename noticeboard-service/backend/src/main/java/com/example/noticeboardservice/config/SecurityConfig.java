@@ -39,6 +39,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST,"/heart").authenticated()
                                 .requestMatchers(HttpMethod.POST,"/reply").authenticated()
                                 .requestMatchers(HttpMethod.POST,"/bid").authenticated()
+                                .requestMatchers("/message/*").authenticated()
                                 .anyRequest().permitAll()
                 )
                 // security 6.1.0 부터 권장
