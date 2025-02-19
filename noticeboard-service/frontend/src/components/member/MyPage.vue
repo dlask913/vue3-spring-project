@@ -167,7 +167,7 @@
                 <p class="card-text">{{ message.content }}</p>
               </div>
               <p class="card-text">
-                <small class="text-muted">Sent on {{ message.postDate }}</small>
+                <small class="text-muted">Sent on {{ message.createdAt }}</small>
               </p>
             </div>
           </div>
@@ -185,7 +185,7 @@
                 <p class="card-text">{{ message.content }}</p>
               </div>
               <p class="card-text">
-                <small class="text-muted">Sent on {{ message.postDate }}</small>
+                <small class="text-muted">Sent on {{ message.createdAt }}</small>
               </p>
             </div>
           </div>

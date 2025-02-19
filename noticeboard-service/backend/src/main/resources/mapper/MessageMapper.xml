@@ -7,7 +7,7 @@
     </insert>
     <!-- 쪽지 상세 조회 -->
     <select id="findMessageByMessageId" parameterType="long" resultType="MessageDto">
-        SELECT sender_id, receiver_id, content
+        SELECT sender_id, receiver_id, content, created_at
         FROM Messages
         WHERE id = #{id}
     </select>
@@ -18,7 +18,7 @@
     </delete>
     <!-- 모든 쪽지 조회 -->
     <select id="findAllMessages" resultType="MessageDto">
-        SELECT id, sender_id, receiver_id, content
+        SELECT id, sender_id, receiver_id, content, created_at
         FROM Messages
     </select>
     <!-- 모든 쪽지 삭제 -->
@@ -27,14 +27,14 @@
     </delete>
     <!-- 받은 메시지 모두 조회 -->
     <select id="findReceivedMessagesByMemberId" parameterType="long" resultType="MessageDto">
-        SELECT id, sender_id, receiver_id, content
+        SELECT id, sender_id, receiver_id, content, created_at
         FROM Messages
-        WHERE receiver_id=#{memberId}
+        WHERE receiver_id = #{memberId}
     </select>
     <!-- 보낸 메시지 모두 조회 -->
     <select id="findSentMessagesByMemberId" parameterType="long" resultType="MessageDto">
-        SELECT id, sender_id, receiver_id, content
+        SELECT id, sender_id, receiver_id, content, created_at
         FROM Messages
-        WHERE sender_id=#{memberId}
+        WHERE sender_id = #{memberId}
     </select>
 </mapper>
