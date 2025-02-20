@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -96,6 +98,53 @@ class MessageServiceTest {
         assertThat(findMessage.getReceiverId()).isEqualTo(savedMessage.getReceiverId());
     }
 
+    @Test
+    @DisplayName("사용자가 받은 모든 메시지를 조회한다")
+    void findReceivedMessagesByMemberIdTest() {
+        // given
+        MemberResponseDto receiver = getMember("limnjReceiver@test.com");
+        MemberResponseDto sender1 = getMember("limnj1@test.com");
+        MemberResponseDto sender2 = getMember("limnj2@test.com");
+
+        MessageDto message1 = MessageDto.builder().content("받은 메시지 1").senderId(sender1.id()).receiverId(receiver.id()).build();
+        MessageDto message2 = MessageDto.builder().content("받은 메시지 2").senderId(sender2.id()).receiverId(receiver.id()).build();
+        messageServiceImpl.sendMessage(message1);
+        messageServiceImpl.sendMessage(message2);
+
+        // when
+        List<MessageDto> receivedMessages = messageServiceImpl.findReceivedMessagesByMemberId(receiver.id());
+
+        // then
+        assertThat(receivedMessages).hasSize(2);
+        assertThat(receivedMessages.get(0).getReceiverId()).isEqualTo(receiver.id());
+        assertThat(receivedMessages.get(0).getContent()).isEqualTo(message1.getContent());
+        assertThat(receivedMessages.get(1).getReceiverId()).isEqualTo(receiver.id());
+        assertThat(receivedMessages.get(1).getContent()).isEqualTo(message2.getContent());
+    }
+
+    @Test
+    @DisplayName("사용자가 보낸 모든 메시지를 조회한다")
+    void findSentMessagesByMemberIdTest() {
+        // given
+        MemberResponseDto sender = getMember("limnjSender@test.com");
+        MemberResponseDto receiver1 = getMember("limnj1@test.com");
+        MemberResponseDto receiver2 = getMember("limnj2@test.com");
+
+        MessageDto message1 = MessageDto.builder().content("보낸 메시지 1").senderId(sender.id()).receiverId(receiver1.id()).build();
+        MessageDto message2 = MessageDto.builder().content("보낸 메시지 2").senderId(sender.id()).receiverId(receiver2.id()).build();
+        messageServiceImpl.sendMessage(message1);
+        messageServiceImpl.sendMessage(message2);
+
+        // when
+        List<MessageDto> sentMessages = messageServiceImpl.findSentMessagesByMemberId(sender.id());
+
+        // then
+        assertThat(sentMessages).hasSize(2);
+        assertThat(sentMessages.get(0).getSenderId()).isEqualTo(sender.id());
+        assertThat(sentMessages.get(0).getContent()).isEqualTo(message1.getContent());
+        assertThat(sentMessages.get(1).getSenderId()).isEqualTo(sender.id());
+        assertThat(sentMessages.get(1).getContent()).isEqualTo(message2.getContent());
+    }
 
     private MemberResponseDto getMember(String email){
         MemberResponseDto findMember = memberMapper.findMemberByEmail(email);
