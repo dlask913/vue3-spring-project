@@ -30,7 +30,11 @@
         >
           참여하기
         </button>
-        <button class="btn btn-primary me-2" @click="isPopupOpen = true">
+        <button
+          v-if="isVisible"
+          class="btn btn-primary me-2"
+          @click="isPopupOpen = true"
+        >
           메시지 작성
         </button>
         <MessagePopup
@@ -58,7 +62,7 @@
 </template>
 <script setup>
 import { useRoute } from 'vue-router'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useStorageStore, useToastStore } from '@/store/index'
 import { getProductById, createProductBid } from '@/api/products'
 import Modal from '@/components/common/Modal.vue'
@@ -129,6 +133,11 @@ const onQuit = async (isConfirmed, bidPrice) => {
     toast.setToast('가격 입력에 실패하였습니다.', 'danger')
   }
 }
+
+const isVisible = computed(() => {
+  // 내가 작성한 글이 아닐 때만 메시지 작성 버튼 보이기
+  return product.value.ownerId !== storage.getUserId
+})
 
 onMounted(getProduct)
 </script>
