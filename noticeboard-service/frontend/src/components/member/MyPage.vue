@@ -164,10 +164,12 @@
           >
             <div class="card-body">
               <div class="d-flex justify-content-between">
-                <p class="card-text">{{ message.content }}</p>
+                <p class="card-text">{{ truncateMessage(message.content) }}</p>
               </div>
               <p class="card-text">
-                <small class="text-muted">Sent on {{ message.createdAt }}</small>
+                <small class="text-muted"
+                  >Sent on {{ message.createdAt }}</small
+                >
               </p>
             </div>
           </div>
@@ -182,10 +184,12 @@
           >
             <div class="card-body">
               <div class="d-flex justify-content-between">
-                <p class="card-text">{{ message.content }}</p>
+                <p class="card-text">{{ truncateMessage(message.content) }}</p>
               </div>
               <p class="card-text">
-                <small class="text-muted">Sent on {{ message.createdAt }}</small>
+                <small class="text-muted"
+                  >Sent on {{ message.createdAt }}</small
+                >
               </p>
             </div>
           </div>
@@ -272,6 +276,11 @@ const fetchMemberImg = file => {
 const moveToPage = noticeId => {
   isActive.value = noticeId
   router.push('/post-details/' + noticeId)
+}
+
+// 메시지 내용이 20자 이상이면 "..." 붙이기
+const truncateMessage = message => {
+  return message.length > 20 ? message.slice(0, 20) + '...' : message
 }
 
 onMounted(fetchData)
