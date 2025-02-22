@@ -162,7 +162,11 @@
             v-for="message in sentMessages"
             :key="message.id"
           >
-            <div class="card-body">
+            <div
+              class="card-body"
+              @click="openMessage(message)"
+              style="cursor: pointer"
+            >
               <div class="d-flex justify-content-between">
                 <p class="card-text">{{ truncateMessage(message.content) }}</p>
               </div>
@@ -182,7 +186,11 @@
             v-for="message in receivedMessages"
             :key="message.id"
           >
-            <div class="card-body">
+            <div
+              class="card-body"
+              @click="openMessage(message)"
+              style="cursor: pointer"
+            >
               <div class="d-flex justify-content-between">
                 <p class="card-text">{{ truncateMessage(message.content) }}</p>
               </div>
@@ -197,10 +205,17 @@
       </div>
     </div>
   </div>
+  <!-- 메시지 팝업 -->
+  <MessageDetails
+    v-if="isMessageOpen"
+    :message="selectedMessage"
+    @close="isMessageOpen = false"
+  />
 </template>
 
 <script setup>
 import ImageUploader from '../common/ImageUploader.vue'
+import MessageDetails from '../common/MessageDetails.vue'
 import { ref, onMounted } from 'vue'
 import { getMemberById, updateMember } from '@/api/users'
 import { getNoticesByMember } from '@/api/notices'
@@ -228,6 +243,8 @@ const sentMessages = ref([])
 const receivedMessages = ref([])
 const isActive = ref(null)
 const selectedMenu = ref('home') // 현재 선택된 메뉴
+const selectedMessage = ref('')
+const isMessageOpen = ref(false)
 
 const fetchData = async () => {
   try {
@@ -281,6 +298,12 @@ const moveToPage = noticeId => {
 // 메시지 내용이 20자 이상이면 "..." 붙이기
 const truncateMessage = message => {
   return message.length > 20 ? message.slice(0, 20) + '...' : message
+}
+
+// 메시지 클릭 시 팝업 열기
+const openMessage = message => {
+  selectedMessage.value = message.content
+  isMessageOpen.value = true
 }
 
 onMounted(fetchData)
