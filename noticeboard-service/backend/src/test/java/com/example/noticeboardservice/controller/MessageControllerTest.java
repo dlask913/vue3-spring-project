@@ -1,7 +1,8 @@
 package com.example.noticeboardservice.controller;
 
 import com.example.noticeboardservice.config.filter.JwtTokenFilter;
-import com.example.noticeboardservice.dto.MessageDto;
+import com.example.noticeboardservice.dto.MessageRequestDto;
+import com.example.noticeboardservice.dto.MessageResponseDto;
 import com.example.noticeboardservice.service.MessageService;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,28 +39,28 @@ class MessageControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("쪽지를 전송한다")
+    @DisplayName("메시지를 전송한다")
     void sendMessageTest() throws Exception {
         // given
-        MessageDto messageDto = MessageDto.builder()
+        MessageRequestDto messageRequestDto = MessageRequestDto.builder()
                 .senderId(1L)
                 .receiverId(2L)
-                .content("쪽지입니다")
+                .content("메시지입니다")
                 .build();
-        Mockito.when(messageServiceImpl.sendMessage(any(MessageDto.class))).thenReturn(1);
+        Mockito.when(messageServiceImpl.sendMessage(any(MessageRequestDto.class))).thenReturn(1);
 
         // when // then
         mockMvc.perform(post("/message")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(messageDto)))
+                        .content(objectMapper.writeValueAsString(messageRequestDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("메시지를 전송하였습니다."));
 
-        Mockito.verify(messageServiceImpl, Mockito.times(1)).sendMessage(any(MessageDto.class));
+        Mockito.verify(messageServiceImpl, Mockito.times(1)).sendMessage(any(MessageRequestDto.class));
     }
 
     @Test
-    @DisplayName("쪽지를 삭제한다")
+    @DisplayName("메시지를 삭제한다")
     void deleteMessageTest() throws Exception {
         // given
         Mockito.when(messageServiceImpl.deleteMessage(anyLong())).thenReturn(1);
@@ -73,26 +74,23 @@ class MessageControllerTest {
     }
 
     @Test
-    @DisplayName("쪽지를 상세 조회한다")
+    @DisplayName("메시지를 상세 조회한다")
     void findMessageByMessageIdTest() throws Exception {
         // given
-        MessageDto responseDto = MessageDto.builder()
-                .id(1L)
-                .senderId(1L)
-                .receiverId(2L)
-                .content("쪽지입니다")
-                .build();
-        Mockito.when(messageServiceImpl.findMessageByMessageId(responseDto.getId())).thenReturn(responseDto);
+        MessageResponseDto responseDto
+                = new MessageResponseDto(1L, 1L, 2L, "메시지 조회", "2025-02-23 00:00:00", "N");
+        Mockito.when(messageServiceImpl.findMessageByMessageId(responseDto.id())).thenReturn(responseDto);
 
         // when // then
-        mockMvc.perform(get("/message/{messageId}", responseDto.getId()))
+        mockMvc.perform(get("/message/{messageId}", responseDto.id()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(responseDto.getId()))
-                .andExpect(jsonPath("$.senderId").value(responseDto.getSenderId()))
-                .andExpect(jsonPath("$.receiverId").value(responseDto.getReceiverId()))
-                .andExpect(jsonPath("$.content").value(responseDto.getContent()));
+                .andExpect(jsonPath("$.id").value(responseDto.id()))
+                .andExpect(jsonPath("$.senderId").value(responseDto.senderId()))
+                .andExpect(jsonPath("$.receiverId").value(responseDto.receiverId()))
+                .andExpect(jsonPath("$.content").value(responseDto.content()))
+                .andExpect(jsonPath("$.isRead").value("N"));
 
-        Mockito.verify(messageServiceImpl, Mockito.times(1)).findMessageByMessageId(responseDto.getId());
+        Mockito.verify(messageServiceImpl, Mockito.times(1)).findMessageByMessageId(responseDto.id());
     }
 
     @Test
@@ -100,23 +98,25 @@ class MessageControllerTest {
     void findReceivedMessagesByMemberIdTest() throws Exception {
         // given
         Long memberId = 1L;
-        List<MessageDto> messages = List.of(
-                MessageDto.builder().id(1L).senderId(2L).receiverId(memberId).content("받은 메시지 1").build(),
-                MessageDto.builder().id(2L).senderId(3L).receiverId(memberId).content("받은 메시지 2").build()
+        List<MessageResponseDto> messages = List.of(
+                new MessageResponseDto(1L, 2L, memberId, "받은 메시지1", "2025-02-23 00:00:00", "N"),
+                new MessageResponseDto(2L, 3L, memberId, "받은 메시지2", "2025-02-23 00:00:00", "N")
         );
         Mockito.when(messageServiceImpl.findReceivedMessagesByMemberId(memberId)).thenReturn(messages);
 
         // when // then
         mockMvc.perform(get("/member/{memberId}/messages/received", memberId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(messages.get(0).getId()))
-                .andExpect(jsonPath("$[0].senderId").value(messages.get(0).getSenderId()))
-                .andExpect(jsonPath("$[0].receiverId").value(messages.get(0).getReceiverId()))
-                .andExpect(jsonPath("$[0].content").value(messages.get(0).getContent()))
-                .andExpect(jsonPath("$[1].id").value(messages.get(1).getId()))
-                .andExpect(jsonPath("$[1].senderId").value(messages.get(1).getSenderId()))
-                .andExpect(jsonPath("$[1].receiverId").value(messages.get(1).getReceiverId()))
-                .andExpect(jsonPath("$[1].content").value(messages.get(1).getContent()));
+                .andExpect(jsonPath("$[0].id").value(messages.get(0).id()))
+                .andExpect(jsonPath("$[0].senderId").value(messages.get(0).senderId()))
+                .andExpect(jsonPath("$[0].receiverId").value(messages.get(0).receiverId()))
+                .andExpect(jsonPath("$[0].content").value(messages.get(0).content()))
+                .andExpect(jsonPath("$[0].isRead").value("N"))
+                .andExpect(jsonPath("$[1].id").value(messages.get(1).id()))
+                .andExpect(jsonPath("$[1].senderId").value(messages.get(1).senderId()))
+                .andExpect(jsonPath("$[1].receiverId").value(messages.get(1).receiverId()))
+                .andExpect(jsonPath("$[1].content").value(messages.get(1).content()))
+                .andExpect(jsonPath("$[1].isRead").value("N"));
 
         Mockito.verify(messageServiceImpl, Mockito.times(1)).findReceivedMessagesByMemberId(memberId);
     }
@@ -126,25 +126,39 @@ class MessageControllerTest {
     void findSentMessagesByMemberIdTest() throws Exception {
         // given
         Long memberId = 1L;
-        List<MessageDto> messages = List.of(
-                MessageDto.builder().id(1L).senderId(memberId).receiverId(2L).content("보낸 메시지 1").build(),
-                MessageDto.builder().id(2L).senderId(memberId).receiverId(3L).content("보낸 메시지 2").build()
+        List<MessageResponseDto> messages = List.of(
+                new MessageResponseDto(1L, memberId, 2L, "보낸 메시지1", "2025-02-23 00:00:00", "N"),
+                new MessageResponseDto(2L, memberId, 3L, "보낸 메시지2", "2025-02-23 00:00:00", "N")
         );
         Mockito.when(messageServiceImpl.findSentMessagesByMemberId(memberId)).thenReturn(messages);
 
         // when // then
         mockMvc.perform(get("/member/{memberId}/messages/sent", memberId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(messages.get(0).getId()))
-                .andExpect(jsonPath("$[0].senderId").value(messages.get(0).getSenderId()))
-                .andExpect(jsonPath("$[0].receiverId").value(messages.get(0).getReceiverId()))
-                .andExpect(jsonPath("$[0].content").value(messages.get(0).getContent()))
-                .andExpect(jsonPath("$[1].id").value(messages.get(1).getId()))
-                .andExpect(jsonPath("$[1].senderId").value(messages.get(1).getSenderId()))
-                .andExpect(jsonPath("$[1].receiverId").value(messages.get(1).getReceiverId()))
-                .andExpect(jsonPath("$[1].content").value(messages.get(1).getContent()));
+                .andExpect(jsonPath("$[0].id").value(messages.get(0).id()))
+                .andExpect(jsonPath("$[0].senderId").value(messages.get(0).senderId()))
+                .andExpect(jsonPath("$[0].receiverId").value(messages.get(0).receiverId()))
+                .andExpect(jsonPath("$[0].content").value(messages.get(0).content()))
+                .andExpect(jsonPath("$[0].isRead").value("N"))
+                .andExpect(jsonPath("$[1].id").value(messages.get(1).id()))
+                .andExpect(jsonPath("$[1].senderId").value(messages.get(1).senderId()))
+                .andExpect(jsonPath("$[1].receiverId").value(messages.get(1).receiverId()))
+                .andExpect(jsonPath("$[1].content").value(messages.get(1).content()))
+                .andExpect(jsonPath("$[1].isRead").value("N"));
 
         Mockito.verify(messageServiceImpl, Mockito.times(1)).findSentMessagesByMemberId(memberId);
     }
 
+    @Test
+    @DisplayName("받은 메시지를 읽는다.")
+    void updateReadStatusOfMessage() throws Exception {
+        // given
+        Mockito.when(messageServiceImpl.updateReadStatus(anyLong())).thenReturn(1);
+
+        // when // then
+        mockMvc.perform(patch("/message/{messageId}/read", anyLong()))
+                .andExpect(status().isOk())
+                .andExpect(content().string("메시지 읽음 처리가 완료되었습니다."));
+        Mockito.verify(messageServiceImpl, Mockito.times(1)).updateReadStatus(anyLong());
+    }
 }
