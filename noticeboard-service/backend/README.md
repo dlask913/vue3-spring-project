@@ -115,6 +115,7 @@ CREATE TABLE Messages (
     sender_id BIGINT NOT NULL,
     receiver_id BIGINT NOT NULL,
     content VARCHAR(255),
+    is_read CHAR DEFAULT 'N',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 

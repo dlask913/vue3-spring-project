@@ -1,40 +1,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.MessageMapper">
     <!-- 쪽지 전송 -->
-    <insert id="insertMessage" parameterType="MessageDto">
+    <insert id="insertMessage" parameterType="MessageRequestDto">
         INSERT INTO Messages (sender_id, receiver_id, content)
         VALUES (#{senderId}, #{receiverId}, #{content})
     </insert>
-    <!-- 쪽지 상세 조회 -->
-    <select id="findMessageByMessageId" parameterType="long" resultType="MessageDto">
-        SELECT sender_id, receiver_id, content, created_at
+    <!-- 메시지 상세 조회 -->
+    <select id="findMessageByMessageId" parameterType="long" resultMap="MessageResponseDtoMap">
+        SELECT id, sender_id, receiver_id, content, created_at, is_read
         FROM Messages
         WHERE id = #{id}
     </select>
-    <!-- 쪽지 삭제 -->
+    <!-- 메시지 삭제 -->
     <delete id="deleteMessage" parameterType="long">
         DELETE FROM Messages
         WHERE id = #{id}
     </delete>
-    <!-- 모든 쪽지 조회 -->
-    <select id="findAllMessages" resultType="MessageDto">
-        SELECT id, sender_id, receiver_id, content, created_at
+    <!-- 모든 메시지 조회 -->
+    <select id="findAllMessages" resultMap="MessageResponseDtoMap">
+        SELECT id, sender_id, receiver_id, content, created_at, is_read
         FROM Messages
     </select>
-    <!-- 모든 쪽지 삭제 -->
+    <!-- 모든 메시지 삭제 -->
     <delete id="deleteAllMessages">
         DELETE FROM Messages
     </delete>
     <!-- 받은 메시지 모두 조회 -->
-    <select id="findReceivedMessagesByMemberId" parameterType="long" resultType="MessageDto">
-        SELECT id, sender_id, receiver_id, content, created_at
+    <select id="findReceivedMessagesByMemberId" parameterType="long" resultMap="MessageResponseDtoMap">
+        SELECT id, sender_id, receiver_id, content, created_at, is_read
         FROM Messages
         WHERE receiver_id = #{memberId}
     </select>
     <!-- 보낸 메시지 모두 조회 -->
-    <select id="findSentMessagesByMemberId" parameterType="long" resultType="MessageDto">
-        SELECT id, sender_id, receiver_id, content, created_at
+    <select id="findSentMessagesByMemberId" parameterType="long" resultMap="MessageResponseDtoMap">
+        SELECT id, sender_id, receiver_id, content, created_at, is_read
         FROM Messages
         WHERE sender_id = #{memberId}
     </select>
+    <!-- 메시지 읽음 상태 업데이트 -->
+    <update id="updateReadStatus" parameterType="Long">
+        UPDATE Messages
+        SET is_read = 'Y'
+        WHERE id = #{id}
+    </update>
+
+    <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
+    <resultMap id="MessageResponseDtoMap" type="com.example.noticeboardservice.dto.MessageResponseDto">
+        <constructor>
+            <arg column="id" javaType="java.lang.Long"/>
+            <arg column="sender_id" javaType="java.lang.Long"/>
+            <arg column="receiver_id" javaType="java.lang.Long"/>
+            <arg column="content" javaType="java.lang.String"/>
+            <arg column="created_at" javaType="java.lang.String"/>
+            <arg column="is_read" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
 </mapper>

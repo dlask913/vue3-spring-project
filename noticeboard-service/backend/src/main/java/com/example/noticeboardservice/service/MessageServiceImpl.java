@@ -1,6 +1,7 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.MessageDto;
+import com.example.noticeboardservice.dto.MessageRequestDto;
+import com.example.noticeboardservice.dto.MessageResponseDto;
 import com.example.noticeboardservice.mapper.MessageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,8 @@ import java.util.List;
 public class MessageServiceImpl implements MessageService{
     private final MessageMapper messageMapper;
     @Override
-    public int sendMessage(MessageDto messageDto) {
-        return messageMapper.insertMessage(messageDto);
+    public int sendMessage(MessageRequestDto messageRequestDto) {
+        return messageMapper.insertMessage(messageRequestDto);
     }
 
     @Override
@@ -24,17 +25,22 @@ public class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public MessageDto findMessageByMessageId(Long messageId) {
+    public MessageResponseDto findMessageByMessageId(Long messageId) {
         return messageMapper.findMessageByMessageId(messageId);
     }
 
     @Override
-    public List<MessageDto> findReceivedMessagesByMemberId(Long memberId) {
+    public List<MessageResponseDto> findReceivedMessagesByMemberId(Long memberId) {
         return messageMapper.findReceivedMessagesByMemberId(memberId);
     }
 
     @Override
-    public List<MessageDto> findSentMessagesByMemberId(Long memberId) {
+    public List<MessageResponseDto> findSentMessagesByMemberId(Long memberId) {
         return messageMapper.findSentMessagesByMemberId(memberId);
+    }
+
+    @Override
+    public int updateReadStatus(Long messageId) {
+        return messageMapper.updateReadStatus(messageId);
     }
 }

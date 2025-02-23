@@ -1,19 +1,23 @@
 package com.example.noticeboardservice.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MessageDto {
+public class MessageRequestDto {
     Long id;
+    @NotNull(message = "senderId 은 필수 값 입니다.")
     Long senderId;
+    @NotNull(message = "receiverId 은 필수 값 입니다.")
     Long receiverId;
+    @NotNull(message = "content 은 필수 값 입니다.")
     String content;
 
     @Builder
-    public MessageDto(Long id, Long senderId, Long receiverId, String content) {
+    public MessageRequestDto(Long id, Long senderId, Long receiverId, String content) {
         this.id = id;
         this.senderId = senderId;
         this.receiverId = receiverId;

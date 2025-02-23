@@ -1,6 +1,7 @@
 package com.example.noticeboardservice.controller;
 
-import com.example.noticeboardservice.dto.MessageDto;
+import com.example.noticeboardservice.dto.MessageRequestDto;
+import com.example.noticeboardservice.dto.MessageResponseDto;
 import com.example.noticeboardservice.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -17,8 +18,8 @@ public class MessageController {
 
     @PostMapping("/message")
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "메시지 저장 API")
-    private ResponseEntity<String> saveMessage(@RequestBody MessageDto messageDto) {
-        int result = messageServiceImpl.sendMessage(messageDto);
+    private ResponseEntity<String> saveMessage(@RequestBody MessageRequestDto messageRequestDto) {
+        int result = messageServiceImpl.sendMessage(messageRequestDto);
         if (result <= 0){
             return ResponseEntity.badRequest().body("메시지 전송에 실패하였습니다.");
         }
@@ -27,8 +28,8 @@ public class MessageController {
 
     @GetMapping("/message/{messageId}")
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "메시지 상세 조회 API")
-    public ResponseEntity<MessageDto> findMessageByMessageId(@PathVariable("messageId") Long messageId) {
-        MessageDto response = messageServiceImpl.findMessageByMessageId(messageId);
+    public ResponseEntity<MessageResponseDto> findMessageByMessageId(@PathVariable("messageId") Long messageId) {
+        MessageResponseDto response = messageServiceImpl.findMessageByMessageId(messageId);
         return ResponseEntity.ok().body(response);
     }
 
@@ -44,15 +45,25 @@ public class MessageController {
 
     @GetMapping("/member/{memberId}/messages/received")
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "받은 메시지 모두 조회 API")
-    public ResponseEntity<List<MessageDto>> findReceivedMessagesByMemberId(@PathVariable("memberId") Long memberId){
-        List<MessageDto> messages = messageServiceImpl.findReceivedMessagesByMemberId(memberId);
+    public ResponseEntity<List<MessageResponseDto>> findReceivedMessagesByMemberId(@PathVariable("memberId") Long memberId){
+        List<MessageResponseDto> messages = messageServiceImpl.findReceivedMessagesByMemberId(memberId);
         return ResponseEntity.ok().body(messages); 
     }
 
     @GetMapping("/member/{memberId}/messages/sent")
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "보낸 메시지 모두 조회 API")
-    public ResponseEntity<List<MessageDto>> findSentMessagesByMemberId(@PathVariable("memberId") Long memberId){
-        List<MessageDto> messages = messageServiceImpl.findSentMessagesByMemberId(memberId);
+    public ResponseEntity<List<MessageResponseDto>> findSentMessagesByMemberId(@PathVariable("memberId") Long memberId){
+        List<MessageResponseDto> messages = messageServiceImpl.findSentMessagesByMemberId(memberId);
         return ResponseEntity.ok().body(messages);
+    }
+
+    @PatchMapping("/message/{messageId}/read")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "메시지 읽음 상태 저장을 위한 API")
+    public ResponseEntity<String> updateReadStatusOfMessage(@PathVariable("messageId") Long messageId){
+        int result = messageServiceImpl.updateReadStatus(messageId);
+        if (result <= 0){
+            return ResponseEntity.badRequest().body("메시지 읽음 상태 저장에 실패하였습니다.");
+        }
+        return ResponseEntity.ok().body("메시지 읽음 처리가 완료되었습니다.");
     }
 }
