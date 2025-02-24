@@ -67,6 +67,7 @@ const handleMessageSend = async () => {
   })
   try {
     await sendMessage(storage.getToken, data.value)
+    toast.setToast('메시지를 전송하였습니다.')
   } catch (e) {
     console.error(e)
   }

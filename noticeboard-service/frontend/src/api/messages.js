@@ -29,3 +29,9 @@ export function getSentMessagesByMemberId(token, memberId) {
     headers: { Authorization: token },
   })
 }
+
+export function updateReadStatus(token, messageId) {
+  return axios.patch(`/message/${messageId}/read`, {
+    headers: { Authorization: token },
+  })
+}

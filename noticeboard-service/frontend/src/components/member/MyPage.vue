@@ -200,6 +200,14 @@
                 >
               </p>
             </div>
+            <i
+              class="bi position-absolute top-0 end-0 m-2"
+              :class="
+                message.isRead == 'Y'
+                  ? 'bi-check-circle text-success'
+                  : 'bi-exclamation-circle-fill text-danger'
+              "
+            ></i>
           </div>
         </div>
       </div>
@@ -223,6 +231,7 @@ import { getCommentsByMember } from '@/api/comments'
 import {
   getSentMessagesByMemberId,
   getReceivedMessagesByMemberId,
+  updateReadStatus,
 } from '@/api/messages'
 import { useToastStore, useStorageStore } from '@/store'
 import { useRouter } from 'vue-router'
@@ -301,9 +310,18 @@ const truncateMessage = message => {
 }
 
 // 메시지 클릭 시 팝업 열기
-const openMessage = message => {
+const openMessage = async message => {
   selectedMessage.value = message.content
   isMessageOpen.value = true
+  if (message.isRead === 'N') {
+    try {
+      await updateReadStatus(storage.getToken, message.id)
+      message.isRead = 'Y'
+      receivedMessages.value = [...receivedMessages.value] // 바로 isRead 값이 화면에 반영될 수 있게 새 배열로 변경
+    } catch (e) {
+      console.error(e.response.data)
+    }
+  }
 }
 
 onMounted(fetchData)
