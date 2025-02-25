@@ -218,12 +218,18 @@
     v-if="isMessageOpen"
     :message="selectedMessage"
     @close="isMessageOpen = false"
+    @reply="openReplyModal"
+  />
+  <MessagePopup
+    v-model:isOpen="isReplyOpen"
+    :receiverId="selectedMessage.receiverId"
   />
 </template>
 
 <script setup>
 import ImageUploader from '../common/ImageUploader.vue'
 import MessageDetails from '../common/MessageDetails.vue'
+import MessagePopup from '../common/MessagePopup.vue'
 import { ref, onMounted } from 'vue'
 import { getMemberById, updateMember } from '@/api/users'
 import { getNoticesByMember } from '@/api/notices'
@@ -253,7 +259,8 @@ const receivedMessages = ref([])
 const isActive = ref(null)
 const selectedMenu = ref('home') // 현재 선택된 메뉴
 const selectedMessage = ref('')
-const isMessageOpen = ref(false)
+const isMessageOpen = ref(false) // 메시지 상세보기 (MessageDetails)
+const isReplyOpen = ref(false) // 메시지 답장하기 (MessagePopup)
 
 const fetchData = async () => {
   try {
@@ -311,7 +318,7 @@ const truncateMessage = message => {
 
 // 메시지 클릭 시 팝업 열기
 const openMessage = async message => {
-  selectedMessage.value = message.content
+  selectedMessage.value = message
   isMessageOpen.value = true
   if (message.isRead === 'N') {
     try {
@@ -322,6 +329,11 @@ const openMessage = async message => {
       console.error(e.response.data)
     }
   }
+}
+
+const openReplyModal = () => {
+  isMessageOpen.value = false
+  isReplyOpen.value = true
 }
 
 onMounted(fetchData)

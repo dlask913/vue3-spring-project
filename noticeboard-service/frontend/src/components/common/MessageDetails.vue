@@ -11,9 +11,12 @@
           ></button>
         </div>
         <div class="modal-body">
-          <p>{{ message }}</p>
+          <p>{{ message.content }}</p>
         </div>
         <div class="modal-footer">
+          <button class="btn btn-primary" @click="$emit('reply')">
+            답장하기
+          </button>
           <button
             type="button"
             class="btn btn-secondary"
@@ -31,6 +34,7 @@
 defineProps({
   message: String,
 })
+defineEmits(['close', 'reply'])
 </script>
 
 <style scoped>
