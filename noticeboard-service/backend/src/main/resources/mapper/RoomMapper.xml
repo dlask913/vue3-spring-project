@@ -1,0 +1,19 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.noticeboardservice.mapper.RoomMapper">
+    <!-- 채팅방 생성 -->
+    <insert id="insertRoom" parameterType="RoomDto">
+        INSERT INTO Rooms (id, sender_id, receiver_id)
+        VALUES (#{id}, #{sender_id}, #{receiver_id})
+
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <!-- 채팅방 조회 -->
+    <select id="findRoomByMembers" resultType="RoomDto">
+        SELECT id, sender_id, receiver_id
+        FROM Rooms
+        WHERE sender_id = #{senderId} AND receiver_id = #{receiverId}
+    </select>
+</mapper>

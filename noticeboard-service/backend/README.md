@@ -122,16 +122,10 @@ CREATE TABLE Messages (
 
 CREATE TABLE Rooms (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE RoomMembers (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    room_id BIGINT NOT NULL,
-    member_id BIGINT NOT NULL,
-    FOREIGN KEY (room_id) REFERENCES Rooms(id) ON DELETE CASCADE,
-    FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE
+    sender_id BIGINT NOT NULL,
+    receiver_id BIGINT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (sender_id, receiver_id) -- 동일한 두 사람 간 중복된 방 생성 방지
 );
 
 ```
