@@ -6,6 +6,7 @@ import com.example.noticeboardservice.dto.MessageRequestDto;
 import com.example.noticeboardservice.dto.MessageResponseDto;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.MessageMapper;
+import com.example.noticeboardservice.mapper.RoomMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,10 +28,13 @@ class MessageServiceTest {
     private MessageMapper messageMapper;
     @Autowired
     private MemberMapper memberMapper;
+    @Autowired
+    private RoomMapper roomMapper;
 
     @AfterEach
     void tearDown() {
         messageMapper.deleteAllMessages();
+        roomMapper.deleteAllRooms();
     }
 
     @Test
@@ -49,7 +53,7 @@ class MessageServiceTest {
         messageServiceImpl.sendMessage(requestDto);
 
         // then
-        MessageResponseDto savedMessage = messageMapper.findAllMessages().get(0);
+        MessageResponseDto savedMessage = messageMapper.findMessageById(requestDto.getId());
         assertThat(savedMessage.content()).isEqualTo(requestDto.getContent());
         assertThat(savedMessage.senderId()).isEqualTo(requestDto.getSenderId());
         assertThat(savedMessage.receiverId()).isEqualTo(requestDto.getReceiverId());
@@ -68,7 +72,7 @@ class MessageServiceTest {
                 .receiverId(receiver.id())
                 .build();
         messageServiceImpl.sendMessage(messageRequestDto);
-        MessageResponseDto savedMessage = messageMapper.findAllMessages().get(0);
+        MessageResponseDto savedMessage = messageMapper.findMessageById(messageRequestDto.getId());
 
         // when
         messageServiceImpl.deleteMessage(savedMessage.id());
@@ -89,7 +93,7 @@ class MessageServiceTest {
                 .receiverId(receiver.id())
                 .build();
         messageServiceImpl.sendMessage(messageRequestDto);
-        MessageResponseDto savedMessage = messageMapper.findAllMessages().get(0);
+        MessageResponseDto savedMessage = messageMapper.findMessageById(messageRequestDto.getId());
 
         // when
         MessageResponseDto findMessage = messageServiceImpl.findMessageByMessageId(savedMessage.id());
@@ -165,13 +169,13 @@ class MessageServiceTest {
                 .receiverId(receiver.id())
                 .build();
         messageServiceImpl.sendMessage(message);
-        MessageResponseDto savedMessage = messageMapper.findAllMessages().get(0);
+        MessageResponseDto savedMessage = messageMapper.findMessageById(message.getId());
 
         // when
         messageServiceImpl.updateReadStatus(savedMessage.id());
 
         // then
-        MessageResponseDto findMessage = messageMapper.findMessageByMessageId(savedMessage.id());
+        MessageResponseDto findMessage = messageMapper.findMessageById(savedMessage.id());
         Assertions.assertThat(findMessage.isRead()).isEqualTo("Y");
     }
 

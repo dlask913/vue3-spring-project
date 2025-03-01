@@ -58,7 +58,7 @@ class ReplyServiceTest {
         replyServiceImpl.insertReply(requestDto);
 
         // then
-        ReplyResponseDto responseDto = replyMapper.findAllReplies().get(0);
+        ReplyResponseDto responseDto = replyMapper.findReply(requestDto.getId());
         Assertions.assertThat(requestDto.getContent()).isEqualTo(responseDto.content());
         Assertions.assertThat(requestDto.getMemberId()).isEqualTo(responseDto.memberId());
         Assertions.assertThat(requestDto.getCommentId()).isEqualTo(responseDto.commentId());
@@ -106,7 +106,7 @@ class ReplyServiceTest {
                 .build();
         replyServiceImpl.insertReply(requestDto);
 
-        ReplyResponseDto findReply = replyMapper.findAllReplies().get(0);
+        ReplyResponseDto findReply = replyMapper.findReply(requestDto.getId());
         ReplyRequestDto updateDto = ReplyRequestDto.builder()
                 .id(findReply.id())
                 .content("댓글의 하위 수정 댓글입니다.")
@@ -133,7 +133,7 @@ class ReplyServiceTest {
                 .commentId(getCommentId("상위 댓글 입니다.", memberId))
                 .build();
         replyServiceImpl.insertReply(requestDto);
-        ReplyResponseDto findReply = replyMapper.findAllReplies().get(0);
+        ReplyResponseDto findReply = replyMapper.findReply(requestDto.getId());
 
         // when
         replyServiceImpl.deleteReply(findReply.id());
@@ -175,7 +175,7 @@ class ReplyServiceTest {
                     .username("limnj1")
                     .build();
             memberMapper.insertMember(memberRequestDto);
-            return memberMapper.findMemberByEmail(email).id();
+            return memberRequestDto.getId();
         }
         return findMember.id();
     }
@@ -183,19 +183,17 @@ class ReplyServiceTest {
     Long getCommentId(String content, Long memberId) {
         NoticeRequestDto noticeRequestDto = NoticeRequestDto.builder()
                 .title("게시글")
-                .content("게시글 내용")
+                .content(content)
                 .memberId(memberId)
                 .build();
         noticeMapper.insertNotice(noticeRequestDto);
-        List<NoticeResponseDto> notices = noticeMapper.findAllNotices(Map.of());
 
         CommentRequestDto commentRequestDto = CommentRequestDto.builder()
                 .content(content)
-                .noticeId(notices.get(0).id())
+                .noticeId(noticeRequestDto.getId())
                 .memberId(memberId)
                 .build();
         commentMapper.insertComment(commentRequestDto);
-        List<CommentResponseDto> comments = commentMapper.findAllComments();
-        return comments.get(0).id();
+        return commentRequestDto.getId();
     }
 }

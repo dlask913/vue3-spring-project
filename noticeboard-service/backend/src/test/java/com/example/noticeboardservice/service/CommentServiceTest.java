@@ -42,18 +42,14 @@ class CommentServiceTest {
     void savedCommentTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        NoticeResponseDto notice = getNotice(NoticeRequestDto.builder()
-                                            .title("게시글")
-                                            .content("게시글 내용")
-                                            .memberId(member.id())
-                                            .build());
-        CommentRequestDto commentDto = createCommentDto(0L,"내용", notice.id(), member.id());
+        Long noticeId = getNoticeId(member.id());
+        CommentRequestDto commentDto = createCommentDto(0L,"내용", noticeId, member.id());
 
         // when
         commentServiceImpl.insertComment(commentDto);
 
         // then
-        CommentResponseDto savedComment = commentMapper.findAllComments().get(0);
+        CommentResponseDto savedComment = commentMapper.findCommentById(commentDto.getId());
         assertThat(savedComment.content()).isEqualTo(commentDto.getContent());
         assertThat(savedComment.memberId()).isEqualTo(commentDto.getMemberId());
         assertThat(savedComment.noticeId()).isEqualTo(commentDto.getNoticeId());
@@ -64,22 +60,18 @@ class CommentServiceTest {
     void updateCommentTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        NoticeResponseDto notice = getNotice(NoticeRequestDto.builder()
-                .title("게시글")
-                .content("게시글 내용")
-                .memberId(member.id())
-                .build());
-        CommentRequestDto commentDto = createCommentDto(0L,"내용", notice.id(), member.id());
+        Long noticeId = getNoticeId(member.id());
+        CommentRequestDto commentDto = createCommentDto(0L,"내용", noticeId, member.id());
         commentServiceImpl.insertComment(commentDto);
-        CommentResponseDto savedComment = commentMapper.findAllComments().get(0);
+        CommentResponseDto savedComment = commentMapper.findCommentById(commentDto.getId());
         CommentRequestDto updateRequestDto =
-                createCommentDto(savedComment.id(),"내용22", notice.id(), member.id());
+                createCommentDto(savedComment.id(),"내용22", noticeId, member.id());
 
         // when
         commentServiceImpl.updateComment(updateRequestDto);
 
         // then
-        CommentResponseDto updateResponseDto = commentMapper.findAllComments().get(0);
+        CommentResponseDto updateResponseDto = commentMapper.findCommentById(commentDto.getId());
         assertThat(updateResponseDto.content()).isEqualTo(updateRequestDto.getContent());
         assertThat(updateResponseDto.memberId()).isEqualTo(updateRequestDto.getMemberId());
         assertThat(updateResponseDto.noticeId()).isEqualTo(updateRequestDto.getNoticeId());
@@ -90,14 +82,10 @@ class CommentServiceTest {
     void deleteCommentTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        NoticeResponseDto notice = getNotice(NoticeRequestDto.builder()
-                .title("게시글")
-                .content("게시글 내용")
-                .memberId(member.id())
-                .build());
-        CommentRequestDto commentDto = createCommentDto(0L,"내용", notice.id(), member.id());
+        Long noticeId = getNoticeId(member.id());
+        CommentRequestDto commentDto = createCommentDto(0L,"내용", noticeId, member.id());
         commentServiceImpl.insertComment(commentDto);
-        CommentResponseDto savedComment = commentMapper.findAllComments().get(0);
+        CommentResponseDto savedComment = commentMapper.findCommentById(commentDto.getId());
 
         // when
         commentServiceImpl.deleteComment(savedComment.id());
@@ -111,20 +99,16 @@ class CommentServiceTest {
     void getCommentsByNoticeTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        NoticeResponseDto notice = getNotice(NoticeRequestDto.builder()
-                .title("게시글")
-                .content("게시글 내용")
-                .memberId(member.id())
-                .build());
-        CommentRequestDto commentDto1 = createCommentDto(0L,"내용1", notice.id(), member.id());
-        CommentRequestDto commentDto2 = createCommentDto(0L,"내용2", notice.id(), member.id());
-        CommentRequestDto commentDto3 = createCommentDto(0L,"내용3", notice.id(), member.id());
+        Long noticeId = getNoticeId(member.id());
+        CommentRequestDto commentDto1 = createCommentDto(0L,"내용1", noticeId, member.id());
+        CommentRequestDto commentDto2 = createCommentDto(0L,"내용2", noticeId, member.id());
+        CommentRequestDto commentDto3 = createCommentDto(0L,"내용3", noticeId, member.id());
         commentServiceImpl.insertComment(commentDto1);
         commentServiceImpl.insertComment(commentDto2);
         commentServiceImpl.insertComment(commentDto3);
 
         // when
-        List<CommentResponseDto> comments = commentServiceImpl.findCommentsByNoticeId(notice.id());
+        List<CommentResponseDto> comments = commentServiceImpl.findCommentsByNoticeId(noticeId);
 
         // then
         List<String> tmp = new ArrayList<>();
@@ -140,16 +124,12 @@ class CommentServiceTest {
     void getCommentsByNoticeWithMemberImgTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        NoticeResponseDto notice = getNotice(NoticeRequestDto.builder()
-                .title("게시글")
-                .content("게시글 내용")
-                .memberId(member.id())
-                .build());
-        CommentRequestDto commentDto = createCommentDto(0L,"내용1", notice.id(), member.id());
+        Long noticeId = getNoticeId(member.id());
+        CommentRequestDto commentDto = createCommentDto(0L,"내용1", noticeId, member.id());
         commentServiceImpl.insertComment(commentDto);
 
         // when
-        List<CommentResponseDto> comments = commentServiceImpl.findCommentsByNoticeId(notice.id());
+        List<CommentResponseDto> comments = commentServiceImpl.findCommentsByNoticeId(noticeId);
 
         // then
         CommentResponseDto findComment = comments.get(0);
@@ -167,16 +147,12 @@ class CommentServiceTest {
         String email = "limnj2@test.com";
         MemberResponseDto member1 = getMember("limnj@test.com");
         MemberResponseDto member2 = getMember(email);
-        NoticeResponseDto notice = getNotice(NoticeRequestDto.builder()
-                .title("게시글")
-                .content("게시글 내용")
-                .memberId(member1.id())
-                .build());
-        CommentRequestDto commentDto1 = createCommentDto(0L,"내용1", notice.id(), member1.id());
-        CommentRequestDto commentDto2 = createCommentDto(0L,"내용2", notice.id(), member2.id());
-        CommentRequestDto commentDto3 = createCommentDto(0L,"내용3", notice.id(), member2.id());
-        CommentRequestDto commentDto4 = createCommentDto(0L,"내용4", notice.id(), member1.id());
-        CommentRequestDto commentDto5 = createCommentDto(0L,"내용5", notice.id(), member1.id());
+        Long noticeId = getNoticeId(member1.id());
+        CommentRequestDto commentDto1 = createCommentDto(0L,"내용1", noticeId, member1.id());
+        CommentRequestDto commentDto2 = createCommentDto(0L,"내용2", noticeId, member2.id());
+        CommentRequestDto commentDto3 = createCommentDto(0L,"내용3", noticeId, member2.id());
+        CommentRequestDto commentDto4 = createCommentDto(0L,"내용4", noticeId, member1.id());
+        CommentRequestDto commentDto5 = createCommentDto(0L,"내용5", noticeId, member1.id());
 
         commentServiceImpl.insertComment(commentDto1);
         commentServiceImpl.insertComment(commentDto2);
@@ -218,10 +194,14 @@ class CommentServiceTest {
         return findMember;
     }
 
-    private NoticeResponseDto getNotice(NoticeRequestDto noticeRequestDto){
+    private Long getNoticeId(Long memberId){
+        NoticeRequestDto noticeRequestDto = NoticeRequestDto.builder()
+                .title("게시글")
+                .content("게시글 내용")
+                .memberId(memberId)
+                .build();
         noticeMapper.insertNotice(noticeRequestDto);
-        List<NoticeResponseDto> notices = noticeMapper.findAllNotices(Map.of());
-        return notices.get(0);
+        return noticeRequestDto.getId();
     }
 
 

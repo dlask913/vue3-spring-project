@@ -42,11 +42,11 @@ class ProductBidServiceTest {
     void addBidHistoryTest() throws InterruptedException {
         // given
         MemberResponseDto member = getMember("buyer@test.com"); // 고객
-        ProductResponseDto product = getProduct(2000, "owner@test.com");
+        Long productId = getProductId(2000, "owner@test.com");
         ProductBidDto productBidDto = ProductBidDto.builder()
                 .bidPrice(3000)
                 .customerId(member.id())
-                .productId(product.id())
+                .productId(productId)
                 .build();
 
         Thread.sleep(1000); // 히스토리 간 간격 주기
@@ -55,7 +55,7 @@ class ProductBidServiceTest {
         productBidServiceImpl.addBidHistory(productBidDto);
 
         // then
-        ProductBidDto findProductBid = productBidHistoryMapper.findLatestBidHistory(product.id());
+        ProductBidDto findProductBid = productBidHistoryMapper.findLatestBidHistory(productId);
         Assertions.assertThat(findProductBid.getProductId()).isEqualTo(productBidDto.getProductId());
         Assertions.assertThat(findProductBid.getBidPrice()).isEqualTo(productBidDto.getBidPrice());
         Assertions.assertThat(findProductBid.getCustomerId()).isEqualTo(productBidDto.getCustomerId());
@@ -66,11 +66,11 @@ class ProductBidServiceTest {
     void addBidPriceBelowCurrentTest() {
         // given
         MemberResponseDto member = getMember("buyer@test.com"); // 고객
-        ProductResponseDto product = getProduct(2000, "owner@test.com");
+        Long productId = getProductId(2000, "owner@test.com");
         ProductBidDto productBidDto = ProductBidDto.builder()
                 .bidPrice(1500)
                 .customerId(member.id())
-                .productId(product.id())
+                .productId(productId)
                 .build();
 
         // when // then
@@ -79,7 +79,7 @@ class ProductBidServiceTest {
         }, "현재 가격보다 높은 가격을 입력해주세요.");
     }
 
-    private ProductResponseDto getProduct(int standardPrice, String ownerEmail) {
+    private Long getProductId(int standardPrice, String ownerEmail) {
         MemberResponseDto member = getMember(ownerEmail);
         ProductRequestDto productDto = ProductRequestDto.builder()
                 .title("title")
@@ -89,7 +89,7 @@ class ProductBidServiceTest {
                 .ownerId(member.id())
                 .build();
         productServiceImpl.insertProduct(productDto, null); // 초기 bidHistory 생성
-        return productMapper.findAllProducts().get(0);
+        return productDto.getId();
     }
 
     private MemberResponseDto getMember(String email){

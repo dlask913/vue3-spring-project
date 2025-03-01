@@ -10,7 +10,7 @@ import java.util.List;
 public interface MessageMapper {
     int insertMessage(MessageRequestDto messageRequestDto);
     int deleteMessage(Long messageId);
-    MessageResponseDto findMessageByMessageId(Long messageId);
+    MessageResponseDto findMessageById(Long messageId);
     List<MessageResponseDto> findAllMessages();
     void deleteAllMessages();
     List<MessageResponseDto> findReceivedMessagesByMemberId(Long memberId);

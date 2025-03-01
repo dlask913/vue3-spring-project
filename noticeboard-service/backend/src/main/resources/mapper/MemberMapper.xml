@@ -1,14 +1,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.MemberMapper">
-
     <!-- 회원 생성 -->
-    <insert id="insertMember" parameterType="MemberRequestDto">
+    <insert id="insertMember" parameterType="MemberRequestDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO Members (username, email, password)
         VALUES (#{username}, #{email}, #{password})
-
-        <selectKey keyProperty="id" resultType="long" order="AFTER">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
     </insert>
 
     <!-- 회원 정보 수정 -->

@@ -1,7 +1,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.ImageMapper">
     <!-- 이미지 생성 -->
-    <insert id="saveImage" parameterType="ImageRequestDto">
+    <insert id="saveImage" parameterType="ImageRequestDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO Images (img_name, ori_img_name, img_url, file_size, upload_date, image_type, type_id)
         VALUES (#{imgName}, #{oriImgName}, #{imgUrl}, #{fileSize}, #{uploadDate}, #{imageType}, #{typeId})
     </insert>

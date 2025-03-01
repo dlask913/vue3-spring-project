@@ -1,7 +1,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.CommentMapper">
     <!-- 댓글 생성 -->
-    <insert id="insertComment" parameterType="CommentRequestDto">
+    <insert id="insertComment" parameterType="CommentRequestDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO Comments (content, member_id, notice_id)
         VALUES (#{content}, #{memberId}, #{noticeId})
     </insert>
@@ -13,8 +13,17 @@
         WHERE id = #{id}
     </update>
 
+    <!-- 댓글 상세 조회 -->
+    <select id="findCommentById" parameterType="long" resultMap="CommentResponseDtoMap">
+        SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id,
+            NULL AS member_img_url, NULL AS reply_count
+        FROM Comments c
+            LEFT JOIN Members m ON c.member_id = m.id
+        WHERE c.id = #{id}
+    </select>
+
     <!-- 댓글 조회 by Notice -->
-    <select id="findCommentsByNoticeId" resultMap="CommentResponseDtoMap" parameterType="long">
+    <select id="findCommentsByNoticeId" parameterType="long" resultMap="CommentResponseDtoMap">
         WITH MemberImages AS (
             SELECT type_id, img_url
             FROM Images

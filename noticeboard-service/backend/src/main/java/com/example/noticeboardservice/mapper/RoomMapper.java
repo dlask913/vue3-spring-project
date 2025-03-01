@@ -8,4 +8,5 @@ import org.apache.ibatis.annotations.Param;
 public interface RoomMapper {
     int insertRoom(RoomDto roomDto);
     RoomDto findRoomByMembers(@Param("senderId") Long senderId, @Param("receiverId") Long receiverId);
+    void deleteAllRooms();
 }

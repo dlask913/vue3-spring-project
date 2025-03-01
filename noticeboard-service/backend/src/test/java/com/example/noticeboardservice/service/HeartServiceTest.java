@@ -128,7 +128,7 @@ class HeartServiceTest {
                     .username("limnj1")
                     .build();
             memberMapper.insertMember(memberRequestDto);
-            return memberMapper.findMemberByEmail(email).id();
+            return memberRequestDto.getId();
         }
         return findMember.id();
     }
@@ -136,19 +136,17 @@ class HeartServiceTest {
     Long getCommentId(String content, Long memberId) {
         NoticeRequestDto noticeRequestDto = NoticeRequestDto.builder()
                 .title("게시글")
-                .content("게시글 내용")
+                .content(content)
                 .memberId(memberId)
                 .build();
         noticeMapper.insertNotice(noticeRequestDto);
-        List<NoticeResponseDto> notices = noticeMapper.findAllNotices(Map.of());
 
         CommentRequestDto commentRequestDto = CommentRequestDto.builder()
                 .content(content)
-                .noticeId(notices.get(0).id())
+                .noticeId(noticeRequestDto.getId())
                 .memberId(memberId)
                 .build();
         commentMapper.insertComment(commentRequestDto);
-        List<CommentResponseDto> comments = commentMapper.findAllComments();
-        return comments.get(0).id();
+        return commentRequestDto.getId();
     }
 }

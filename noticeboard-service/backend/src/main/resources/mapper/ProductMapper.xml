@@ -1,13 +1,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.ProductMapper">
     <!-- 상품 등록 -->
-    <insert id="insertProduct" parameterType="ProductRequestDto">
+    <insert id="insertProduct" parameterType="ProductRequestDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO Products (title, content, category, standard_price, owner_id)
         VALUES (#{title}, #{content}, #{category}, #{standardPrice}, #{ownerId})
-
-        <selectKey keyProperty="id" resultType="long" order="AFTER">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
     </insert>
 
     <!-- 상품 단일 조회 -->

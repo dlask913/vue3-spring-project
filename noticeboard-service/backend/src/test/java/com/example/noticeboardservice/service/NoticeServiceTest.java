@@ -45,7 +45,7 @@ class NoticeServiceTest {
         noticeServiceImpl.saveNotice(noticeRequestDto);
 
         // then
-        NoticeResponseDto findNotice = noticeMapper.findAllNotices(Map.of()).get(0);
+        NoticeResponseDto findNotice = noticeMapper.findNotice(noticeRequestDto.getId());
         assertThat(findNotice.title()).isEqualTo(noticeRequestDto.getTitle());
         assertThat(findNotice.content()).isEqualTo(noticeRequestDto.getContent());
     }
@@ -57,14 +57,14 @@ class NoticeServiceTest {
         NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
                 getMemberId("limnj1@test.com", "limnj"));
         noticeMapper.insertNotice(noticeRequestDto);
-        NoticeResponseDto savedNotice = noticeMapper.findAllNotices(Map.of()).get(0);
+        NoticeResponseDto savedNotice = noticeMapper.findNotice(noticeRequestDto.getId());
         NoticeRequestDto updateNotice = createNoticeRequestDto(savedNotice.id(),"제목1", "내용1", noticeRequestDto.getMemberId());
 
         // when
         noticeServiceImpl.updateNotice(savedNotice.id(), updateNotice);
 
         // then
-        NoticeResponseDto findNotice = noticeMapper.findAllNotices(Map.of()).get(0);
+        NoticeResponseDto findNotice = noticeMapper.findNotice(noticeRequestDto.getId());
         assertThat(findNotice.id()).isEqualTo(updateNotice.getId());
         assertThat(findNotice.title()).isEqualTo(updateNotice.getTitle());
         assertThat(findNotice.content()).isEqualTo(updateNotice.getContent());
@@ -78,7 +78,7 @@ class NoticeServiceTest {
         NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
                 getMemberId("limnj1@test.com", "limnj"));
         noticeMapper.insertNotice(noticeRequestDto);
-        NoticeResponseDto findNotice = noticeMapper.findAllNotices(Map.of()).get(0);
+        NoticeResponseDto findNotice = noticeMapper.findNotice(noticeRequestDto.getId());
 
         // when
         noticeServiceImpl.deleteNotice(findNotice.id());
@@ -96,7 +96,7 @@ class NoticeServiceTest {
         noticeMapper.insertNotice(noticeRequestDto);
 
         // when
-        NoticeResponseDto findNotice = noticeServiceImpl.findAllNotices(Map.of()).get(0);
+        NoticeResponseDto findNotice = noticeMapper.findNotice(noticeRequestDto.getId());
 
         // then
         assertThat(findNotice.memberId()).isEqualTo(noticeRequestDto.getMemberId());
@@ -112,7 +112,7 @@ class NoticeServiceTest {
         NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
                 getMemberId("limnj1@test.com", "limnj"));
         noticeMapper.insertNotice(noticeRequestDto);
-        NoticeResponseDto savedNotice = noticeMapper.findAllNotices(Map.of()).get(0); // 저장한 게시글 조회
+        NoticeResponseDto savedNotice = noticeMapper.findNotice(noticeRequestDto.getId()); // 저장한 게시글 조회
 
         // when
         NoticeResponseDto findNotice = noticeServiceImpl.findNotice(savedNotice.id(), "test");
@@ -128,7 +128,7 @@ class NoticeServiceTest {
         NoticeRequestDto noticeRequestDto = createNoticeRequestDto(0L,"제목", "내용",
                 getMemberId("limnj1@test.com", "limnj"));
         noticeMapper.insertNotice(noticeRequestDto);
-        NoticeResponseDto savedNotice = noticeMapper.findAllNotices(Map.of()).get(0); // 저장한 게시글 조회
+        NoticeResponseDto savedNotice = noticeMapper.findNotice(noticeRequestDto.getId()); // 저장한 게시글 조회
 
         // when
         NoticeResponseDto findNotice = noticeServiceImpl.findNotice(savedNotice.id(), "limnj1@test.com");

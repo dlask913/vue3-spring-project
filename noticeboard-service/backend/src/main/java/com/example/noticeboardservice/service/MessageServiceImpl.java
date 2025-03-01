@@ -4,7 +4,6 @@ import com.example.noticeboardservice.dto.MessageRequestDto;
 import com.example.noticeboardservice.dto.MessageResponseDto;
 import com.example.noticeboardservice.dto.RoomDto;
 import com.example.noticeboardservice.mapper.MessageMapper;
-import com.example.noticeboardservice.mapper.RoomMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +40,7 @@ public class MessageServiceImpl implements MessageService{
 
     @Override
     public MessageResponseDto findMessageByMessageId(Long messageId) {
-        return messageMapper.findMessageByMessageId(messageId);
+        return messageMapper.findMessageById(messageId);
     }
 
     @Override

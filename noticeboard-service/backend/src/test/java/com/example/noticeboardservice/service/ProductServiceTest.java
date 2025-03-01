@@ -53,7 +53,7 @@ class ProductServiceTest {
         productServiceImpl.insertProduct(requestDto, null);
 
         // then
-        ProductResponseDto findProduct = productMapper.findAllProducts().get(0);
+        ProductDetailsResponseDto findProduct = productMapper.findProduct(requestDto.getId());
 
         Assertions.assertThat(findProduct.title()).isEqualTo(requestDto.getTitle());
         Assertions.assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
@@ -97,7 +97,7 @@ class ProductServiceTest {
         productServiceImpl.insertProduct(requestDto, productImg);
 
         // then
-        ProductResponseDto findProduct = productMapper.findAllProducts().get(0);
+        ProductDetailsResponseDto findProduct = productMapper.findProduct(requestDto.getId());
         Assertions.assertThat(findProduct.title()).isEqualTo(requestDto.getTitle());
         Assertions.assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
         Assertions.assertThat(findProduct.standardPrice()).isEqualTo(requestDto.getStandardPrice());
@@ -113,7 +113,7 @@ class ProductServiceTest {
         ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
         productServiceImpl.insertProduct(requestDto, null);
 
-        Long productId = productMapper.findAllProducts().get(0).id();
+        Long productId = productMapper.findProduct(requestDto.getId()).id();
         ProductRequestDto updateDto = createProductRequestDto(
                 productId, "고양이 장난감 팔아요", "강아지 장난감은 다 팔렸어요", "FURNITURE", 220, requestDto.getOwnerId());
 
@@ -121,7 +121,7 @@ class ProductServiceTest {
         productServiceImpl.updateProduct(updateDto);
 
         // then
-        ProductResponseDto findProduct = productMapper.findAllProducts().get(0);
+        ProductDetailsResponseDto findProduct = productMapper.findProduct(requestDto.getId());
         Assertions.assertThat(findProduct.title()).isEqualTo(updateDto.getTitle());
         Assertions.assertThat(findProduct.content()).isEqualTo(updateDto.getContent());
         Assertions.assertThat(findProduct.standardPrice()).isEqualTo(updateDto.getStandardPrice());
@@ -136,9 +136,10 @@ class ProductServiceTest {
         ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
         productServiceImpl.insertProduct(requestDto, null);
 
-        Long productId = productMapper.findAllProducts().get(0).id();
+        Long productId = productMapper.findProduct(requestDto.getId()).id();
 
         // when
+        // todo: Cannot delete or update a parent row: a foreign key constraint fails (`testboard`.`bid_history`, CONSTRAINT `bid_history_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`))
         productServiceImpl.deleteProduct(productId);
 
         // then
@@ -153,7 +154,7 @@ class ProductServiceTest {
         ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
         productServiceImpl.insertProduct(requestDto, null);
 
-        Long productId = productMapper.findAllProducts().get(0).id();
+        Long productId = productMapper.findProduct(requestDto.getId()).id();
 
         // when
         ProductDetailsResponseDto findProduct = productServiceImpl.findProduct(productId);

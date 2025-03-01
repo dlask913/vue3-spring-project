@@ -11,6 +11,7 @@ public interface CommentMapper {
     int insertComment(CommentRequestDto commentDto);
     int updateComment(CommentRequestDto commentDto);
     int deleteComment(Long commentId);
+    CommentResponseDto findCommentById(Long commentId);
     List<CommentResponseDto> findCommentsByNoticeId(Long noticeId);
     List<CommentResponseDto> findAllComments();
     void deleteAll();

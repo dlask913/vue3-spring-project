@@ -1,12 +1,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.MessageMapper">
-    <!-- 쪽지 전송 -->
-    <insert id="insertMessage" parameterType="MessageRequestDto">
-        INSERT INTO Messages (sender_id, receiver_id, content)
-        VALUES (#{senderId}, #{receiverId}, #{content})
+    <!-- 메시지 전송 -->
+    <insert id="insertMessage" parameterType="MessageRequestDto" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Messages (room_id, sender_id, receiver_id, content)
+        VALUES (#{roomId}, #{senderId}, #{receiverId}, #{content})
     </insert>
     <!-- 메시지 상세 조회 -->
-    <select id="findMessageByMessageId" parameterType="long" resultMap="MessageResponseDtoMap">
+    <select id="findMessageById" parameterType="long" resultMap="MessageResponseDtoMap">
         SELECT id, sender_id, receiver_id, content, created_at, is_read
         FROM Messages
         WHERE id = #{id}
