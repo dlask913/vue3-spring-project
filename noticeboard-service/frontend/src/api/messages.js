@@ -35,3 +35,9 @@ export function updateReadStatus(token, messageId) {
     headers: { Authorization: token },
   })
 }
+
+export function getMessagesByRoomId(token, roomId) {
+  return axios.get(`/room/${roomId}/messages`, {
+    headers: { Authorization: token },
+  })
+}

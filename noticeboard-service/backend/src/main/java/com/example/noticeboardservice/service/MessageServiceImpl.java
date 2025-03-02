@@ -57,4 +57,9 @@ public class MessageServiceImpl implements MessageService{
     public int updateReadStatus(Long messageId) {
         return messageMapper.updateReadStatus(messageId);
     }
+
+    @Override
+    public List<MessageResponseDto> findMessagesByRoomId(Long roomId) {
+        return messageMapper.findMessagesByRoomId(roomId);
+    }
 }

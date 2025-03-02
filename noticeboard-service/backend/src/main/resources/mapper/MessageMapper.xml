@@ -7,7 +7,7 @@
     </insert>
     <!-- 메시지 상세 조회 -->
     <select id="findMessageById" parameterType="long" resultMap="MessageResponseDtoMap">
-        SELECT id, sender_id, receiver_id, content, created_at, is_read
+        SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
         FROM Messages
         WHERE id = #{id}
     </select>
@@ -18,7 +18,7 @@
     </delete>
     <!-- 모든 메시지 조회 -->
     <select id="findAllMessages" resultMap="MessageResponseDtoMap">
-        SELECT id, sender_id, receiver_id, content, created_at, is_read
+        SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
         FROM Messages
     </select>
     <!-- 모든 메시지 삭제 -->
@@ -27,13 +27,13 @@
     </delete>
     <!-- 받은 메시지 모두 조회 -->
     <select id="findReceivedMessagesByMemberId" parameterType="long" resultMap="MessageResponseDtoMap">
-        SELECT id, sender_id, receiver_id, content, created_at, is_read
+        SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
         FROM Messages
         WHERE receiver_id = #{memberId}
     </select>
     <!-- 보낸 메시지 모두 조회 -->
     <select id="findSentMessagesByMemberId" parameterType="long" resultMap="MessageResponseDtoMap">
-        SELECT id, sender_id, receiver_id, content, created_at, is_read
+        SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
         FROM Messages
         WHERE sender_id = #{memberId}
     </select>
@@ -43,6 +43,12 @@
         SET is_read = 'Y'
         WHERE id = #{id}
     </update>
+    <!-- 특정 채팅방 내 모든 메시지 조회 -->
+    <select id="findMessagesByRoomId" parameterType="long" resultMap="MessageResponseDtoMap">
+        SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
+        FROM Messages
+        WHERE room_id = #{roomId}
+    </select>
 
     <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
     <resultMap id="MessageResponseDtoMap" type="com.example.noticeboardservice.dto.MessageResponseDto">
@@ -53,6 +59,7 @@
             <arg column="content" javaType="java.lang.String"/>
             <arg column="created_at" javaType="java.lang.String"/>
             <arg column="is_read" javaType="java.lang.String"/>
+            <arg column="room_id" javaType="java.lang.Long"/>
         </constructor>
     </resultMap>
 </mapper>

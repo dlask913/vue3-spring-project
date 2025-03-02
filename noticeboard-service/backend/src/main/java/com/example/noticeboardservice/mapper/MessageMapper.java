@@ -16,4 +16,5 @@ public interface MessageMapper {
     List<MessageResponseDto> findReceivedMessagesByMemberId(Long memberId);
     List<MessageResponseDto> findSentMessagesByMemberId(Long memberId);
     int updateReadStatus(Long messageId);
+    List<MessageResponseDto> findMessagesByRoomId(Long roomId);
 }

@@ -6,6 +6,7 @@ public record MessageResponseDto(
         Long receiverId,
         String content,
         String createdAt,
-        String isRead
+        String isRead,
+        Long roomId
 ) {
 }

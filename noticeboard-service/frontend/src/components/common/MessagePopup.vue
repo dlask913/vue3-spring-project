@@ -70,6 +70,7 @@ const handleMessageSend = async () => {
     toast.setToast('메시지를 전송하였습니다.')
   } catch (e) {
     console.error(e)
+    toast.setToast('메시지 전송에 실패하였습니다.', 'danger')
   }
   message.value = ''
   closePopup()

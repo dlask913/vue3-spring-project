@@ -66,4 +66,12 @@ public class MessageController {
         }
         return ResponseEntity.ok().body("메시지 읽음 처리가 완료되었습니다.");
     }
+
+    @GetMapping("/room/{roomId}/messages")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "특정 채팅방의 메시지 전체 조회 API")
+    public ResponseEntity<List<MessageResponseDto>> findMessagesByRoomId(@PathVariable("roomId") Long roomId) {
+        List<MessageResponseDto> messages = messageServiceImpl.findMessagesByRoomId(roomId);
+        return ResponseEntity.ok().body(messages);
+    }
+
 }
