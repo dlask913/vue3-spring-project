@@ -2,15 +2,15 @@
 <mapper namespace="com.example.noticeboardservice.mapper.RoomMapper">
     <!-- 채팅방 생성 -->
     <insert id="insertRoom" parameterType="RoomDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Rooms (id, sender_id, receiver_id)
-        VALUES (#{id}, #{senderId}, #{receiverId})
+        INSERT INTO Rooms (member_id_lower, member_id_higher)
+        VALUES (#{lowerId}, #{higherId})
     </insert>
 
     <!-- 채팅방 조회 -->
     <select id="findRoomByMembers" parameterType="RoomDto" resultType="RoomDto">
-        SELECT id, sender_id, receiver_id
+        SELECT id, member_id_lower AS lowerId, member_id_higher AS higherId
         FROM Rooms
-        WHERE sender_id = #{senderId} AND receiver_id = #{receiverId}
+        WHERE member_id_lower = LEAST(#{senderId}, #{receiverId}) AND member_id_higher = GREATEST(#{senderId}, #{receiverId})
     </select>
 
     <delete id="deleteAllRooms">

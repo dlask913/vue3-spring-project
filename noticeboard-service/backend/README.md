@@ -122,10 +122,10 @@ CREATE TABLE Messages (
 
 CREATE TABLE Rooms (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    sender_id BIGINT NOT NULL,
-    receiver_id BIGINT NOT NULL,
+    member_id_lower BIGINT NOT NULL,
+    member_id_higher BIGINT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (sender_id, receiver_id) -- 동일한 두 사람 간 중복된 방 생성 방지
+    UNIQUE (member_id_lower, member_id_higher) -- 동일한 두 사람 간 중복된 방 생성 방지
 );
 
 ```

@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -22,10 +25,13 @@ public class MessageServiceImpl implements MessageService{
         Optional<RoomDto> findRoom = roomServiceImpl.findRoomByMembers(messageRequestDto.getSenderId(), messageRequestDto.getReceiverId());
         if (findRoom.isEmpty()) { // 멤버들 간 채팅방이 없을 때 생성
             RoomDto roomDto = RoomDto.builder()
-                    .senderId(messageRequestDto.getSenderId())
-                    .receiverId(messageRequestDto.getReceiverId())
+                    .lowerId(min(messageRequestDto.getSenderId(), messageRequestDto.getReceiverId()))
+                    .higherId(max(messageRequestDto.getSenderId(), messageRequestDto.getReceiverId()))
                     .build();
-            roomServiceImpl.insertRoom(roomDto);
+            int result = roomServiceImpl.insertRoom(roomDto);
+            if (result <= 0) { // todo: 예외처리
+                throw new RuntimeException("채팅방 생성에 실패하였습니다.");
+            }
             messageRequestDto.saveRoomId(roomDto.getId());
         } else {
             messageRequestDto.saveRoomId(findRoom.get().getId());
