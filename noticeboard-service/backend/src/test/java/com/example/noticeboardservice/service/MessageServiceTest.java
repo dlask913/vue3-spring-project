@@ -1,9 +1,6 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.MemberRequestDto;
-import com.example.noticeboardservice.dto.MemberResponseDto;
-import com.example.noticeboardservice.dto.MessageRequestDto;
-import com.example.noticeboardservice.dto.MessageResponseDto;
+import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.MessageMapper;
 import com.example.noticeboardservice.mapper.RoomMapper;
@@ -17,6 +14,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -38,7 +37,7 @@ class MessageServiceTest {
     }
 
     @Test
-    @DisplayName("메시지를 전송한다")
+    @DisplayName("처음 상대방에게 메시지를 전송한다")
     void sendMessageTest() {
         // given
         MemberResponseDto sender = getMember("limnjSender@test.com");
@@ -58,6 +57,10 @@ class MessageServiceTest {
         assertThat(savedMessage.senderId()).isEqualTo(requestDto.getSenderId());
         assertThat(savedMessage.receiverId()).isEqualTo(requestDto.getReceiverId());
         assertThat(savedMessage.isRead()).isEqualTo("N");
+
+        RoomDto findRoom = roomMapper.findRoomByMembers(sender.id(), receiver.id());
+        assertThat(findRoom.getLowerId()).isEqualTo(min(sender.id(), receiver.id()));
+        assertThat(findRoom.getHigherId()).isEqualTo(max(sender.id(), receiver.id()));
     }
 
     @Test

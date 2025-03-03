@@ -78,7 +78,7 @@ class MessageControllerTest {
     void findMessageByMessageIdTest() throws Exception {
         // given
         MessageResponseDto responseDto
-                = new MessageResponseDto(1L, 1L, 2L, "메시지 조회", "2025-02-23 00:00:00", "N");
+                = new MessageResponseDto(1L, 1L, 2L, "메시지 조회", "2025-02-23 00:00:00", "N", 1L);
         Mockito.when(messageServiceImpl.findMessageByMessageId(responseDto.id())).thenReturn(responseDto);
 
         // when // then
@@ -99,8 +99,8 @@ class MessageControllerTest {
         // given
         Long memberId = 1L;
         List<MessageResponseDto> messages = List.of(
-                new MessageResponseDto(1L, 2L, memberId, "받은 메시지1", "2025-02-23 00:00:00", "N"),
-                new MessageResponseDto(2L, 3L, memberId, "받은 메시지2", "2025-02-23 00:00:00", "N")
+                new MessageResponseDto(1L, 2L, memberId, "받은 메시지1", "2025-02-23 00:00:00", "N", 1L),
+                new MessageResponseDto(2L, 3L, memberId, "받은 메시지2", "2025-02-23 00:00:00", "N", 1L)
         );
         Mockito.when(messageServiceImpl.findReceivedMessagesByMemberId(memberId)).thenReturn(messages);
 
@@ -127,8 +127,8 @@ class MessageControllerTest {
         // given
         Long memberId = 1L;
         List<MessageResponseDto> messages = List.of(
-                new MessageResponseDto(1L, memberId, 2L, "보낸 메시지1", "2025-02-23 00:00:00", "N"),
-                new MessageResponseDto(2L, memberId, 3L, "보낸 메시지2", "2025-02-23 00:00:00", "N")
+                new MessageResponseDto(1L, memberId, 2L, "보낸 메시지1", "2025-02-23 00:00:00", "N", 1L),
+                new MessageResponseDto(2L, memberId, 3L, "보낸 메시지2", "2025-02-23 00:00:00", "N", 1L)
         );
         Mockito.when(messageServiceImpl.findSentMessagesByMemberId(memberId)).thenReturn(messages);
 
