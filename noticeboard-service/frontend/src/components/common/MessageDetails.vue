@@ -68,14 +68,17 @@ const fetchMessages = async () => {
 }
 
 const handleMessageSend = async () => {
-  // todo: 답장 보내기
   try {
     const data = ref({
-      senderId: props.message.receiverId,
-      receiverId: props.message.senderId,
+      senderId: storage.getUserId,
+      receiverId:
+        storage.getUserId != props.message.senderId
+          ? props.message.senderId
+          : props.message.receiverId, // sender 와 receiver 는 바뀔 수 있기 때문에 현재 userId 와 비교
       content: newMessage.value,
     })
     await sendMessage(storage.getToken, data.value)
+    fetchMessages()
   } catch (e) {
     console.error(e)
   }
