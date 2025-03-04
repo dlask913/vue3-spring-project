@@ -10,7 +10,7 @@
             @click="$emit('close')"
           ></button>
         </div>
-        <div class="chat-body">
+        <div ref="chatBody" class="chat-body">
           <div
             v-for="(msg, index) in messages"
             :key="index"
@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { sendMessage, getMessagesByRoomId } from '@/api/messages'
 import { useStorageStore } from '@/store/index'
 const props = defineProps({
@@ -50,6 +50,7 @@ defineEmits(['close', 'reply'])
 const storage = useStorageStore()
 const newMessage = ref('')
 const messages = ref([])
+const chatBody = ref(null) // 채팅창 요소
 
 const fetchMessages = async () => {
   // 메시지 초기 조회
@@ -62,6 +63,9 @@ const fetchMessages = async () => {
       ...msg,
       type: msg.senderId == storage.userId ? 'user' : 'other', // 채팅방 sender 와 receiver 구분
     }))
+
+    await nextTick() // DOM 업데이트 후 스크롤 이동
+    scrollToBottom()
   } catch (e) {
     console.error(e)
   }
@@ -78,11 +82,17 @@ const handleMessageSend = async () => {
       content: newMessage.value,
     })
     await sendMessage(storage.getToken, data.value)
-    fetchMessages()
+    await fetchMessages()
   } catch (e) {
     console.error(e)
   }
   newMessage.value = ''
+}
+
+const scrollToBottom = () => {
+  if (chatBody.value) {
+    chatBody.value.scrollTop = chatBody.value.scrollHeight
+  }
 }
 
 onMounted(() => {
