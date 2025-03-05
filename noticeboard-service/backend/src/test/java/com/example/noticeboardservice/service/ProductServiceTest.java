@@ -192,6 +192,7 @@ class ProductServiceTest {
         Assertions.assertThat(products.get(0).title()).isEqualTo("모빌 팔아요");
         Assertions.assertThat(products.get(0).content()).isEqualTo("사용한 건 1년 되었어요 ");
         Assertions.assertThat(products.get(0).standardPrice()).isEqualTo(2000);
+        Assertions.assertThat(products.get(0).postType()).isEqualTo(PostType.PRODUCT);
     }
 
     @Test
@@ -219,6 +220,7 @@ class ProductServiceTest {
         Assertions.assertThat(products.get(0).content()).isEqualTo("사용한 건 2년 되었어요 ");
         Assertions.assertThat(products.get(0).category()).isEqualTo("DEVICE");
         Assertions.assertThat(products.get(0).standardPrice()).isEqualTo(1000);
+        Assertions.assertThat(products.get(0).postType()).isEqualTo(PostType.PRODUCT);
     }
 
     @Test

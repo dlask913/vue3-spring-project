@@ -1,9 +1,6 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.MemberRequestDto;
-import com.example.noticeboardservice.dto.MemberResponseDto;
-import com.example.noticeboardservice.dto.NoticeRequestDto;
-import com.example.noticeboardservice.dto.NoticeResponseDto;
+import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.NoticeMapper;
 import org.junit.jupiter.api.*;
@@ -103,6 +100,8 @@ class NoticeServiceTest {
         assertThat(findNotice.title()).isEqualTo(noticeRequestDto.getTitle());
         assertThat(findNotice.content()).isEqualTo(noticeRequestDto.getContent());
         assertThat(findNotice.viewCount()).isEqualTo(0); // 조회수 초기값 0
+        assertThat(findNotice.postType()).isEqualTo(PostType.NOTICE);
+
     }
 
     @Test
