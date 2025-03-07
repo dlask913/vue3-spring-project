@@ -10,11 +10,15 @@ public class RoomDto {
     private Long id;
     private Long lowerId;
     private Long higherId;
+    private String lowerIdUsername;
+    private String higherIdUsername;
 
     @Builder
-    public RoomDto(Long id, Long lowerId, Long higherId) {
+    public RoomDto(Long id, Long lowerId, Long higherId, String lowerIdUsername, String higherIdUsername) {
         this.id = id;
         this.lowerId = lowerId;
         this.higherId = higherId;
+        this.lowerIdUsername = lowerIdUsername;
+        this.higherIdUsername = higherIdUsername;
     }
 }

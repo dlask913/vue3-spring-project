@@ -13,6 +13,16 @@
         WHERE member_id_lower = LEAST(#{senderId}, #{receiverId}) AND member_id_higher = GREATEST(#{senderId}, #{receiverId})
     </select>
 
+    <!-- 회원이 속한 채팅방 모두 조회 -->
+    <select id="findRoomsByMemberId" parameterType="long" resultType="RoomDto">
+        SELECT r.id, r.member_id_lower AS lowerId, r.member_id_higher AS higherId,
+            m1.username AS lowerIdUsername, m2.username AS higherIdUsername
+        FROM Rooms r
+            LEFT JOIN Members m1 ON r.member_id_lower = m1.id
+            LEFT JOIN Members m2 ON r.member_id_higher = m2.id
+        WHERE member_id_lower = #{memberId} OR member_id_higher = #{memberId}
+    </select>
+
     <delete id="deleteAllRooms">
         DELETE FROM Rooms
     </delete>

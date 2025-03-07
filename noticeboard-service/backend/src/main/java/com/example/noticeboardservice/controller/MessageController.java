@@ -2,7 +2,9 @@ package com.example.noticeboardservice.controller;
 
 import com.example.noticeboardservice.dto.MessageRequestDto;
 import com.example.noticeboardservice.dto.MessageResponseDto;
+import com.example.noticeboardservice.dto.RoomDto;
 import com.example.noticeboardservice.service.MessageService;
+import com.example.noticeboardservice.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MessageController {
     private final MessageService messageServiceImpl;
+    private final RoomService roomServiceImpl;
 
     @PostMapping("/message")
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "메시지 저장 API")
@@ -74,4 +77,10 @@ public class MessageController {
         return ResponseEntity.ok().body(messages);
     }
 
+    @GetMapping("/rooms/{memberId}")
+    @Operation(security = {@SecurityRequirement(name = "bearerAuth")}, summary = "회원이 속한 모든 채팅방 조회 API")
+    public ResponseEntity<List<RoomDto>> findRoomsByMemberId(@PathVariable("memberId") Long memberId) {
+        List<RoomDto> rooms = roomServiceImpl.findRoomsByMemberId(memberId);
+        return ResponseEntity.ok().body(rooms);
+    }
 }

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service @Transactional @RequiredArgsConstructor
@@ -20,5 +21,10 @@ public class RoomServiceImpl implements RoomService{
     public Optional<RoomDto> findRoomByMembers(Long senderId, Long receiverId) {
         RoomDto roomDto = roomMapper.findRoomByMembers(senderId, receiverId);
         return Optional.ofNullable(roomDto);
+    }
+
+    @Override
+    public List<RoomDto> findRoomsByMemberId(Long memberId) {
+        return roomMapper.findRoomsByMemberId(memberId);
     }
 }
