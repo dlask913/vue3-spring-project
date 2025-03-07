@@ -13,10 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -50,9 +52,9 @@ class RoomServiceTest {
 
         // then
         RoomDto findRoom = roomMapper.findRoomByMembers(senderId, receiverId);// senderId와 receiverId 당 1개
-        Assertions.assertThat(findRoom.getId()).isEqualTo(roomDto.getId());
-        Assertions.assertThat(findRoom.getLowerId()).isEqualTo(roomDto.getLowerId());
-        Assertions.assertThat(findRoom.getHigherId()).isEqualTo(roomDto.getHigherId());
+        assertThat(findRoom.getId()).isEqualTo(roomDto.getId());
+        assertThat(findRoom.getLowerId()).isEqualTo(roomDto.getLowerId());
+        assertThat(findRoom.getHigherId()).isEqualTo(roomDto.getHigherId());
     }
 
     @Test
@@ -71,9 +73,46 @@ class RoomServiceTest {
         RoomDto findRoom = roomServiceImpl.findRoomByMembers(memberAId, memberBId).orElseThrow();
 
         // then
-        Assertions.assertThat(findRoom.getId()).isEqualTo(roomDto.getId());
-        Assertions.assertThat(findRoom.getHigherId()).isEqualTo(roomDto.getHigherId());
-        Assertions.assertThat(findRoom.getLowerId()).isEqualTo(roomDto.getLowerId());
+        assertThat(findRoom.getId()).isEqualTo(roomDto.getId());
+        assertThat(findRoom.getHigherId()).isEqualTo(roomDto.getHigherId());
+        assertThat(findRoom.getLowerId()).isEqualTo(roomDto.getLowerId());
+    }
+
+    @Test
+    @DisplayName("회원이 속한 채팅방들을 모두 조회한다.")
+    void findRoomsByMemberIdTest() {
+        // given
+        Long memberAId = getMemberId("limnjA@test.com");
+        Long memberBId = getMemberId("limnjB@test.com");
+        Long memberCId = getMemberId("limnjC@test.com");
+        RoomDto roomAB = RoomDto.builder()
+                .lowerId(min(memberAId, memberBId))
+                .higherId(max(memberAId, memberBId))
+                .build();
+        RoomDto roomAC = RoomDto.builder()
+                .lowerId(min(memberAId, memberCId))
+                .higherId(max(memberAId, memberCId))
+                .build();
+        roomServiceImpl.insertRoom(roomAB);
+        roomServiceImpl.insertRoom(roomAC);
+
+        // when
+        List<RoomDto> rooms = roomServiceImpl.findRoomsByMemberId(memberAId);
+
+        // then
+        assertThat(rooms).hasSize(2);
+
+        RoomDto firstRoom = rooms.get(0); // 첫번째 방 (A, B)
+        assertThat(firstRoom.getLowerId()).isEqualTo(min(memberAId, memberBId));
+        assertThat(firstRoom.getHigherId()).isEqualTo(max(memberAId, memberBId));
+        assertThat(firstRoom.getLowerIdUsername()).isNotBlank();
+        assertThat(firstRoom.getHigherIdUsername()).isNotBlank();
+
+        RoomDto secondRoom = rooms.get(1); // 두번째 방 (A, C)
+        assertThat(secondRoom.getLowerId()).isEqualTo(min(memberAId, memberCId));
+        assertThat(secondRoom.getHigherId()).isEqualTo(max(memberAId, memberCId));
+        assertThat(secondRoom.getLowerIdUsername()).isNotBlank();
+        assertThat(secondRoom.getHigherIdUsername()).isNotBlank();
     }
 
     private Long getMemberId(String email){

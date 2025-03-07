@@ -3,7 +3,9 @@ package com.example.noticeboardservice.controller;
 import com.example.noticeboardservice.config.filter.JwtTokenFilter;
 import com.example.noticeboardservice.dto.MessageRequestDto;
 import com.example.noticeboardservice.dto.MessageResponseDto;
+import com.example.noticeboardservice.dto.RoomDto;
 import com.example.noticeboardservice.service.MessageService;
+import com.example.noticeboardservice.service.RoomService;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +32,8 @@ class MessageControllerTest {
 
     @MockBean
     private MessageService messageServiceImpl;
+    @MockBean
+    private RoomService roomServiceImpl;
     @MockBean
     private JwtTokenUtil jwtTokenUtil;
     @MockBean
@@ -147,6 +151,33 @@ class MessageControllerTest {
                 .andExpect(jsonPath("$[1].isRead").value("N"));
 
         Mockito.verify(messageServiceImpl, Mockito.times(1)).findSentMessagesByMemberId(memberId);
+    }
+
+    @Test
+    @DisplayName("사용자가 속한 채팅방을 모두 조회한다.")
+    void findRoomsByMemberIdTest() throws Exception {
+        Long memberId = 1L;
+        List<RoomDto> rooms = List.of(
+                new RoomDto(1L, 1L, 2L, "userA", "userB"),
+                new RoomDto(1L, 1L, 3L, "userA", "userC")
+        );
+        Mockito.when(roomServiceImpl.findRoomsByMemberId(memberId)).thenReturn(rooms);
+
+        // when // then
+        mockMvc.perform(get("/rooms/{memberId}", memberId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(rooms.get(0).getId()))
+                .andExpect(jsonPath("$[0].lowerId").value(rooms.get(0).getLowerId()))
+                .andExpect(jsonPath("$[0].higherId").value(rooms.get(0).getHigherId()))
+                .andExpect(jsonPath("$[0].lowerIdUsername").value(rooms.get(0).getLowerIdUsername()))
+                .andExpect(jsonPath("$[0].higherIdUsername").value(rooms.get(0).getHigherIdUsername()))
+                .andExpect(jsonPath("$[1].id").value(rooms.get(1).getId()))
+                .andExpect(jsonPath("$[1].lowerId").value(rooms.get(1).getLowerId()))
+                .andExpect(jsonPath("$[1].higherId").value(rooms.get(1).getHigherId()))
+                .andExpect(jsonPath("$[1].lowerIdUsername").value(rooms.get(1).getLowerIdUsername()))
+                .andExpect(jsonPath("$[1].higherIdUsername").value(rooms.get(1).getHigherIdUsername()));
+
+        Mockito.verify(roomServiceImpl, Mockito.times(1)).findRoomsByMemberId(memberId);
     }
 
     @Test
