@@ -3,6 +3,7 @@ package com.example.noticeboardservice.mapper;
 import com.example.noticeboardservice.dto.MessageRequestDto;
 import com.example.noticeboardservice.dto.MessageResponseDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public interface MessageMapper {
     void deleteAllMessages();
     List<MessageResponseDto> findReceivedMessagesByMemberId(Long memberId);
     List<MessageResponseDto> findSentMessagesByMemberId(Long memberId);
-    int updateReadStatus(Long messageId);
+    int updateReadStatus(@Param("userId") Long userId, @Param("otherId") Long otherId);
     List<MessageResponseDto> findMessagesByRoomId(Long roomId);
+    MessageResponseDto findLatestMessageByRoomId(Long roomId);
 }

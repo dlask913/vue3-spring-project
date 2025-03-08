@@ -60,12 +60,17 @@ public class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public int updateReadStatus(Long messageId) {
-        return messageMapper.updateReadStatus(messageId);
+    public int updateReadStatus(Long userId, Long otherId) {
+        return messageMapper.updateReadStatus(userId, otherId);
     }
 
     @Override
     public List<MessageResponseDto> findMessagesByRoomId(Long roomId) {
         return messageMapper.findMessagesByRoomId(roomId);
+    }
+
+    @Override
+    public MessageResponseDto findLatestMessageByRoomId(Long roomId) {
+        return messageMapper.findLatestMessageByRoomId(roomId);
     }
 }

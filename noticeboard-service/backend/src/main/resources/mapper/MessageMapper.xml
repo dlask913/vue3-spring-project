@@ -38,16 +38,24 @@
         WHERE sender_id = #{memberId}
     </select>
     <!-- 메시지 읽음 상태 업데이트 -->
-    <update id="updateReadStatus" parameterType="Long">
+    <update id="updateReadStatus">
         UPDATE Messages
         SET is_read = 'Y'
-        WHERE id = #{id}
+        WHERE sender_id = #{otherId} AND receiver_id = #{userId}
     </update>
     <!-- 특정 채팅방 내 모든 메시지 조회 -->
     <select id="findMessagesByRoomId" parameterType="long" resultMap="MessageResponseDtoMap">
         SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
         FROM Messages
         WHERE room_id = #{roomId}
+    </select>
+    <!-- 채팅방에서 가장 최근 메시지 조회 -->
+    <select id="findLatestMessageByRoomId" parameterType="long" resultMap="MessageResponseDtoMap">
+        SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
+        FROM Messages
+        WHERE room_id = #{roomId}
+        ORDER BY created_at DESC
+        LIMIT 1;
     </select>
 
     <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->

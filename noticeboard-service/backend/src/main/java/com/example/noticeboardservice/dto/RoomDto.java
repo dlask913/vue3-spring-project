@@ -12,6 +12,9 @@ public class RoomDto {
     private Long higherId;
     private String lowerIdUsername;
     private String higherIdUsername;
+    private Long latestMessageId;
+    private String latestMessage;
+    private String isRead;
 
     @Builder
     public RoomDto(Long id, Long lowerId, Long higherId, String lowerIdUsername, String higherIdUsername) {
@@ -21,4 +24,11 @@ public class RoomDto {
         this.lowerIdUsername = lowerIdUsername;
         this.higherIdUsername = higherIdUsername;
     }
+
+    public void saveLatestMessage(Long latestMessageId, String latestMessage, String isRead) {
+        this.latestMessageId = latestMessageId;
+        this.latestMessage = latestMessage;
+        this.isRead = isRead;
+    }
+
 }

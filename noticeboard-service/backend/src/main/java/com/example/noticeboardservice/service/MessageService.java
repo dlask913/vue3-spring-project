@@ -13,6 +13,7 @@ public interface MessageService {
     MessageResponseDto findMessageByMessageId(Long messageId);
     List<MessageResponseDto> findReceivedMessagesByMemberId(Long memberId);
     List<MessageResponseDto> findSentMessagesByMemberId(Long memberId);
-    int updateReadStatus(Long messageId);
+    int updateReadStatus(Long memberId, Long otherId);
     List<MessageResponseDto> findMessagesByRoomId(Long roomId);
+    MessageResponseDto findLatestMessageByRoomId(Long roomId);
 }

@@ -60,10 +60,10 @@ public class MessageController {
         return ResponseEntity.ok().body(messages);
     }
 
-    @PatchMapping("/message/{messageId}/read")
+    @PatchMapping("/message/{memberId}/{otherId}/read")
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "메시지 읽음 상태 저장을 위한 API")
-    public ResponseEntity<String> updateReadStatusOfMessage(@PathVariable("messageId") Long messageId){
-        int result = messageServiceImpl.updateReadStatus(messageId);
+    public ResponseEntity<String> updateReadStatusOfMessage(@PathVariable("memberId") Long memberId, @PathVariable("otherId") Long otherId){
+        int result = messageServiceImpl.updateReadStatus(memberId, otherId);
         if (result <= 0){
             return ResponseEntity.badRequest().body("메시지 읽음 상태 저장에 실패하였습니다.");
         }
@@ -80,7 +80,12 @@ public class MessageController {
     @GetMapping("/rooms/{memberId}")
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")}, summary = "회원이 속한 모든 채팅방 조회 API")
     public ResponseEntity<List<RoomDto>> findRoomsByMemberId(@PathVariable("memberId") Long memberId) {
-        List<RoomDto> rooms = roomServiceImpl.findRoomsByMemberId(memberId);
+        List<RoomDto> rooms = roomServiceImpl.findRoomsByMemberId(memberId).stream()
+                .map(roomDto -> {
+                    MessageResponseDto latestMessage = messageServiceImpl.findLatestMessageByRoomId(roomDto.getId());
+                    roomDto.saveLatestMessage(latestMessage.id(), latestMessage.content(), latestMessage.isRead());
+                    return roomDto;
+                }).toList();
         return ResponseEntity.ok().body(rooms);
     }
 }
