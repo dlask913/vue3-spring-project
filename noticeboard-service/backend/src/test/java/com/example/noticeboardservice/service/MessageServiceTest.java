@@ -166,20 +166,28 @@ class MessageServiceTest {
         // given
         MemberResponseDto sender = getMember("sender@test.com");
         MemberResponseDto receiver = getMember("receiver@test.com");
-        MessageRequestDto message = MessageRequestDto.builder()
-                .content("받은 메시지")
+        MessageRequestDto message1 = MessageRequestDto.builder()
+                .content("메시지1")
                 .senderId(sender.id())
                 .receiverId(receiver.id())
                 .build();
-        messageServiceImpl.sendMessage(message);
-        MessageResponseDto savedMessage = messageMapper.findMessageById(message.getId());
+        MessageRequestDto message2 = MessageRequestDto.builder()
+                .content("메시지2")
+                .senderId(sender.id())
+                .receiverId(receiver.id())
+                .build();
+        messageServiceImpl.sendMessage(message1);
+        messageServiceImpl.sendMessage(message2);
+        MessageResponseDto savedMessage = messageMapper.findMessageById(message1.getId());
 
         // when
-        messageServiceImpl.updateReadStatus(savedMessage.id());
+        messageServiceImpl.updateReadStatus(savedMessage.receiverId(), savedMessage.senderId());
 
         // then
-        MessageResponseDto findMessage = messageMapper.findMessageById(savedMessage.id());
-        Assertions.assertThat(findMessage.isRead()).isEqualTo("Y");
+        List<MessageResponseDto> messages = messageMapper.findReceivedMessagesByMemberId(receiver.id());
+        assertThat(messages).hasSize(2);
+        assertThat(messages.get(0).isRead()).isEqualTo("Y");
+        assertThat(messages.get(1).isRead()).isEqualTo("Y");
     }
 
     private MemberResponseDto getMember(String email){

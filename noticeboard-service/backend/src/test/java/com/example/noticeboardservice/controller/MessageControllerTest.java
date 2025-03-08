@@ -184,12 +184,12 @@ class MessageControllerTest {
     @DisplayName("받은 메시지를 읽는다.")
     void updateReadStatusOfMessage() throws Exception {
         // given
-        Mockito.when(messageServiceImpl.updateReadStatus(anyLong())).thenReturn(1);
+        Mockito.when(messageServiceImpl.updateReadStatus(1L, 2L)).thenReturn(1);
 
         // when // then
-        mockMvc.perform(patch("/message/{messageId}/read", anyLong()))
+        mockMvc.perform(patch("/message/{memberId}/{otherId}/read", 1L, 2L))
                 .andExpect(status().isOk())
                 .andExpect(content().string("메시지 읽음 처리가 완료되었습니다."));
-        Mockito.verify(messageServiceImpl, Mockito.times(1)).updateReadStatus(anyLong());
+        Mockito.verify(messageServiceImpl, Mockito.times(1)).updateReadStatus(1L, 2L);
     }
 }
