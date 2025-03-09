@@ -30,14 +30,20 @@ export function getSentMessagesByMemberId(token, memberId) {
   })
 }
 
-export function updateReadStatus(token, messageId) {
-  return axios.patch(`/message/${messageId}/read`, {
+export function updateReadStatus(token, memberId, otherId) {
+  return axios.patch(`/message/${memberId}/${otherId}/read`, {
     headers: { Authorization: token },
   })
 }
 
 export function getMessagesByRoomId(token, roomId) {
   return axios.get(`/room/${roomId}/messages`, {
+    headers: { Authorization: token },
+  })
+}
+
+export function getRoomsByMemberId(token, memberId) {
+  return axios.get(`/rooms/${memberId}`, {
     headers: { Authorization: token },
   })
 }

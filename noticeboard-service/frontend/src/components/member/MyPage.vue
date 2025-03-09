@@ -153,57 +153,33 @@
         </div>
       </div>
 
-      <!-- 내가 보낸 메시지 -->
+      <!-- 나의 채팅방 -->
       <div class="row mt-5" v-if="selectedMenu === 'messages'">
         <div class="col-md-5">
-          <h3>보낸 메시지</h3>
+          <h3>Messages</h3>
           <div
             class="card mb-3"
-            v-for="message in sentMessages"
-            :key="message.id"
+            v-for="room in rooms"
+            :key="room.id"
           >
             <div
               class="card-body"
-              @click="openMessage(message)"
+              @click="openRoom(room)"
               style="cursor: pointer"
             >
               <div class="d-flex justify-content-between">
-                <p class="card-text">{{ truncateMessage(message.content) }}</p>
+                <p class="card-text">{{ truncateMessage(room.latestMessage) }}</p>
               </div>
               <p class="card-text">
                 <small class="text-muted"
-                  >Sent on {{ message.createdAt }}</small
-                >
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-5">
-          <h3>받은 메시지</h3>
-          <div
-            class="card mb-3"
-            v-for="message in receivedMessages"
-            :key="message.id"
-          >
-            <div
-              class="card-body"
-              @click="openMessage(message)"
-              style="cursor: pointer"
-            >
-              <div class="d-flex justify-content-between">
-                <p class="card-text">{{ truncateMessage(message.content) }}</p>
-              </div>
-              <p class="card-text">
-                <small class="text-muted"
-                  >Sent on {{ message.createdAt }}</small
+                  >with {{ room.otherUsername }}</small
                 >
               </p>
             </div>
             <i
               class="bi position-absolute top-0 end-0 m-2"
               :class="
-                message.isRead == 'Y'
+                room.isRead == 'Y'
                   ? 'bi-check-circle text-success'
                   : 'bi-exclamation-circle-fill text-danger'
               "
@@ -213,31 +189,24 @@
       </div>
     </div>
   </div>
-  <!-- 메시지 팝업 -->
-  <MessageDetails
-    v-if="isMessageOpen"
-    :message="selectedMessage"
-    @close="isMessageOpen = false"
-    @reply="openReplyModal"
-  />
-  <MessagePopup
-    v-model:isOpen="isReplyOpen"
-    :receiverId="selectedMessage.receiverId"
+  <!-- 채팅방 팝업 -->
+  <RoomPopup
+    v-if="isRoomOpen"
+    :room="selectedRoom"
+    @close="isRoomOpen = false"
   />
 </template>
 
 <script setup>
 import ImageUploader from '../common/ImageUploader.vue'
-import MessageDetails from '../common/MessageDetails.vue'
-import MessagePopup from '../common/MessagePopup.vue'
+import RoomPopup from '../common/RoomPopup.vue'
 import { ref, onMounted } from 'vue'
 import { getMemberById, updateMember } from '@/api/users'
 import { getNoticesByMember } from '@/api/notices'
 import { getCommentsByMember } from '@/api/comments'
 import {
-  getSentMessagesByMemberId,
-  getReceivedMessagesByMemberId,
   updateReadStatus,
+  getRoomsByMemberId,
 } from '@/api/messages'
 import { useToastStore, useStorageStore } from '@/store'
 import { useRouter } from 'vue-router'
@@ -254,13 +223,11 @@ const member = ref({
 const memberImg = ref(null)
 const notices = ref([])
 const comments = ref([])
-const sentMessages = ref([])
-const receivedMessages = ref([])
+const rooms = ref([]) // 내 채팅방들
 const isActive = ref(null)
 const selectedMenu = ref('home') // 현재 선택된 메뉴
-const selectedMessage = ref('')
-const isMessageOpen = ref(false) // 메시지 상세보기 (MessageDetails)
-const isReplyOpen = ref(false) // 메시지 답장하기 (MessagePopup)
+const selectedRoom = ref('')
+const isRoomOpen = ref(false) // 채팅방 열기 (RoomPopup)
 
 const fetchData = async () => {
   try {
@@ -268,20 +235,21 @@ const fetchData = async () => {
       memberResponse,
       noticesResponse,
       commentsResponse,
-      sentMessagesResponse,
-      receivedMessagesResponse,
+      roomsResponse,
     ] = await Promise.all([
       getMemberById(storage.getToken, storage.getUserId),
       getNoticesByMember(storage.getToken),
       getCommentsByMember(storage.getToken),
-      getSentMessagesByMemberId(storage.getToken, storage.getUserId),
-      getReceivedMessagesByMemberId(storage.getToken, storage.getUserId),
+      getRoomsByMemberId(storage.getToken, storage.getUserId),
     ])
     member.value = memberResponse.data
     notices.value = noticesResponse.data
     comments.value = commentsResponse.data
-    sentMessages.value = sentMessagesResponse.data
-    receivedMessages.value = receivedMessagesResponse.data
+    rooms.value = roomsResponse.data.map(room => ({
+      ...room,
+      otherUserId: room.lowerId == storage.getUserId ? room.higherId : room.lowerId, // 상대방 id
+      otherUsername: room.lowerId == storage.getUserId ? room.higherIdUsername : room.lowerIdUsername // 상대방 username
+    }))
     member.value.imgUrl = 'http://localhost:8080' + member.value.imgUrl // todo: baseUrl 따로 빼기
   } catch (e) {
     console.error(e.response.data)
@@ -317,23 +285,17 @@ const truncateMessage = message => {
 }
 
 // 메시지 클릭 시 팝업 열기
-const openMessage = async message => {
-  selectedMessage.value = message
-  isMessageOpen.value = true
-  if (message.isRead === 'N') {
+const openRoom = async room => {
+  selectedRoom.value = room
+  isRoomOpen.value = true
+  if (room.isRead === 'N') {
     try {
-      await updateReadStatus(storage.getToken, message.id)
-      message.isRead = 'Y'
-      receivedMessages.value = [...receivedMessages.value] // 바로 isRead 값이 화면에 반영될 수 있게 새 배열로 변경
+      await updateReadStatus(storage.getToken, storage.getUserId, room.otherUserId) // room 내 상대방 메시지에 대한 isRead update로
+      room.isRead = 'Y'
     } catch (e) {
       console.error(e.response.data)
     }
   }
-}
-
-const openReplyModal = () => {
-  isMessageOpen.value = false
-  isReplyOpen.value = true
 }
 
 onMounted(fetchData)

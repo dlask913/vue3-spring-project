@@ -43,9 +43,9 @@ import { ref, onMounted, nextTick } from 'vue'
 import { sendMessage, getMessagesByRoomId } from '@/api/messages'
 import { useStorageStore } from '@/store/index'
 const props = defineProps({
-  message: Object,
+  room: Object,
 })
-defineEmits(['close', 'reply'])
+defineEmits(['close'])
 
 const storage = useStorageStore()
 const newMessage = ref('')
@@ -57,7 +57,7 @@ const fetchMessages = async () => {
   try {
     const { data } = await getMessagesByRoomId(
       storage.getToken,
-      props.message.roomId,
+      props.room.id,
     )
     messages.value = data.map(msg => ({
       ...msg,
@@ -75,10 +75,7 @@ const handleMessageSend = async () => {
   try {
     const data = ref({
       senderId: storage.getUserId,
-      receiverId:
-        storage.getUserId != props.message.senderId
-          ? props.message.senderId
-          : props.message.receiverId, // sender 와 receiver 는 바뀔 수 있기 때문에 현재 userId 와 비교
+      receiverId: props.room.otherUserId, // sender 와 receiver 는 바뀔 수 있기 때문에 현재 userId 와 비교
       content: newMessage.value,
     })
     await sendMessage(storage.getToken, data.value)
