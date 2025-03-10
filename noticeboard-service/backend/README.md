@@ -128,4 +128,5 @@ CREATE TABLE Rooms (
     UNIQUE (member_id_lower, member_id_higher) -- 동일한 두 사람 간 중복된 방 생성 방지
 );
 
+CREATE INDEX idx_messages_room_created ON Messages (room_id, created_at DESC);
 ```
