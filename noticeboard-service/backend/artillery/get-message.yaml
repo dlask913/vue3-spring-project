@@ -1,0 +1,13 @@
+config:
+  target: "http://localhost:8080"
+  phases:
+    - duration: 60  # 테스트 지속 시간 (초)
+      arrivalRate: 10  # 초당 10개의 요청 생성
+  payload:
+    path: "users.csv"  # 테스트할 회원 ID 목록 파일
+    fields:
+      - "memberId"
+scenarios:
+  - flow:
+      - get:
+          url: "/rooms/{{ memberId }}"
