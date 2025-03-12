@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -81,9 +82,10 @@ public class MessageController {
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")}, summary = "회원이 속한 모든 채팅방 조회 API")
     public ResponseEntity<List<RoomDto>> findRoomsByMemberId(@PathVariable("memberId") Long memberId) {
         List<RoomDto> rooms = roomServiceImpl.findRoomsByMemberId(memberId).stream()
-                .map(roomDto -> {
+                .map(roomDto -> { // todo: 서비스단으로 빼기
                     MessageResponseDto latestMessage = messageServiceImpl.findLatestMessageByRoomId(roomDto.getId());
-                    roomDto.saveLatestMessage(latestMessage.id(), latestMessage.content(), latestMessage.isRead());
+                    roomDto.saveLatestMessage(latestMessage.id(), latestMessage.content(),
+                            Objects.equals(memberId, latestMessage.senderId()) ? "Y" : latestMessage.isRead());
                     return roomDto;
                 }).toList();
         return ResponseEntity.ok().body(rooms);
