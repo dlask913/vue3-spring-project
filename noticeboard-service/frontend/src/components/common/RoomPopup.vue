@@ -17,6 +17,10 @@
             :class="['chat-message', msg.type]"
           >
             <div class="bubble">{{ msg.content }}</div>
+            <i
+              v-if="msg.type === 'user' && msg.isRead !== 'Y'"
+              class="bi bi-exclamation-circle text-danger status-icon"
+            ></i>
           </div>
         </div>
         <div class="chat-footer">
@@ -55,10 +59,7 @@ const chatBody = ref(null) // 채팅창 요소
 const fetchMessages = async () => {
   // 메시지 초기 조회
   try {
-    const { data } = await getMessagesByRoomId(
-      storage.getToken,
-      props.room.id,
-    )
+    const { data } = await getMessagesByRoomId(storage.getToken, props.room.id)
     messages.value = data.map(msg => ({
       ...msg,
       type: msg.senderId == storage.userId ? 'user' : 'other', // 채팅방 sender 와 receiver 구분

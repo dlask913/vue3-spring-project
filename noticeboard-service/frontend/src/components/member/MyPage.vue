@@ -157,32 +157,24 @@
       <div class="row mt-5" v-if="selectedMenu === 'messages'">
         <div class="col-md-5">
           <h3>Messages</h3>
-          <div
-            class="card mb-3"
-            v-for="room in rooms"
-            :key="room.id"
-          >
+          <div class="card mb-3" v-for="room in rooms" :key="room.id">
             <div
               class="card-body"
               @click="openRoom(room)"
               style="cursor: pointer"
             >
               <div class="d-flex justify-content-between">
-                <p class="card-text">{{ truncateMessage(room.latestMessage) }}</p>
+                <p class="card-text">
+                  {{ truncateMessage(room.latestMessage) }}
+                </p>
               </div>
               <p class="card-text">
-                <small class="text-muted"
-                  >with {{ room.otherUsername }}</small
-                >
+                <small class="text-muted">with {{ room.otherUsername }}</small>
               </p>
             </div>
             <i
-              class="bi position-absolute top-0 end-0 m-2"
-              :class="
-                room.isRead == 'Y'
-                  ? 'bi-check-circle text-success'
-                  : 'bi-exclamation-circle-fill text-danger'
-              "
+              v-if="room.isRead !== 'Y'"
+              class="bi bi-exclamation-circle-fill text-danger position-absolute top-0 end-0 m-2"
             ></i>
           </div>
         </div>
@@ -204,10 +196,7 @@ import { ref, onMounted } from 'vue'
 import { getMemberById, updateMember } from '@/api/users'
 import { getNoticesByMember } from '@/api/notices'
 import { getCommentsByMember } from '@/api/comments'
-import {
-  updateReadStatus,
-  getRoomsByMemberId,
-} from '@/api/messages'
+import { updateReadStatus, getRoomsByMemberId } from '@/api/messages'
 import { useToastStore, useStorageStore } from '@/store'
 import { useRouter } from 'vue-router'
 
@@ -231,24 +220,24 @@ const isRoomOpen = ref(false) // 채팅방 열기 (RoomPopup)
 
 const fetchData = async () => {
   try {
-    const [
-      memberResponse,
-      noticesResponse,
-      commentsResponse,
-      roomsResponse,
-    ] = await Promise.all([
-      getMemberById(storage.getToken, storage.getUserId),
-      getNoticesByMember(storage.getToken),
-      getCommentsByMember(storage.getToken),
-      getRoomsByMemberId(storage.getToken, storage.getUserId),
-    ])
+    const [memberResponse, noticesResponse, commentsResponse, roomsResponse] =
+      await Promise.all([
+        getMemberById(storage.getToken, storage.getUserId),
+        getNoticesByMember(storage.getToken),
+        getCommentsByMember(storage.getToken),
+        getRoomsByMemberId(storage.getToken, storage.getUserId),
+      ])
     member.value = memberResponse.data
     notices.value = noticesResponse.data
     comments.value = commentsResponse.data
     rooms.value = roomsResponse.data.map(room => ({
       ...room,
-      otherUserId: room.lowerId == storage.getUserId ? room.higherId : room.lowerId, // 상대방 id
-      otherUsername: room.lowerId == storage.getUserId ? room.higherIdUsername : room.lowerIdUsername // 상대방 username
+      otherUserId:
+        room.lowerId == storage.getUserId ? room.higherId : room.lowerId, // 상대방 id
+      otherUsername:
+        room.lowerId == storage.getUserId
+          ? room.higherIdUsername
+          : room.lowerIdUsername, // 상대방 username
     }))
     member.value.imgUrl = 'http://localhost:8080' + member.value.imgUrl // todo: baseUrl 따로 빼기
   } catch (e) {
@@ -290,7 +279,11 @@ const openRoom = async room => {
   isRoomOpen.value = true
   if (room.isRead === 'N') {
     try {
-      await updateReadStatus(storage.getToken, storage.getUserId, room.otherUserId) // room 내 상대방 메시지에 대한 isRead update로
+      await updateReadStatus(
+        storage.getToken,
+        storage.getUserId,
+        room.otherUserId,
+      ) // room 내 상대방 메시지에 대한 isRead update로
       room.isRead = 'Y'
     } catch (e) {
       console.error(e.response.data)
