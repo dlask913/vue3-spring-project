@@ -81,4 +81,11 @@ public class ProductController {
         List<ProductResponseDto> products = productServiceImpl.findProductsByCategory(category);
         return ResponseEntity.ok().body(products);
     }
+
+    @GetMapping("/products/member/{memberId}")
+    @Operation(summary = "회원이 등록한 상품 모두 조회 API")
+    private ResponseEntity<List<ProductResponseDto>> findProductsByMemberId(@PathVariable("memberId") Long memberId) {
+        List<ProductResponseDto> products = productServiceImpl.findProductsByMemberId(memberId);
+        return ResponseEntity.ok().body(products);
+    }
 }

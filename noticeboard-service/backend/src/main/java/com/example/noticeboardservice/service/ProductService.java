@@ -18,4 +18,5 @@ public interface ProductService {
     List<ProductResponseDto> findAllProducts();
     List<ProductResponseDto> searchProductsByKeyword(String sort, String order, Map<String, String> params);
     List<ProductResponseDto> findProductsByCategory(String category);
+    List<ProductResponseDto> findProductsByMemberId(Long memberId);
 }
