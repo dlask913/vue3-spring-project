@@ -105,22 +105,42 @@
 
       <!-- 내가 작성한 게시물 -->
       <div class="row mt-5" v-if="selectedMenu === 'posts'">
+        <h3 class="mb-3">My Posts</h3>
         <div class="col-md-5">
-          <h3>My Posts</h3>
           <div
             class="card mb-3"
             v-for="notice in notices"
             :key="notice.id"
-            @click="moveToPage(notice.id)"
+            @click="moveToNoticePage(notice.id)"
             :style="{ cursor: isActive === notice.id ? 'default' : 'pointer' }"
           >
             <div class="card-body">
-              {{ notice.id }}
-              <h5 class="card-title">{{ notice.title }}</h5>
+              <h5 class="card-title mt-1">{{ notice.title }}</h5>
               <p class="card-text">{{ notice.content }}</p>
               <p class="card-text">
                 <small class="text-muted"
-                  >Posted on {{ notice.postDate }}</small
+                  >{{ notice.postType }}, posted on {{ notice.postDate }}</small
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <!-- Post Type is PRODUCT -->
+          <div
+            class="card mb-3"
+            v-for="product in products"
+            :key="product.id"
+            @click="moveToProductPage(product.id)"
+            :style="{ cursor: isActive === product.id ? 'default' : 'pointer' }"
+          >
+            <div class="card-body">
+              <h5 class="card-title mt-1">{{ product.title }}</h5>
+              <p class="card-text">{{ product.content }}</p>
+              <p class="card-text">
+                <small class="text-muted"
+                  >{{ product.postType }}, posted on
+                  {{ product.postDate }}</small
                 >
               </p>
             </div>
@@ -197,6 +217,7 @@ import { getMemberById, updateMember } from '@/api/users'
 import { getNoticesByMember } from '@/api/notices'
 import { getCommentsByMember } from '@/api/comments'
 import { updateReadStatus, getRoomsByMemberId } from '@/api/messages'
+import { getProductsByMemberId } from '@/api/products'
 import { useToastStore, useStorageStore } from '@/store'
 import { useRouter } from 'vue-router'
 
@@ -211,6 +232,7 @@ const member = ref({
 })
 const memberImg = ref(null)
 const notices = ref([])
+const products = ref([])
 const comments = ref([])
 const rooms = ref([]) // 내 채팅방들
 const isActive = ref(null)
@@ -220,15 +242,22 @@ const isRoomOpen = ref(false) // 채팅방 열기 (RoomPopup)
 
 const fetchData = async () => {
   try {
-    const [memberResponse, noticesResponse, commentsResponse, roomsResponse] =
-      await Promise.all([
-        getMemberById(storage.getToken, storage.getUserId),
-        getNoticesByMember(storage.getToken),
-        getCommentsByMember(storage.getToken),
-        getRoomsByMemberId(storage.getToken, storage.getUserId),
-      ])
+    const [
+      memberResponse,
+      noticesResponse,
+      commentsResponse,
+      roomsResponse,
+      productsResponse,
+    ] = await Promise.all([
+      getMemberById(storage.getToken, storage.getUserId),
+      getNoticesByMember(storage.getToken),
+      getCommentsByMember(storage.getToken),
+      getRoomsByMemberId(storage.getToken, storage.getUserId),
+      getProductsByMemberId(storage.getToken, storage.getUserId),
+    ])
     member.value = memberResponse.data
     notices.value = noticesResponse.data
+    products.value = productsResponse.data
     comments.value = commentsResponse.data
     rooms.value = roomsResponse.data.map(room => ({
       ...room,
@@ -263,9 +292,14 @@ const fetchMemberImg = file => {
   memberImg.value = file
 }
 
-const moveToPage = noticeId => {
+const moveToNoticePage = noticeId => {
   isActive.value = noticeId
   router.push('/post-details/' + noticeId)
+}
+
+const moveToProductPage = productId => {
+  isActive.value = productId
+  router.push('/product-details/' + productId)
 }
 
 // 메시지 내용이 20자 이상이면 "..." 붙이기

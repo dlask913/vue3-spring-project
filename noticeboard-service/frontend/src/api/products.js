@@ -51,3 +51,9 @@ export function createProductBid(token, data) {
 export function getProductsByCategory(category) {
   return axios.get(`/products/${category}`)
 }
+
+export function getProductsByMemberId(token, memberId) {
+  return axios.get(`/products/member/${memberId}`, {
+    headers: { Authorization: token },
+  })
+}
