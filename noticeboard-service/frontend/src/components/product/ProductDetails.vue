@@ -136,7 +136,7 @@ const onQuit = async (isConfirmed, bidPrice) => {
 
 const isVisible = computed(() => {
   // 내가 작성한 글이 아닐 때만 메시지 작성 버튼 보이기
-  return product.value.ownerId !== storage.getUserId
+  return product.value.ownerId != storage.getUserId
 })
 
 onMounted(getProduct)
