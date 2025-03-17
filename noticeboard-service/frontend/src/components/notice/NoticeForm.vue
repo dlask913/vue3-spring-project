@@ -84,7 +84,7 @@ const onSaveNotice = async () => {
 
 const getTodo = async () => {
   try {
-    const { data } = await getNoticeById(noticeId)
+    const { data } = await getNoticeById(storage.getToken, noticeId)
     form.value.title = data.title
     form.value.content = data.content
   } catch (error) {
