@@ -3,6 +3,7 @@ package com.example.noticeboardservice.controller;
 import com.example.noticeboardservice.config.filter.JwtTokenFilter;
 import com.example.noticeboardservice.dto.ProductDetailsResponseDto;
 import com.example.noticeboardservice.dto.ProductRequestDto;
+import com.example.noticeboardservice.dto.ProductResponseDto;
 import com.example.noticeboardservice.service.CategoryService;
 import com.example.noticeboardservice.service.ProductService;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
@@ -17,6 +18,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -130,5 +133,35 @@ class ProductControllerTest {
                 .andExpect(content().string("삭제 완료되었습니다."));
 
         Mockito.verify(productServiceImpl, Mockito.times(1)).deleteProduct(1L);
+    }
+
+    @Test
+    @DisplayName("회원이 등록한 상품 게시물들을 모두 조회한다")
+    void findProductsByMemberIdTest() throws Exception {
+        // given
+        Long memberId = 1L;
+        List<ProductResponseDto> products = List.of(
+                new ProductResponseDto(1L, "제목1", "내용1", "FURNITURE", 10000, "productImg1", memberId, "2025-03-19"),
+                new ProductResponseDto(2L, "제목2", "내용2", "CLOTHES", 8000, "productImg2", memberId, "2025-03-19")
+        );
+        Mockito.when(productServiceImpl.findProductsByMemberId(memberId)).thenReturn(products);
+
+        // when // then
+        mockMvc.perform(get("/products/member/{memberId}", memberId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(products.get(0).id()))
+                .andExpect(jsonPath("$[0].title").value(products.get(0).title()))
+                .andExpect(jsonPath("$[0].content").value(products.get(0).content()))
+                .andExpect(jsonPath("$[0].category").value(products.get(0).category()))
+                .andExpect(jsonPath("$[0].standardPrice").value(products.get(0).standardPrice()))
+                .andExpect(jsonPath("$[0].ownerId").value(products.get(0).ownerId()))
+                .andExpect(jsonPath("$[1].id").value(products.get(1).id()))
+                .andExpect(jsonPath("$[1].title").value(products.get(1).title()))
+                .andExpect(jsonPath("$[1].content").value(products.get(1).content()))
+                .andExpect(jsonPath("$[1].category").value(products.get(1).category()))
+                .andExpect(jsonPath("$[1].standardPrice").value(products.get(1).standardPrice()))
+                .andExpect(jsonPath("$[1].ownerId").value(products.get(1).ownerId()));
+
+        Mockito.verify(productServiceImpl, Mockito.times(1)).findProductsByMemberId(memberId);
     }
 }

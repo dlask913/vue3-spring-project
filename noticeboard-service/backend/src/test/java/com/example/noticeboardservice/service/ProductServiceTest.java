@@ -245,6 +245,33 @@ class ProductServiceTest {
                 .containsExactly("모빌 팔아요", "가구 팔아요");
     }
 
+    @Test
+    @DisplayName("회원이 등록한 상품 게시물들을 모두 조회한다.")
+    void findProductsByMemberIdTest(){
+        // given
+        MemberResponseDto member1 = getMember("limnj1@test.com");
+        MemberResponseDto member2 = getMember("limnj2@test.com");
+        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", "FURNIURE", 2000, member1.id());
+        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", "DEVICE", 1000, member2.id());
+        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member1.id());
+        ProductRequestDto requestDto4 = createProductRequestDto(0L,"TV 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member2.id());
+        ProductRequestDto requestDto5 = createProductRequestDto(0L,"노트북 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member2.id());
+        productServiceImpl.insertProduct(requestDto1, null);
+        productServiceImpl.insertProduct(requestDto2, null);
+        productServiceImpl.insertProduct(requestDto3, null);
+        productServiceImpl.insertProduct(requestDto4, null);
+        productServiceImpl.insertProduct(requestDto5, null);
+
+        // when
+        List<ProductResponseDto> products = productServiceImpl.findProductsByMemberId(member1.id());
+
+        // then
+        assertThat(products)
+                .hasSize(2)
+                .extracting(ProductResponseDto::title)
+                .containsExactly("모빌 팔아요", "간식 팔아요");
+    }
+
     private static ProductRequestDto createProductRequestDto(Long productId, String title, String content, String category, int price, Long memberId) {
         return ProductRequestDto.builder()
                 .id(productId)
