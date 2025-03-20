@@ -158,7 +158,7 @@
                 <p class="card-text">{{ comment.content }}</p>
                 <button
                   class="btn btn-secondary btn-sm mt-2"
-                  @click="moveToPage(comment.noticeId)"
+                  @click="moveToNoticePage(comment.noticeId)"
                 >
                   게시글 보기
                 </button>
