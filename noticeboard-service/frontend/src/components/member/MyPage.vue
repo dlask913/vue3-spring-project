@@ -1,59 +1,7 @@
 <template>
   <div class="d-flex">
     <!-- 사이드바 -->
-    <div
-      class="d-flex flex-column flex-shrink-0 p-3 mt-5 ms-5"
-      style="width: 280px"
-    >
-      <div
-        class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none"
-      >
-        <span class="fs-4">MyPage</span>
-      </div>
-      <hr />
-      <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-          <a
-            href="#"
-            class="nav-link"
-            :class="{ active: selectedMenu === 'home' }"
-            @click.prevent="selectedMenu = 'home'"
-          >
-            Home
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="nav-link link-dark"
-            :class="{ active: selectedMenu === 'posts' }"
-            @click.prevent="selectedMenu = 'posts'"
-          >
-            Posts
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="nav-link link-dark"
-            :class="{ active: selectedMenu === 'comments' }"
-            @click.prevent="selectedMenu = 'comments'"
-          >
-            Comments
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="nav-link link-dark"
-            :class="{ active: selectedMenu === 'messages' }"
-            @click.prevent="selectedMenu = 'messages'"
-          >
-            Messages
-          </a>
-        </li>
-      </ul>
-    </div>
+    <SideBar :menus="menus" v-model:selectedMenu="selectedMenu" />
 
     <!-- 메인 콘텐츠 -->
     <div class="container mt-5 me-5" style="">
@@ -212,6 +160,7 @@
 <script setup>
 import ImageUploader from '../common/ImageUploader.vue'
 import RoomPopup from '../common/RoomPopup.vue'
+import SideBar from '../common/SideBar.vue'
 import { ref, onMounted } from 'vue'
 import { getMemberById, updateMember } from '@/api/users'
 import { getNoticesByMember } from '@/api/notices'
@@ -224,6 +173,12 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const toast = useToastStore()
 const storage = useStorageStore()
+const menus = [
+  { id: 'home', label: 'Home' },
+  { id: 'posts', label: 'Posts' },
+  { id: 'comments', label: 'Comments' },
+  { id: 'messages', label: 'Messages' },
+]
 const member = ref({
   email: '',
   username: '',
