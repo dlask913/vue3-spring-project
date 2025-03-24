@@ -17,6 +17,7 @@
             :class="['chat-message', msg.type]"
           >
             <div class="bubble">{{ msg.content }}</div>
+            <div class="timestamp">{{ formatDate(msg.createdAt) }}</div>
             <i
               v-if="msg.type === 'user' && msg.isRead !== 'Y'"
               class="bi bi-exclamation-circle text-danger status-icon"
@@ -91,6 +92,15 @@ const scrollToBottom = () => {
   if (chatBody.value) {
     chatBody.value.scrollTop = chatBody.value.scrollHeight
   }
+}
+
+const formatDate = timestamp => {
+  // YYYY-MM-DD hh:mm:ss → 오후/오전 HH:mm
+  const date = new Date(timestamp)
+  return date.toLocaleTimeString('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
 }
 
 onMounted(() => {
@@ -172,5 +182,19 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   border: none;
+}
+.timestamp {
+  font-size: 12px;
+  color: gray;
+}
+
+.chat-message.user .timestamp {
+  text-align: right;
+  align-self: flex-end;
+}
+
+.chat-message.other .timestamp {
+  text-align: left;
+  align-self: flex-end;
 }
 </style>
