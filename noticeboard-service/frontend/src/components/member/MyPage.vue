@@ -67,7 +67,8 @@
               <p class="card-text">{{ notice.content }}</p>
               <p class="card-text">
                 <small class="text-muted"
-                  >{{ notice.postType }}, posted on {{ notice.postDate }}</small
+                  >{{ notice.postType }}, posted on
+                  {{ formatToYYYYMMDD(notice.postDate) }}</small
                 >
               </p>
             </div>
@@ -88,7 +89,7 @@
               <p class="card-text">
                 <small class="text-muted"
                   >{{ product.postType }}, posted on
-                  {{ product.postDate }}</small
+                  {{ formatToYYYYMMDD(product.postDate) }}</small
                 >
               </p>
             </div>
@@ -113,7 +114,7 @@
               </div>
               <p class="card-text">
                 <small class="text-muted"
-                  >Commented on {{ comment.postDate }}</small
+                  >Commented on {{ formatToYYYYMMDD(comment.postDate) }}</small
                 >
               </p>
             </div>
@@ -278,6 +279,11 @@ const openRoom = async room => {
       console.error(e.response.data)
     }
   }
+}
+
+// YYYY-MM-DD 포맷으로 변경
+const formatToYYYYMMDD = dateString => {
+  return dateString.split(' ')[0]
 }
 
 onMounted(fetchData)
