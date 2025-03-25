@@ -12,7 +12,7 @@
         <h3>Product Information</h3>
         <br />
         <form @submit.prevent="onSaveProduct">
-          <!-- 카테고리 ui-->
+          <!-- 카테고리 -->
           <div class="mb-3">
             <label for="category" class="form-label">카테고리</label>
             <select class="form-select" v-model="form.category">
@@ -24,6 +24,20 @@
                 {{ category.name }}
               </option>
             </select>
+          </div>
+
+          <!-- 마감 기한 -->
+          <div class="mb-3">
+            <label for="deadline" class="form-label">마감 기한</label>
+            <input
+              v-model="form.deadline"
+              type="date"
+              class="form-control"
+              id="deadline"
+            />
+            <div v-if="valueError.deadline" class="text-red">
+              {{ valueError.deadline }}
+            </div>
           </div>
 
           <div class="mb-3">
@@ -62,6 +76,7 @@
               {{ valueError.content }}
             </div>
           </div>
+
           <button type="submit" class="btn btn-primary">Save</button>
         </form>
       </div>
@@ -85,6 +100,7 @@ const form = ref({
   content: '',
   category: '',
   standardPrice: 0,
+  deadline: '',
   imgUrl: 'http://localhost:8080/image/productDefaultImg.jpg',
 })
 const productImg = ref('')

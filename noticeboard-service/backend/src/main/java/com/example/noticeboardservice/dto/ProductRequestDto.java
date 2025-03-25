@@ -13,14 +13,16 @@ public class ProductRequestDto {
     private String category;
     private int standardPrice; // 불변
     private Long ownerId;
+    private String deadline;
 
     @Builder
-    public ProductRequestDto(Long id, String title, String content, String category, int standardPrice, Long ownerId) {
+    public ProductRequestDto(Long id, String title, String content, String category, int standardPrice, Long ownerId, String deadline) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.category = category;
         this.standardPrice = standardPrice;
         this.ownerId = ownerId;
+        this.deadline = deadline;
     }
 }

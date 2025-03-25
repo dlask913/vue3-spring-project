@@ -4,7 +4,6 @@ import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.ProductBidHistoryMapper;
 import com.example.noticeboardservice.mapper.ProductMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +46,7 @@ class ProductServiceTest {
     void insertProductWithoutImageTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id(), "2025-03-25");
 
         // when
         productServiceImpl.insertProduct(requestDto, null);
@@ -55,11 +54,12 @@ class ProductServiceTest {
         // then
         ProductDetailsResponseDto findProduct = productMapper.findProduct(requestDto.getId());
 
-        Assertions.assertThat(findProduct.title()).isEqualTo(requestDto.getTitle());
-        Assertions.assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
-        Assertions.assertThat(findProduct.standardPrice()).isEqualTo(requestDto.getStandardPrice());
-        Assertions.assertThat(findProduct.ownerId()).isEqualTo(requestDto.getOwnerId());
-        Assertions.assertThat(findProduct.imgUrl()).isEqualTo("/image/productDefaultImg.jpg");
+        assertThat(findProduct.title()).isEqualTo(requestDto.getTitle());
+        assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
+        assertThat(findProduct.standardPrice()).isEqualTo(requestDto.getStandardPrice());
+        assertThat(findProduct.ownerId()).isEqualTo(requestDto.getOwnerId());
+        assertThat(findProduct.imgUrl()).isEqualTo("/image/productDefaultImg.jpg");
+        assertThat(findProduct.deadline()).isEqualTo(requestDto.getDeadline());
     }
 
     @Test
@@ -67,16 +67,16 @@ class ProductServiceTest {
     void checkPriceWhenProductInsertTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id(),"2025-03-25");
 
         // when
         productServiceImpl.insertProduct(requestDto, null);
 
         // then
         ProductBidDto latestBidHistory = productBidHistoryMapper.findLatestBidHistory(requestDto.getId());
-        Assertions.assertThat(latestBidHistory.getProductId()).isEqualTo(requestDto.getId());
-        Assertions.assertThat(latestBidHistory.getBidPrice()).isEqualTo(requestDto.getStandardPrice());
-        Assertions.assertThat(latestBidHistory.getCustomerId()).isEqualTo(requestDto.getOwnerId());
+        assertThat(latestBidHistory.getProductId()).isEqualTo(requestDto.getId());
+        assertThat(latestBidHistory.getBidPrice()).isEqualTo(requestDto.getStandardPrice());
+        assertThat(latestBidHistory.getCustomerId()).isEqualTo(requestDto.getOwnerId());
     }
 
 
@@ -85,7 +85,7 @@ class ProductServiceTest {
     void insertProductWithImageTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id(),"2025-03-25");
         MockMultipartFile productImg = new MockMultipartFile(
                 "상품 이미지",
                 "productImg.jpg",
@@ -98,11 +98,12 @@ class ProductServiceTest {
 
         // then
         ProductDetailsResponseDto findProduct = productMapper.findProduct(requestDto.getId());
-        Assertions.assertThat(findProduct.title()).isEqualTo(requestDto.getTitle());
-        Assertions.assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
-        Assertions.assertThat(findProduct.standardPrice()).isEqualTo(requestDto.getStandardPrice());
-        Assertions.assertThat(findProduct.ownerId()).isEqualTo(requestDto.getOwnerId());
-        Assertions.assertThat(findProduct.imgUrl()).startsWith("/images/product/");
+        assertThat(findProduct.title()).isEqualTo(requestDto.getTitle());
+        assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
+        assertThat(findProduct.standardPrice()).isEqualTo(requestDto.getStandardPrice());
+        assertThat(findProduct.ownerId()).isEqualTo(requestDto.getOwnerId());
+        assertThat(findProduct.imgUrl()).startsWith("/images/product/");
+        assertThat(findProduct.deadline()).isEqualTo(requestDto.getDeadline());
     }
 
     @Test
@@ -110,22 +111,23 @@ class ProductServiceTest {
     void updateProductTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id(),"2025-03-25");
         productServiceImpl.insertProduct(requestDto, null);
 
         Long productId = productMapper.findProduct(requestDto.getId()).id();
         ProductRequestDto updateDto = createProductRequestDto(
-                productId, "고양이 장난감 팔아요", "강아지 장난감은 다 팔렸어요", "FURNITURE", 220, requestDto.getOwnerId());
+                productId, "고양이 장난감 팔아요", "강아지 장난감은 다 팔렸어요", "FURNITURE", 220, requestDto.getOwnerId(),"2025-03-25");
 
         // when
         productServiceImpl.updateProduct(updateDto);
 
         // then
         ProductDetailsResponseDto findProduct = productMapper.findProduct(requestDto.getId());
-        Assertions.assertThat(findProduct.title()).isEqualTo(updateDto.getTitle());
-        Assertions.assertThat(findProduct.content()).isEqualTo(updateDto.getContent());
-        Assertions.assertThat(findProduct.standardPrice()).isEqualTo(updateDto.getStandardPrice());
-        Assertions.assertThat(findProduct.ownerId()).isEqualTo(updateDto.getOwnerId());
+        assertThat(findProduct.title()).isEqualTo(updateDto.getTitle());
+        assertThat(findProduct.content()).isEqualTo(updateDto.getContent());
+        assertThat(findProduct.standardPrice()).isEqualTo(updateDto.getStandardPrice());
+        assertThat(findProduct.ownerId()).isEqualTo(updateDto.getOwnerId());
+        assertThat(findProduct.deadline()).isEqualTo(requestDto.getDeadline());
     }
 
     @Test
@@ -133,7 +135,7 @@ class ProductServiceTest {
     void deleteProductTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id(),"2025-03-25");
         productServiceImpl.insertProduct(requestDto, null);
 
         Long productId = productMapper.findProduct(requestDto.getId()).id();
@@ -143,7 +145,7 @@ class ProductServiceTest {
         productServiceImpl.deleteProduct(productId);
 
         // then
-        Assertions.assertThat(productMapper.findAllProducts().size()).isEqualTo(0);
+        assertThat(productMapper.findAllProducts().size()).isEqualTo(0);
     }
 
     @Test
@@ -151,7 +153,7 @@ class ProductServiceTest {
     void findProductTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
+        ProductRequestDto requestDto = createProductRequestDto(0L,"강아지 장난감 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id(),"2025-03-25");
         productServiceImpl.insertProduct(requestDto, null);
 
         Long productId = productMapper.findProduct(requestDto.getId()).id();
@@ -160,12 +162,13 @@ class ProductServiceTest {
         ProductDetailsResponseDto findProduct = productServiceImpl.findProduct(productId);
 
         // then
-        Assertions.assertThat(findProduct.title()).isEqualTo(requestDto.getTitle());
-        Assertions.assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
-        Assertions.assertThat(findProduct.standardPrice()).isEqualTo(requestDto.getStandardPrice());
-        Assertions.assertThat(findProduct.latestPrice()).isEqualTo(requestDto.getStandardPrice()); // 초기 가격은 처음 기준 가격
-        Assertions.assertThat(findProduct.ownerId()).isEqualTo(requestDto.getOwnerId());
-        Assertions.assertThat(findProduct.customerId()).isEqualTo(requestDto.getOwnerId()); // 초기 가격의 주인은 소유자
+        assertThat(findProduct.title()).isEqualTo(requestDto.getTitle());
+        assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
+        assertThat(findProduct.standardPrice()).isEqualTo(requestDto.getStandardPrice());
+        assertThat(findProduct.latestPrice()).isEqualTo(requestDto.getStandardPrice()); // 초기 가격은 처음 기준 가격
+        assertThat(findProduct.ownerId()).isEqualTo(requestDto.getOwnerId());
+        assertThat(findProduct.customerId()).isEqualTo(requestDto.getOwnerId()); // 초기 가격의 주인은 소유자
+        assertThat(findProduct.deadline()).isEqualTo(requestDto.getDeadline());
     }
 
     @Test
@@ -173,9 +176,9 @@ class ProductServiceTest {
     void searchProductsByTitleTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", "FURNITURE", 2000, member.id());
-        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
-        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", "FURNITURE", 1000, member.id());
+        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", "FURNITURE", 2000, member.id(),"2025-03-25");
+        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id(),"2025-03-25");
+        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", "FURNITURE", 1000, member.id(),"2025-03-25");
         productServiceImpl.insertProduct(requestDto1, null);
         productServiceImpl.insertProduct(requestDto2, null);
         productServiceImpl.insertProduct(requestDto3, null);
@@ -188,11 +191,11 @@ class ProductServiceTest {
         List<ProductResponseDto> products = productServiceImpl.searchProductsByKeyword("post_date", "desc", params);
 
         // then
-        Assertions.assertThat(products.size()).isEqualTo(1);
-        Assertions.assertThat(products.get(0).title()).isEqualTo("모빌 팔아요");
-        Assertions.assertThat(products.get(0).content()).isEqualTo("사용한 건 1년 되었어요 ");
-        Assertions.assertThat(products.get(0).standardPrice()).isEqualTo(2000);
-        Assertions.assertThat(products.get(0).postType()).isEqualTo(PostType.PRODUCT);
+        assertThat(products.size()).isEqualTo(1);
+        assertThat(products.get(0).title()).isEqualTo("모빌 팔아요");
+        assertThat(products.get(0).content()).isEqualTo("사용한 건 1년 되었어요 ");
+        assertThat(products.get(0).standardPrice()).isEqualTo(2000);
+        assertThat(products.get(0).postType()).isEqualTo(PostType.PRODUCT);
     }
 
     @Test
@@ -200,9 +203,9 @@ class ProductServiceTest {
     void searchProductsByContentTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", "FURNIURE", 2000, member.id());
-        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", "DEVICE", 1000, member.id());
-        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member.id());
+        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", "FURNIURE", 2000, member.id(),"2025-03-25");
+        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", "DEVICE", 1000, member.id(),"2025-03-25");
+        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member.id(),"2025-03-25");
         productServiceImpl.insertProduct(requestDto1, null);
         productServiceImpl.insertProduct(requestDto2, null);
         productServiceImpl.insertProduct(requestDto3, null);
@@ -215,12 +218,12 @@ class ProductServiceTest {
         List<ProductResponseDto> products = productServiceImpl.searchProductsByKeyword("post_date", "desc", params);
 
         // then
-        Assertions.assertThat(products.size()).isEqualTo(1);
-        Assertions.assertThat(products.get(0).title()).isEqualTo("가구 팔아요");
-        Assertions.assertThat(products.get(0).content()).isEqualTo("사용한 건 2년 되었어요 ");
-        Assertions.assertThat(products.get(0).category()).isEqualTo("DEVICE");
-        Assertions.assertThat(products.get(0).standardPrice()).isEqualTo(1000);
-        Assertions.assertThat(products.get(0).postType()).isEqualTo(PostType.PRODUCT);
+        assertThat(products.size()).isEqualTo(1);
+        assertThat(products.get(0).title()).isEqualTo("가구 팔아요");
+        assertThat(products.get(0).content()).isEqualTo("사용한 건 2년 되었어요 ");
+        assertThat(products.get(0).category()).isEqualTo("DEVICE");
+        assertThat(products.get(0).standardPrice()).isEqualTo(1000);
+        assertThat(products.get(0).postType()).isEqualTo(PostType.PRODUCT);
     }
 
     @Test
@@ -228,9 +231,9 @@ class ProductServiceTest {
     void findProductsByCategoryTest() {
         // given
         MemberResponseDto member = getMember("limnj@test.com");
-        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", "FURNITURE",  2000, member.id());
-        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id());
-        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member.id());
+        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", "FURNITURE",  2000, member.id(),"2025-03-25");
+        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", "FURNITURE", 1000, member.id(),"2025-03-25");
+        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member.id(),"2025-03-25");
         productServiceImpl.insertProduct(requestDto1, null);
         productServiceImpl.insertProduct(requestDto2, null);
         productServiceImpl.insertProduct(requestDto3, null);
@@ -251,11 +254,11 @@ class ProductServiceTest {
         // given
         MemberResponseDto member1 = getMember("limnj1@test.com");
         MemberResponseDto member2 = getMember("limnj2@test.com");
-        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", "FURNIURE", 2000, member1.id());
-        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", "DEVICE", 1000, member2.id());
-        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member1.id());
-        ProductRequestDto requestDto4 = createProductRequestDto(0L,"TV 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member2.id());
-        ProductRequestDto requestDto5 = createProductRequestDto(0L,"노트북 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member2.id());
+        ProductRequestDto requestDto1 = createProductRequestDto(0L,"모빌 팔아요", "사용한 건 1년 되었어요 ", "FURNIURE", 2000, member1.id(),"2025-03-25");
+        ProductRequestDto requestDto2 = createProductRequestDto(0L,"가구 팔아요", "사용한 건 2년 되었어요 ", "DEVICE", 1000, member2.id(),"2025-03-25");
+        ProductRequestDto requestDto3 = createProductRequestDto(0L,"간식 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member1.id(),"2025-03-25");
+        ProductRequestDto requestDto4 = createProductRequestDto(0L,"TV 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member2.id(),"2025-03-25");
+        ProductRequestDto requestDto5 = createProductRequestDto(0L,"노트북 팔아요", "유통기한 7일 남았네요 ", "DEVICE", 1000, member2.id(),"2025-03-25");
         productServiceImpl.insertProduct(requestDto1, null);
         productServiceImpl.insertProduct(requestDto2, null);
         productServiceImpl.insertProduct(requestDto3, null);
@@ -272,7 +275,7 @@ class ProductServiceTest {
                 .containsExactly("모빌 팔아요", "간식 팔아요");
     }
 
-    private static ProductRequestDto createProductRequestDto(Long productId, String title, String content, String category, int price, Long memberId) {
+    private static ProductRequestDto createProductRequestDto(Long productId, String title, String content, String category, int price, Long memberId, String deadline) {
         return ProductRequestDto.builder()
                 .id(productId)
                 .title(title)
@@ -280,6 +283,7 @@ class ProductServiceTest {
                 .category(category)
                 .standardPrice(price)
                 .ownerId(memberId)
+                .deadline(deadline)
                 .build();
     }
 

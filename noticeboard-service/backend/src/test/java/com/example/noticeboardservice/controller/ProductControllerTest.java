@@ -75,8 +75,7 @@ class ProductControllerTest {
     void findProductByIdTest() throws Exception {
         // given
         ProductDetailsResponseDto responseDto =
-                new ProductDetailsResponseDto(1L, "상품 제목", "상품 내용","FURNITURE",10000, 9500,"productImg",1L,2L,"2024-12-21");
-
+                new ProductDetailsResponseDto(1L, "상품 제목", "상품 내용","FURNITURE",10000, 9500,"productImg",1L,2L,"2024-12-21", "2025-03-25");
         Mockito.when(productServiceImpl.findProduct(anyLong())).thenReturn(responseDto);
 
         // when // then
@@ -91,7 +90,8 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.imgUrl").value(responseDto.imgUrl()))
                 .andExpect(jsonPath("$.ownerId").value(responseDto.ownerId()))
                 .andExpect(jsonPath("$.customerId").value(responseDto.customerId()))
-                .andExpect(jsonPath("$.postDate").value(responseDto.postDate()));
+                .andExpect(jsonPath("$.postDate").value(responseDto.postDate()))
+                .andExpect(jsonPath("$.deadline").value(responseDto.deadline()));
 
         Mockito.verify(productServiceImpl, Mockito.times(1)).findProduct(1L);
     }

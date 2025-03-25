@@ -10,6 +10,7 @@ public record ProductDetailsResponseDto(
         String imgUrl,
         Long ownerId,
         Long customerId,
-        String postDate
+        String postDate,
+        String deadline
 ){
 }

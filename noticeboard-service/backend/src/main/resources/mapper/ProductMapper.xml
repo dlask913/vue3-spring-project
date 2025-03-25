@@ -2,8 +2,8 @@
 <mapper namespace="com.example.noticeboardservice.mapper.ProductMapper">
     <!-- 상품 등록 -->
     <insert id="insertProduct" parameterType="ProductRequestDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Products (title, content, category, standard_price, owner_id)
-        VALUES (#{title}, #{content}, #{category}, #{standardPrice}, #{ownerId})
+        INSERT INTO Products (title, content, category, standard_price, owner_id, deadline)
+        VALUES (#{title}, #{content}, #{category}, #{standardPrice}, #{ownerId}, #{deadline})
     </insert>
 
     <!-- 상품 단일 조회 -->
@@ -20,7 +20,7 @@
         )
 
         SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
-            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date,
+            COALESCE(B.img_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date, A.deadline,
             c.bid_price AS latest_price, c.customer_id
         FROM Products A
             LEFT JOIN ProductImg B ON A.id = B.type_id
@@ -135,6 +135,7 @@
             <arg column="owner_id" javaType="java.lang.Long"/>
             <arg column="customer_id" javaType="java.lang.Long"/>
             <arg column="post_date" javaType="java.lang.String"/>
+            <arg column="deadline" javaType="java.lang.String"/>
         </constructor>
     </resultMap>
 </mapper>
