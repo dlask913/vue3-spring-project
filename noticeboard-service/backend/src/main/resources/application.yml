@@ -1,14 +1,6 @@
 spring:
   application:
     name: noticeboard-service
-  # MySQL DataSource
-  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/noticeboard?serverTimezone=UTC
-    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mysql://localhost:3306/noticeboard?serverTimezone=UTC
-    username: root
-    password: 1234
 
 # Mapper Xml Location
 mybatis:
@@ -24,6 +16,30 @@ member-img-location: C:/images/member
 product-img-location: C:/images/product
 category-img-location: C:/images/category
 
+# 카카오 REST API KEY
+kakao-rest-api-key: 049c84589ed98d01f5fe19b15cb67ea4
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local # 환경이름설정
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mysql://localhost:3306/noticeboard?serverTimezone=UTC
+    username: root
+    password: 1234
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev # 환경이름설정
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mysql://mysql-app:3306/noticeboard?serverTimezone=UTC # 컨테이너 sql 서비스명
+    username: root
+    password: 1234
 
 ---
 spring:
