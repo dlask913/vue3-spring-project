@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-app
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: noticeboard
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 1234
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - backend
+
+  backend:
+    image: openjdk:17-jdk
+    container_name: spring-app
+    working_dir: /app
+    volumes:
+      - ./build/libs/noticeboard-service-0.0.1-SNAPSHOT.jar:/app/spring-app.jar
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    entrypoint: ["java", "-jar", "/app/spring-app.jar"]
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  mysql_data:
