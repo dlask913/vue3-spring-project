@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class AddressRequestDto {
+    Long id;
     Long memberId;
     String addressName;
     String roadAddressName;
