@@ -4,7 +4,7 @@
     <select id="findAllCategories" resultType="CategoryDto">
         WITH CategoryImg AS (
             SELECT *
-            FROM images
+            FROM Images
             WHERE image_type = 'CATEGORY'
         )
 

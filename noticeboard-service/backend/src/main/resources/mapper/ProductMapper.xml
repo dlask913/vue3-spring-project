@@ -10,7 +10,7 @@
     <select id="findProduct" resultMap="ProductDetailsResponseDtoMap" parameterType="long">
         WITH ProductImg AS (
             SELECT *
-            FROM images
+            FROM Images
             WHERE image_type = 'PRODUCT'
         ),
         RankedBids AS (
@@ -49,7 +49,7 @@
     <select id="findAllProducts" resultMap="ProductResponseDtoMap">
         WITH ProductImg AS (
             SELECT *
-            FROM images
+            FROM Images
             WHERE image_type = 'PRODUCT'
         )
 
@@ -62,7 +62,7 @@
     <select id="searchProductsByKeyword" resultMap="ProductResponseDtoMap">
         WITH ProductImg AS (
             SELECT *
-            FROM images
+            FROM Images
             WHERE image_type = 'PRODUCT'
         ),
         RankedBids AS (
@@ -90,7 +90,7 @@
     <select id="findProductsByCategory" parameterType="string" resultMap="ProductResponseDtoMap">
         WITH ProductImg AS (
             SELECT *
-            FROM images
+            FROM Images
             WHERE image_type = 'PRODUCT'
         )
 
