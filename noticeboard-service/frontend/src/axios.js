@@ -3,7 +3,7 @@ import router from '@/router'
 import { useToastStore, useStorageStore } from '@/store/index'
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 })
 
 // 예외 처리를 위한 response interceptor
