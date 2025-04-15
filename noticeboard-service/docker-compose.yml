@@ -18,17 +18,35 @@ services:
     networks:
       - backend
 
-  backend:
+
+  spring-app-1:
     image: openjdk:17-jdk
-    container_name: spring-app
+    container_name: spring-app-1
     working_dir: /app
     volumes:
       - ./backend/build/libs/noticeboard-service-0.0.1-SNAPSHOT.jar:/app/spring-app.jar
       - app_images:/app/images
     environment:
       SPRING_PROFILES_ACTIVE: dev
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
+    depends_on:
+      - mysql
+    entrypoint: ["java", "-jar", "/app/spring-app.jar"]
+    networks:
+      - backend
+
+  spring-app-2:
+    image: openjdk:17-jdk
+    container_name: spring-app-2
+    working_dir: /app
+    volumes:
+      - ./backend/build/libs/noticeboard-service-0.0.1-SNAPSHOT.jar:/app/spring-app.jar
+      - app_images:/app/images
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    expose:
+      - "8080"
     depends_on:
       - mysql
     entrypoint: ["java", "-jar", "/app/spring-app.jar"]
@@ -39,7 +57,8 @@ services:
     image: nginx:latest
     container_name: nginx-app
     depends_on:
-      - backend
+      - spring-app-1
+      - spring-app-2
     ports:
       - "80:80"
     volumes:
