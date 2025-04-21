@@ -61,6 +61,7 @@ services:
       - spring-app-2
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./frontend/dist:/usr/share/nginx/html                # Vite 빌드 결과
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf    # Nginx 설정
