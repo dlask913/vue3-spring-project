@@ -1,5 +1,6 @@
 package com.limnj.mail_sender.service;
 
+import com.limnj.mail_sender.aop.Trace;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ public class MailService {
         this.mailSender = mailSender;
     }
 
+    @Trace
     public void sendMail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
