@@ -275,6 +275,32 @@ class ProductServiceTest {
                 .containsExactly("모빌 팔아요", "간식 팔아요");
     }
 
+    @Test
+    @DisplayName("마감일이 오늘인 상품들을 모두 조회한다.")
+    void findProductsByDeadline(){
+        // given
+        MemberResponseDto member = getMember("limnj@test.com");
+        String today = java.time.LocalDate.now().toString();
+        String futureDate = java.time.LocalDate.now().plusDays(1).toString();
+
+        ProductRequestDto product1 = createProductRequestDto(0L, "오늘 마감 상품 1", "내용", "DEVICE", 1000, member.id(), today);
+        ProductRequestDto product2 = createProductRequestDto(0L, "오늘 마감 상품 2", "내용", "DEVICE", 2000, member.id(), today);
+        ProductRequestDto product3 = createProductRequestDto(0L, "내일 마감 상품", "내용", "DEVICE", 3000, member.id(), futureDate);
+
+        productServiceImpl.insertProduct(product1, null);
+        productServiceImpl.insertProduct(product2, null);
+        productServiceImpl.insertProduct(product3, null);
+
+        // when
+        List<ProductResponseDto> products = productServiceImpl.findProductsByDeadline();
+
+        // then
+        assertThat(products)
+                .hasSize(2)
+                .extracting(ProductResponseDto::title)
+                .containsExactlyInAnyOrder("오늘 마감 상품 1", "오늘 마감 상품 2");
+    }
+
     private static ProductRequestDto createProductRequestDto(Long productId, String title, String content, String category, int price, Long memberId, String deadline) {
         return ProductRequestDto.builder()
                 .id(productId)
