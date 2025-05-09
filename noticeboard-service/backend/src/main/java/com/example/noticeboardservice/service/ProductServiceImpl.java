@@ -79,4 +79,9 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductResponseDto> findProductsByMemberId(Long memberId) {
         return productMapper.findProductsByMemberId(memberId);
     }
+
+    @Override
+    public List<ProductResponseDto> findProductsByDeadline() {
+        return productMapper.findProductsByDeadline();
+    }
 }

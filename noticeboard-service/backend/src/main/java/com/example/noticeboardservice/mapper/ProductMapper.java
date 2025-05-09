@@ -24,4 +24,5 @@ public interface ProductMapper {
     );
     List<ProductResponseDto> findProductsByCategory(String category);
     List<ProductResponseDto> findProductsByMemberId(Long memberId);
+    List<ProductResponseDto> findProductsByDeadline();
 }

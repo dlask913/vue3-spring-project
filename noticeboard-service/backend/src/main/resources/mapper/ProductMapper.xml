@@ -108,6 +108,13 @@
         WHERE owner_id = #{memberId}
     </select>
 
+    <select id="findProductsByDeadline" resultMap="ProductResponseDtoMap">
+        SELECT id, title, content, category, NULL AS standard_price, owner_id AS owner_id,
+        NULL AS img_url, post_date
+        FROM Products
+        WHERE DATE(deadline) = CURRENT_DATE();
+    </select>
+
 
     <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
     <resultMap id="ProductResponseDtoMap" type="com.example.noticeboardservice.dto.ProductResponseDto">
