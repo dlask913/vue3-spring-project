@@ -52,7 +52,7 @@ const noticeId = route.params.id
 
 const getNotice = async () => {
   try {
-    const { data } = await getNoticeById(storage.getToken, noticeId)
+    const { data } = await getNoticeById(noticeId)
     notice.value = data
   } catch (error) {
     console.error(error)
@@ -69,7 +69,7 @@ const moveToPage = () => {
 
 const onDelete = async () => {
   try {
-    await deleteNotice(storage.getToken, noticeId)
+    await deleteNotice(noticeId)
     router.push('/post')
     toast.setToast('게시글이 삭제되었습니다.')
   } catch (e) {

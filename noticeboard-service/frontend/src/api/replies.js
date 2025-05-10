@@ -1,20 +1,20 @@
 import axios from '@/axios'
 
-export function createReply(token, data) {
+export function createReply(data) {
   return axios.post('/reply', data, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function updateReply(token, replyId, data) {
+export function updateReply(replyId, data) {
   return axios.put(`/reply/${replyId}`, data, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function deleteReply(token, replyId) {
+export function deleteReply(replyId) {
   return axios.delete(`/reply/${replyId}`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 

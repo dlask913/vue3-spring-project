@@ -205,11 +205,11 @@ const fetchData = async () => {
       roomsResponse,
       productsResponse,
     ] = await Promise.all([
-      getMemberById(storage.getToken, storage.getUserId),
-      getNoticesByMember(storage.getToken),
-      getCommentsByMember(storage.getToken),
-      getRoomsByMemberId(storage.getToken, storage.getUserId),
-      getProductsByMemberId(storage.getToken, storage.getUserId),
+      getMemberById(storage.getUserId),
+      getNoticesByMember(),
+      getCommentsByMember(),
+      getRoomsByMemberId(storage.getUserId),
+      getProductsByMemberId(storage.getUserId),
     ])
     member.value = memberResponse.data
     notices.value = noticesResponse.data
@@ -232,12 +232,7 @@ const fetchData = async () => {
 
 const onUpdateUser = async () => {
   try {
-    await updateMember(
-      storage.getToken,
-      storage.getUserId,
-      member.value,
-      memberImg,
-    )
+    await updateMember(storage.getUserId, member.value, memberImg)
     toast.setToast('정보 수정이 완료되었습니다.')
   } catch (e) {
     console.error(e.response.data)
@@ -269,11 +264,7 @@ const openRoom = async room => {
   isRoomOpen.value = true
   if (room.isRead === 'N') {
     try {
-      await updateReadStatus(
-        storage.getToken,
-        storage.getUserId,
-        room.otherUserId,
-      ) // room 내 상대방 메시지에 대한 isRead update로
+      await updateReadStatus(storage.getUserId, room.otherUserId) // room 내 상대방 메시지에 대한 isRead update로
       room.isRead = 'Y'
     } catch (e) {
       console.error(e.response.data)

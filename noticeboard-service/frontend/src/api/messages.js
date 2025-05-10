@@ -1,49 +1,49 @@
 import axios from '@/axios'
 
-export function sendMessage(token, data) {
+export function sendMessage(data) {
   return axios.post('/message', data, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function deleteMessage(token, id) {
+export function deleteMessage(id) {
   return axios.delete(`/message/${id}`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function getMessageById(token, id) {
+export function getMessageById(id) {
   return axios.get(`/message/${id}`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function getReceivedMessagesByMemberId(token, memberId) {
+export function getReceivedMessagesByMemberId(memberId) {
   return axios.get(`/member/${memberId}/messages/received`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function getSentMessagesByMemberId(token, memberId) {
+export function getSentMessagesByMemberId(memberId) {
   return axios.get(`/member/${memberId}/messages/sent`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function updateReadStatus(token, memberId, otherId) {
+export function updateReadStatus(memberId, otherId) {
   return axios.patch(`/message/${memberId}/${otherId}/read`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function getMessagesByRoomId(token, roomId) {
+export function getMessagesByRoomId(roomId) {
   return axios.get(`/room/${roomId}/messages`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function getRoomsByMemberId(token, memberId) {
+export function getRoomsByMemberId(memberId) {
   return axios.get(`/rooms/${memberId}`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }

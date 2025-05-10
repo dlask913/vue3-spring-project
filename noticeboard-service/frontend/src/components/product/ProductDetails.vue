@@ -135,7 +135,7 @@ const onQuit = async (isConfirmed, bidPrice) => {
     customerId: storage.getUserId,
   }
   try {
-    await createProductBid(storage.getToken, bidData)
+    await createProductBid(bidData)
     toast.setToast('정상적으로 가격이 입력되었습니다.')
     getProduct()
   } catch (error) {

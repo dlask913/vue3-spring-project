@@ -92,7 +92,7 @@ const saveComment = async data => {
       noticeId: data.parentId,
       memberId: storage.getUserId,
     }
-    await createComment(storage.getToken, form)
+    await createComment(form)
     getComments()
   } catch (error) {
     console.error(error)
@@ -114,7 +114,7 @@ const isMine = memberId => {
 
 const onDeleteComment = async commentId => {
   try {
-    await deleteComment(storage.getToken, commentId)
+    await deleteComment(commentId)
     getComments()
     toast.setToast('댓글 삭제 완료!')
   } catch (error) {
@@ -137,7 +137,7 @@ const onEdit = async comment => {
       id: comment.id,
       content: comment.content,
     }
-    await updateComment(storage.getToken, comment.id, form)
+    await updateComment(comment.id, form)
     editFlag.value = 0
     getComments()
   } catch (error) {

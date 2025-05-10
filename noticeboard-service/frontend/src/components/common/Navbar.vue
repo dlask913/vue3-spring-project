@@ -98,7 +98,7 @@ const openModal = () => {
 const onQuit = async isConfirmed => {
   if (isConfirmed) {
     try {
-      await deleteMember(storage.getToken, storage.getUserId)
+      await deleteMember(storage.getUserId)
       storage.logout()
       toast.setToast('회원 탈퇴 완료')
     } catch (error) {

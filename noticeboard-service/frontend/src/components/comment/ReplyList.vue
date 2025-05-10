@@ -78,7 +78,6 @@ const fetchReplis = async () => {
     const { data } = await getRepliesByComment(props.commentId)
     replies.value = data
     emit('update-reply-count', replies.value.length)
-    console.log(replies.value)
   } catch (e) {
     console.error(e)
   }
@@ -91,7 +90,7 @@ const saveReply = async data => {
       commentId: data.parentId,
       memberId: storage.getUserId,
     }
-    await createReply(storage.getToken, form)
+    await createReply(form)
     fetchReplis()
   } catch (error) {
     console.error(error)
@@ -105,7 +104,7 @@ const onEdit = async data => {
   }
 
   try {
-    await updateReply(storage.getToken, data.id, data)
+    await updateReply(data.id, data)
     isEdited.value = 0
   } catch (e) {
     console.error(e)
@@ -114,7 +113,7 @@ const onEdit = async data => {
 
 const onDelete = async replyId => {
   try {
-    await deleteReply(storage.getToken, replyId)
+    await deleteReply(replyId)
     fetchReplis()
   } catch (e) {
     console.error(e)

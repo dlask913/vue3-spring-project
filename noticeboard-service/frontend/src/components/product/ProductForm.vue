@@ -131,7 +131,7 @@ const onSaveProduct = async () => {
       ...form.value,
       ownerId: storage.getUserId,
     }
-    await createProduct(storage.getToken, data, productImg)
+    await createProduct(data, productImg)
     toast.setToast('상품 등록 완료!')
     router.push('/product')
   } catch (error) {

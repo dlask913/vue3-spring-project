@@ -38,9 +38,9 @@ const toggleHeart = async () => {
         memberId: storage.getUserId,
         commentId: props.commentId,
       }
-      await saveHeart(storage.getToken, request)
+      await saveHeart(request)
     } else {
-      await removeHeart(storage.getToken, heartId.value)
+      await removeHeart(heartId.value)
       isLike.value = false
     }
     await fetchHeartStatus()
@@ -51,11 +51,7 @@ const toggleHeart = async () => {
 
 const fetchHeartStatus = async () => {
   try {
-    const { data } = await getHeartStatus(
-      storage.getToken,
-      storage.getUserId,
-      props.commentId,
-    )
+    const { data } = await getHeartStatus(storage.getUserId, props.commentId)
     if (data) {
       if (storage.getUserId == data.memberId) {
         isLike.value = true

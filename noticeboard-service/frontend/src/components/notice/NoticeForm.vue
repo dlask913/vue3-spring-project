@@ -69,10 +69,10 @@ const onSaveNotice = async () => {
       memberId: storage.getUserId,
     }
     if (props.editing) {
-      await updateNotice(storage.getToken, noticeId, data)
+      await updateNotice(noticeId, data)
       toast.setToast('게시글 수정 완료!')
     } else {
-      await createNotice(storage.getToken, data)
+      await createNotice(data)
       toast.setToast('게시글 저장 완료!')
     }
     router.push('/post')
@@ -84,7 +84,7 @@ const onSaveNotice = async () => {
 
 const getTodo = async () => {
   try {
-    const { data } = await getNoticeById(storage.getToken, noticeId)
+    const { data } = await getNoticeById(noticeId)
     form.value.title = data.title
     form.value.content = data.content
   } catch (error) {

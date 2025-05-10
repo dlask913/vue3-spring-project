@@ -60,7 +60,7 @@ const chatBody = ref(null) // 채팅창 요소
 const fetchMessages = async () => {
   // 메시지 초기 조회
   try {
-    const { data } = await getMessagesByRoomId(storage.getToken, props.room.id)
+    const { data } = await getMessagesByRoomId(props.room.id)
     messages.value = data.map(msg => ({
       ...msg,
       type: msg.senderId == storage.userId ? 'user' : 'other', // 채팅방 sender 와 receiver 구분
@@ -80,7 +80,7 @@ const handleMessageSend = async () => {
       receiverId: props.room.otherUserId, // sender 와 receiver 는 바뀔 수 있기 때문에 현재 userId 와 비교
       content: newMessage.value,
     })
-    await sendMessage(storage.getToken, data.value)
+    await sendMessage(data.value)
     await fetchMessages()
   } catch (e) {
     console.error(e)

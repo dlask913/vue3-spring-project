@@ -4,26 +4,26 @@ export function getCommentsByNoticeId(noticeId) {
   return axios.get(`/comment/${noticeId}`)
 }
 
-export function createComment(token, data) {
+export function createComment(data) {
   return axios.post('/comment', data, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function updateComment(token, id, data) {
+export function updateComment(id, data) {
   return axios.put(`/comment/${id}`, data, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function deleteComment(token, id) {
+export function deleteComment(id) {
   return axios.delete(`/comment/${id}`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function getCommentsByMember(token) {
+export function getCommentsByMember() {
   return axios.get(`/member/comments`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }

@@ -14,32 +14,32 @@ export function getNoticesByKeyword(page, limit, option, value, sort, order) {
   )
 }
 
-export function getNoticeById(token, id) {
+export function getNoticeById(id) {
   return axios.get(`/notice/${id}`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function createNotice(token, data) {
+export function createNotice(data) {
   return axios.post('/notice', data, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function updateNotice(token, id, data) {
+export function updateNotice(id, data) {
   return axios.put(`/notice/${id}`, data, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function deleteNotice(token, id) {
+export function deleteNotice(id) {
   return axios.delete(`/notice/${id}`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function getNoticesByMember(token) {
+export function getNoticesByMember() {
   return axios.get(`/member/notices`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }

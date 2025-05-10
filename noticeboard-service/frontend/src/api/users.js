@@ -4,9 +4,9 @@ export function loginMember(data) {
   return axios.post('/login', data)
 }
 
-export function getMemberById(token, id) {
+export function getMemberById(id) {
   return axios.get(`/member/${id}`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
@@ -14,7 +14,7 @@ export function createMember(data) {
   return axios.post('/member', data)
 }
 
-export function updateMember(token, id, memberDto, memberImg) {
+export function updateMember(id, memberDto, memberImg) {
   const formData = new FormData()
   formData.append(
     'memberDto',
@@ -25,13 +25,14 @@ export function updateMember(token, id, memberDto, memberImg) {
   }
 
   return axios.patch(`/member/${id}`, formData, {
-    headers: { Authorization: token, 'Content-Type': 'multipart/form-data' },
+    needsAuth: true,
+    headers: { 'Content-Type': 'multipart/form-data' },
   })
 }
 
-export function deleteMember(token, id) {
+export function deleteMember(id) {
   return axios.delete(`/member/${id}`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 

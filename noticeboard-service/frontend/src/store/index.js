@@ -41,7 +41,7 @@ export const useStorageStore = defineStore('storage', {
       return !!state.token
     },
     getToken(state) {
-      return `Bearer ${state.token}`
+      return `${state.token}`
     },
     getUserId(state) {
       return state.userId

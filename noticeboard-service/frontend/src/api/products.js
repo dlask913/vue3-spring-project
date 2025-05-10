@@ -1,6 +1,6 @@
 import axios from '@/axios'
 
-export function createProduct(token, productDto, productImg) {
+export function createProduct(productDto, productImg) {
   const formData = new FormData()
   formData.append(
     'productDto',
@@ -10,7 +10,8 @@ export function createProduct(token, productDto, productImg) {
     formData.append('productImg', productImg.value) // 파일이 있는 경우
   }
   return axios.post('/product', formData, {
-    headers: { Authorization: token, 'Content-Type': 'multipart/form-data' },
+    needsAuth: true,
+    headers: { 'Content-Type': 'multipart/form-data' },
   })
 }
 
@@ -26,15 +27,15 @@ export function getProductById(productId) {
   return axios.get(`/product/${productId}`)
 }
 
-export function updateProduct(token, productId, data) {
+export function updateProduct(productId, data) {
   return axios.put(`/product/${productId}`, data, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
-export function deleteProduct(token, productId) {
+export function deleteProduct(productId) {
   return axios.delete(`/product/${productId}`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
@@ -42,9 +43,9 @@ export function getCategories() {
   return axios.get('/categories')
 }
 
-export function createProductBid(token, data) {
+export function createProductBid(data) {
   return axios.post('/bid', data, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
 
@@ -52,8 +53,8 @@ export function getProductsByCategory(category) {
   return axios.get(`/products/${category}`)
 }
 
-export function getProductsByMemberId(token, memberId) {
+export function getProductsByMemberId(memberId) {
   return axios.get(`/products/member/${memberId}`, {
-    headers: { Authorization: token },
+    needsAuth: true,
   })
 }
