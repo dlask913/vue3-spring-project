@@ -25,7 +25,8 @@ services:
     working_dir: /app
     volumes:
       - ./backend/build/libs/noticeboard-service-0.0.1-SNAPSHOT.jar:/app/spring-app.jar
-      - app_images:/app/images
+      - app_images:/app/
+      - ./logs/spring-app-1:/app/logs  # 로그 디렉토리 추가
     environment:
       SPRING_PROFILES_ACTIVE: dev
     expose:
@@ -43,6 +44,7 @@ services:
     volumes:
       - ./backend/build/libs/noticeboard-service-0.0.1-SNAPSHOT.jar:/app/spring-app.jar
       - app_images:/app/images
+      - ./logs/spring-app-2:/app/logs  # 로그 디렉토리 추가
     environment:
       SPRING_PROFILES_ACTIVE: dev
     expose:
