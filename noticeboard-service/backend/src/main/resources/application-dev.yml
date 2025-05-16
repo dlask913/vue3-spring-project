@@ -1,0 +1,26 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mysql://mysql-app:3306/noticeboard?serverTimezone=UTC
+    username: root
+    password: 1234
+
+server:
+  port: 8080
+  address: 0.0.0.0
+
+logging:
+  file:
+    path: /app/logs
+    name: app.log
+  level:
+    root: INFO
+
+upload-path: file:/app/images/
+default-img-path: classpath:/static/default-image/
+member-img-location: /app/images/member
+product-img-location: /app/images/product
+category-img-location: /app/images/category
