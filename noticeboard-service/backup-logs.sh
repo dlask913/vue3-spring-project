@@ -6,11 +6,11 @@ mkdir -p /backup_logs/spring-app-1
 mkdir -p /backup_logs/spring-app-2
 
 # spring-app-1 로그 백업
-if [ -f logs/spring-app-1/nohup.log ]; then
+if [ -f /logs/spring-app-1/nohup.log ]; then
   grep -E 'INFO|WARN|ERROR' /logs/spring-app-1/nohup.log > /backup_logs/spring-app-1/nohup-$TODAY.log
 fi
 
 # spring-app-2 로그 백업
-if [ -f logs/spring-app-2/nohup.log ]; then
+if [ -f /logs/spring-app-2/nohup.log ]; then
   grep -E 'INFO|WARN|ERROR' /logs/spring-app-2/nohup.log > /backup_logs/spring-app-2/nohup-$TODAY.log
 fi
