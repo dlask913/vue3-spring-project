@@ -130,4 +130,13 @@ CREATE TABLE Rooms (
 );
 
 CREATE INDEX idx_messages_room_created ON Messages (room_id, created_at DESC);
+
+-- 메일 보낸 이력을 저장할 로그 테이블 생성
+CREATE TABLE Mail_Send_Log (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    receiver_id BIGINT NOT NULL,
+    receiver_email VARCHAR(50) NOT NULL,
+    template VARCHAR(50) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 ```
