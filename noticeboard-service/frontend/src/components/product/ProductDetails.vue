@@ -153,7 +153,19 @@ const isDeadlineOver = computed(() => {
   // 현재 날짜가 마감일 이후면 '참여하기' 비활성화
   const today = new Date()
   const deadline = new Date(product.value.deadline)
-  return today > deadline
+
+  const todayDateOnly = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  )
+  const deadlineDateOnly = new Date(
+    deadline.getFullYear(),
+    deadline.getMonth(),
+    deadline.getDate(),
+  )
+
+  return todayDateOnly > deadlineDateOnly
 })
 
 onMounted(getProduct)
