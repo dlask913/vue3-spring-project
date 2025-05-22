@@ -12,13 +12,15 @@ public class ProductBidDto {
     @NotNull(message = "bidPrice 은 필수 값 입니다.")
     private int bidPrice;
     private Long customerId;
+    private String customerEmail;
     private Long productId;
 
     @Builder
-    public ProductBidDto(Long id, int bidPrice, Long customerId, Long productId) {
+    public ProductBidDto(Long id, int bidPrice, Long customerId, String customerEmail, Long productId) {
         this.id = id;
         this.bidPrice = bidPrice;
         this.customerId = customerId;
+        this.customerEmail = customerEmail;
         this.productId = productId;
     }
 }

@@ -20,6 +20,11 @@ public class ProductBidServiceImpl implements ProductBidService{
         return productBidHistoryMapper.addBidHistory(productBidDto);
     }
 
+    @Override
+    public ProductBidDto findLatestBidHistory(Long productId) {
+        return productBidHistoryMapper.findLatestBidHistory(productId);
+    }
+
     private boolean isPriceLowerCurrentStandard(Long productId, int inputPrice) {
         int latestBidPrice = productBidHistoryMapper.findLatestBidHistory(productId).getBidPrice();
         return inputPrice <= latestBidPrice;

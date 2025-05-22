@@ -7,11 +7,11 @@
     </insert>
 
     <!-- 상품의 가장 최근 히스토리 조회 -->
-    <select id="findLatestBidHistory" parameterType="long">
-        SELECT id, bid_price, customer_id, product_id, created_at
-        FROM Bid_History
-        WHERE product_id = #{productId}
-        ORDER BY created_at DESC
+    <select id="findLatestBidHistory" parameterType="long" resultType="ProductBidDto">
+        SELECT bh.id, bh.bid_price, bh.customer_id, m.email AS customer_email, bh.product_id, bh.created_at
+        FROM Bid_History bh JOIN Members m ON bh.customer_id = m.id
+        WHERE bh.product_id = #{productId}
+        ORDER BY bh.created_at DESC
         LIMIT 1
     </select>
 
