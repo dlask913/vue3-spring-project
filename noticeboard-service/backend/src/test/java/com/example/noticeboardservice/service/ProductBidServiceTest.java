@@ -43,11 +43,7 @@ class ProductBidServiceTest {
         // given
         MemberResponseDto member = getMember("buyer@test.com"); // 고객
         Long productId = getProductId(2000, "owner@test.com");
-        ProductBidDto productBidDto = ProductBidDto.builder()
-                .bidPrice(3000)
-                .customerId(member.id())
-                .productId(productId)
-                .build();
+        ProductBidDto productBidDto = createProductBidDto(3000, member.id(), productId);
 
         Thread.sleep(1000); // 히스토리 간 간격 주기
 
@@ -67,16 +63,41 @@ class ProductBidServiceTest {
         // given
         MemberResponseDto member = getMember("buyer@test.com"); // 고객
         Long productId = getProductId(2000, "owner@test.com");
-        ProductBidDto productBidDto = ProductBidDto.builder()
-                .bidPrice(1500)
-                .customerId(member.id())
-                .productId(productId)
-                .build();
+        ProductBidDto productBidDto =  createProductBidDto(1500, member.id(), productId);
 
         // when // then
         assertThrows(BidPriceBelowCurrentException.class, () -> {
             productBidServiceImpl.addBidHistory(productBidDto);
         }, "현재 가격보다 높은 가격을 입력해주세요.");
+    }
+
+    @Test
+    @DisplayName("최종 입찰된 결과를 조회한다.")
+    void findLatestBidHistoryTest() throws InterruptedException {
+        // given
+        MemberResponseDto member1= getMember("buyer@test.com"); // 고객
+        MemberResponseDto member2 = getMember("buyer2@test.com"); // 최종 입찰한 고객
+        Long productId = getProductId(2000, "owner@test.com");
+        ProductBidDto productBidDto1 =  createProductBidDto(3000, member1.id(), productId);
+        ProductBidDto productBidDto2 =  createProductBidDto(4000, member1.id(), productId);
+        ProductBidDto productBidDto3 =  createProductBidDto(5000, member2.id(), productId);
+        productBidServiceImpl.addBidHistory(productBidDto1);
+        Thread.sleep(1000); // 히스토리 간 간격 주기
+        productBidServiceImpl.addBidHistory(productBidDto2);
+        Thread.sleep(1000); // 히스토리 간 간격 주기
+        productBidServiceImpl.addBidHistory(productBidDto3);
+        Thread.sleep(1000); // 히스토리 간 간격 주기
+
+        // todo: 간격 없이 동시 요청하면 실패 → 쿼리 수정
+
+        // when
+        ProductBidDto bidResultDto = productBidServiceImpl.findLatestBidHistory(productId);
+
+        // then
+        Assertions.assertThat(bidResultDto.getProductId()).isEqualTo(productBidDto3.getProductId());
+        Assertions.assertThat(bidResultDto.getBidPrice()).isEqualTo(productBidDto3.getBidPrice());
+        Assertions.assertThat(bidResultDto.getCustomerId()).isEqualTo(productBidDto3.getCustomerId());
+        Assertions.assertThat(bidResultDto.getCustomerEmail()).isEqualTo(member2.email());
     }
 
     private Long getProductId(int standardPrice, String ownerEmail) {
@@ -104,5 +125,13 @@ class ProductBidServiceTest {
             return memberMapper.findMemberByEmail(email);
         }
         return findMember;
+    }
+
+    private static ProductBidDto createProductBidDto(int bidPrice, Long customerId, Long productId) {
+        return ProductBidDto.builder()
+                .bidPrice(bidPrice)
+                .customerId(customerId)
+                .productId(productId)
+                .build();
     }
 }
