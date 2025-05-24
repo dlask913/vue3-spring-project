@@ -11,7 +11,7 @@
         SELECT bh.id, bh.bid_price, bh.customer_id, m.email AS customer_email, bh.product_id, bh.created_at
         FROM Bid_History bh JOIN Members m ON bh.customer_id = m.id
         WHERE bh.product_id = #{productId}
-        ORDER BY bh.created_at DESC
+        ORDER BY bh.bid_price DESC
         LIMIT 1
     </select>
 
