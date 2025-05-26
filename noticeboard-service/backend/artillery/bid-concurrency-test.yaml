@@ -1,0 +1,25 @@
+config:
+  target: "http://localhost:8080"  # 서버 주소
+  phases:
+    - duration: 10       # 총 테스트 시간 (초)
+      arrivalRate: 20    # 초당 요청 수 (RPS)
+  payload:
+    path: "bids.csv"
+    fields:
+      - bidPrice
+      - customerId
+      - productId
+    order: random  # 또는 sequential      
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "입찰 요청 시나리오"
+    flow:
+      - post:
+          url: "/bid"
+          json:
+            bidPrice: "{{ bidPrice }}"
+            customerId: "{{ customerId }}"
+            productId: 31
