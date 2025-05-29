@@ -8,7 +8,19 @@ spring:
     username: root
     password: 1234
 
-memory: on
+management:
+  server:
+    port: 9292
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,threaddump,heapdump,httptrace,loggers
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    enable:
+      all: true
 
 upload-path: file:///C:/images/
 default-img-path: classpath:/static/default-image/

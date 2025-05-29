@@ -53,6 +53,9 @@ dependencies {
     // log4j
     implementation "org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:${log4jVersion}"
 
+    // actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     // 메일 전송 + 로그 추적 라이브러리
     implementation files('libs/mail-sender-0.0.1-SNAPSHOT.jar')
 }
