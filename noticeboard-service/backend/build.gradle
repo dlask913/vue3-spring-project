@@ -56,6 +56,9 @@ dependencies {
     // actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    // prometheus
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
     // 메일 전송 + 로그 추적 라이브러리
     implementation files('libs/mail-sender-0.0.1-SNAPSHOT.jar')
 }
