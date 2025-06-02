@@ -7,3 +7,9 @@ spring:
     url: jdbc:log4jdbc:mysql://localhost:3306/testboard?serverTimezone=UTC
     username: root
     password: 1234
+
+upload-path: file:///C:/images/
+default-img-path: classpath:/static/default-image/
+member-img-location: C:/images/member
+product-img-location: C:/images/product
+category-img-location: C:/images/category
