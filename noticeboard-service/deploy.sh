@@ -24,17 +24,10 @@ if [ ! -d "$FRONTEND_DIST_DIR" ]; then
 fi
 cd ..
 
-echo "🚧 3. Building Vue 3 Docker image"
-docker build -t dlask913/vue3-app ./frontend
-
-echo "🐳 4. Docker Compose: down"
+echo "🐳 3. Docker Compose: down"
 docker-compose down
 
-echo "🚀 5. Docker Compose: up"
+echo "🚀 4. Docker Compose: up"
 docker-compose up -d
-
-echo "🌐 6. Starting Vue 3 app container"
-docker rm -f vue3-app || true
-docker run -d -p 5173:5173 --name vue3-app dlask913/vue3-app:latest
 
 echo "✅ Deployment complete!"

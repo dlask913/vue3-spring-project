@@ -1,0 +1,47 @@
+pipeline {
+  agent any
+
+  environment {
+    SERVICE_NAME = "noticeboard-service"
+    JAR_NAME = "${SERVICE_NAME}-0.0.1-SNAPSHOT.jar"
+    BUILD_JAR = "build/libs/${JAR_NAME}"
+    FRONTEND_DIST_DIR = "dist"
+  }
+
+  stages {
+    stage('Backend Build') {
+      steps {
+        dir('backend') {
+          sh './gradlew clean build -x test'
+        }
+      }
+    }
+
+    stage('Frontend Build') {
+      steps {
+        dir('frontend') {
+          sh 'npm install'
+          sh 'npm run build'
+        }
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        sh '''
+          echo "🐳 Stopping existing containers..."
+          docker-compose down
+
+          echo "🚀 Starting containers with updated build..."
+          docker-compose up -d --build
+        '''
+      }
+    }
+  }
+
+  post {
+    failure {
+      echo '🚨 Jenkins Build Failed'
+    }
+  }
+}
