@@ -11,7 +11,7 @@ pipeline {
   stages {
     stage('Backend Build') {
       steps {
-        dir('backend') {
+        dir('noticeboard-service/backend') {
           sh './gradlew clean build -x test'
         }
       }
