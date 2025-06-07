@@ -20,7 +20,7 @@ pipeline {
 
     stage('Frontend Build') {
       steps {
-        dir('frontend') {
+        dir('noticeboard-service/frontend') {
           sh 'npm install'
           sh 'npm run build'
         }
