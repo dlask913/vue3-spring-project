@@ -12,6 +12,7 @@ pipeline {
     stage('Backend Build') {
       steps {
         dir('noticeboard-service/backend') {
+          sh 'chmod +x gradlew'
           sh './gradlew clean build -x test'
         }
       }
