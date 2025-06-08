@@ -22,22 +22,25 @@ public class DbHealthMonitor {
     @Value("${slack.webhook.url}")
     private String slackWebhookUrl;
 
+    private boolean dbWasDown = false;
 
     @Scheduled(fixedDelay = 10000) // 10초마다 확인
     public void checkDbHealth() {
         HealthComponent dbHealth = healthEndpoint.healthForPath("db");
         Status status = (dbHealth != null) ? dbHealth.getStatus() : Status.UNKNOWN;
-
         if (Status.DOWN.equals(status)) {
+            dbWasDown = true;
             sendAlert("DB is DOWN!");
         } else {
-            sendAlert("DB is UP!");
+            if(dbWasDown){
+                dbWasDown = false;
+                sendAlert("DB is UP!");
+            }
         }
     }
 
     private void sendAlert(String message) {
         System.out.println("[ALERT] " + message);
-
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
