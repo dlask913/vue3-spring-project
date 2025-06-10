@@ -29,13 +29,15 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        sh '''
+        dir('noticeboard-service') {
+          sh '''
           echo "🐳 Stopping existing containers..."
           docker-compose down
 
           echo "🚀 Starting containers with updated build..."
           docker-compose up -d --build
-        '''
+          '''
+        }
       }
     }
   }
