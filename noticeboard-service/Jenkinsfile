@@ -35,7 +35,8 @@ pipeline {
           docker-compose down
 
           echo "🚀 Starting containers with updated build..."
-          docker-compose up -d --build
+          chmod +x ./deploy.sh
+          ./deploy.sh
           '''
         }
       }
