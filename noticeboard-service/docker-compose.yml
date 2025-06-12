@@ -20,12 +20,13 @@ services:
 
 
   spring-app-1:
-    image: openjdk:17-jdk
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
     container_name: spring-app-1
     working_dir: /app
     volumes:
-      - ./backend/build/libs/noticeboard-service-0.0.1-SNAPSHOT.jar:/app/spring-app.jar
-      - app_images:/app/
+      - app_images:/app/images
       - ./logs/spring-app-1:/app/logs  # 로그 디렉토리 추가
     environment:
       SPRING_PROFILES_ACTIVE: dev
@@ -33,16 +34,16 @@ services:
       - "8080"
     depends_on:
       - mysql
-    entrypoint: ["/bin/sh", "-c", "java -jar /app/spring-app.jar > /app/logs/nohup.log 2>&1"]
     networks:
       - backend
 
   spring-app-2:
-    image: openjdk:17-jdk
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
     container_name: spring-app-2
     working_dir: /app
     volumes:
-      - ./backend/build/libs/noticeboard-service-0.0.1-SNAPSHOT.jar:/app/spring-app.jar
       - app_images:/app/images
       - ./logs/spring-app-2:/app/logs  # 로그 디렉토리 추가
     environment:
@@ -51,7 +52,6 @@ services:
       - "8080"
     depends_on:
       - mysql
-    entrypoint: ["/bin/sh", "-c", "java -jar /app/spring-app.jar > /app/logs/nohup.log 2>&1"]
     networks:
       - backend
   

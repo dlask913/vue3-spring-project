@@ -34,9 +34,11 @@ pipeline {
           echo "🐳 Stopping existing containers..."
           docker-compose down
 
+          echo "🐳 Building new images..."
+          docker-compose build
+
           echo "🚀 Starting containers with updated build..."
-          chmod +x ./deploy.sh
-          ./deploy.sh
+          docker compose up -d
           '''
         }
       }
