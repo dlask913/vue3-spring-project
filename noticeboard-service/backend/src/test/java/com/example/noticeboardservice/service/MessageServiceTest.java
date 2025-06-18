@@ -4,13 +4,12 @@ import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.MessageMapper;
 import com.example.noticeboardservice.mapper.RoomMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,8 +17,8 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 @SpringBootTest
-@ActiveProfiles("test")
 class MessageServiceTest {
     @Autowired
     private MessageService messageServiceImpl;
@@ -29,12 +28,6 @@ class MessageServiceTest {
     private MemberMapper memberMapper;
     @Autowired
     private RoomMapper roomMapper;
-
-    @AfterEach
-    void tearDown() {
-        messageMapper.deleteAllMessages();
-        roomMapper.deleteAllRooms();
-    }
 
     @Test
     @DisplayName("처음 상대방에게 메시지를 전송한다")

@@ -4,14 +4,13 @@ import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.ProductBidHistoryMapper;
 import com.example.noticeboardservice.mapper.ProductMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +18,8 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+@Transactional
 @SpringBootTest
-@ActiveProfiles(value = "test")
 class ProductServiceTest {
 
     @Autowired
@@ -31,15 +29,8 @@ class ProductServiceTest {
 
     @Autowired
     ProductBidHistoryMapper productBidHistoryMapper;
-
     @Autowired
     MemberMapper memberMapper;
-
-    @AfterEach
-    void tearDown() {
-        productBidHistoryMapper.deleteAll();
-        productMapper.deleteAll();
-    }
 
     @Test
     @DisplayName("판매할 상품을 이미지 없이 등록한다.")
@@ -327,3 +318,4 @@ class ProductServiceTest {
         return findMember;
     }
 }
+

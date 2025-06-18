@@ -4,7 +4,6 @@ import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.ImageMapper;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @SpringBootTest
-@ActiveProfiles("test")
 class ImageServiceTest {
 
     @Autowired
@@ -26,11 +25,6 @@ class ImageServiceTest {
     MemberMapper memberMapper;
     @Value("${member-img-location}")
     String memberImgLocation;
-
-    @AfterEach
-    void tearDown() {
-        imageMapper.deleteAll();
-    }
 
     @Test
     @DisplayName("회원 타입의 이미지를 저장한다.")

@@ -5,24 +5,22 @@ import com.example.noticeboardservice.dto.MemberResponseDto;
 import com.example.noticeboardservice.dto.RoomDto;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.RoomMapper;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 @SpringBootTest
-@ActiveProfiles("test")
 class RoomServiceTest {
+
     @Autowired
     RoomService roomServiceImpl;
     @Autowired
@@ -30,11 +28,6 @@ class RoomServiceTest {
 
     @Autowired
     MemberMapper memberMapper;
-
-    @AfterEach
-    void tearDown() {
-        roomMapper.deleteAllRooms();
-    }
 
     @Test
     @DisplayName("멤버 간 채팅방이 없을 때 메시지 전송 시 채팅방이 자동 생성된다.")

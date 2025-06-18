@@ -11,16 +11,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 @SpringBootTest
-@ActiveProfiles("test")
 class ReplyServiceTest {
 
     @Autowired
@@ -34,14 +33,6 @@ class ReplyServiceTest {
     NoticeMapper noticeMapper;
     @Autowired
     MemberMapper memberMapper;
-
-    @AfterEach
-    void tearDown() {
-        replyMapper.deleteAll();
-        commentMapper.deleteAll();
-        noticeMapper.deleteAll();
-        memberMapper.deleteAll();
-    }
 
     @Test
     @DisplayName("댓글에 대한 하위 댓글을 작성한다.")

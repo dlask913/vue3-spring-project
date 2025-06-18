@@ -6,7 +6,7 @@ import com.example.noticeboardservice.mapper.NoticeMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +14,8 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 @SpringBootTest
-@ActiveProfiles("test")
 class NoticeServiceTest {
 
     @Autowired
@@ -24,12 +24,6 @@ class NoticeServiceTest {
     NoticeMapper noticeMapper;
     @Autowired
     MemberMapper memberMapper;
-
-    @AfterEach
-    void tearDown() {
-        noticeMapper.deleteAll();
-        memberMapper.deleteAll();
-    }
 
     @Test
     @DisplayName("게시글을 저장한다.")

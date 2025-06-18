@@ -8,30 +8,24 @@ import com.example.noticeboardservice.exception.MemberNotFoundException;
 import com.example.noticeboardservice.exception.PasswordMismatchException;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Transactional
 @SpringBootTest
-@ActiveProfiles("test")
 class MemberServiceTest {
 
     @Autowired
     MemberMapper memberMapper;
     @Autowired
     MemberService memberServiceImpl;
-
-    @AfterEach
-    void tearDown() {
-        memberMapper.deleteAll();
-    }
 
     @Test
     @DisplayName("회원 가입을 한다.")

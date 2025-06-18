@@ -6,18 +6,16 @@ import com.example.noticeboardservice.mapper.HeartMapper;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.NoticeMapper;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
+@Transactional
 @SpringBootTest
-@ActiveProfiles("test")
 class HeartServiceTest {
 
     @Autowired
@@ -30,12 +28,6 @@ class HeartServiceTest {
     NoticeMapper noticeMapper;
     @Autowired
     CommentMapper commentMapper;
-
-    @AfterEach
-    void tearDown() {
-        heartMapper.deleteAll();
-        memberMapper.deleteAll();
-    }
 
     @Test
     @DisplayName("댓글의 좋아요 상태를 확인한다.")

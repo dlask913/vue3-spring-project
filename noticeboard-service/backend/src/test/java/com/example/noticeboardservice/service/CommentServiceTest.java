@@ -4,21 +4,19 @@ import com.example.noticeboardservice.dto.*;
 import com.example.noticeboardservice.mapper.CommentMapper;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import com.example.noticeboardservice.mapper.NoticeMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 @SpringBootTest
-@ActiveProfiles("test")
 class CommentServiceTest {
 
     @Autowired
@@ -29,13 +27,6 @@ class CommentServiceTest {
     private MemberMapper memberMapper;
     @Autowired
     private NoticeMapper noticeMapper;
-
-    @AfterEach
-    void tearDown() {
-        commentMapper.deleteAll();
-        noticeMapper.deleteAll();
-        memberMapper.deleteAll();
-    }
 
     @Test
     @DisplayName("댓글을 생성한다")
