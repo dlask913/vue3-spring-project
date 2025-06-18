@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    active: test
+
+#MyBatis
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.noticeboardservice.dto # Dto 매핑 클래스 패키지 지정
+  configuration:
+    map-underscore-to-camel-case: true
+
+upload-path: file:///C:/images/
+default-img-path: classpath:/static/default-image/
+member-img-location: C:/images/member
+product-img-location: C:/images/product
+category-img-location: C:/images/category
+
+# 카카오 REST API KEY
+kakao-rest-api-key: 049c84589ed98d01f5fe19b15cb67ea4
+
+jwt:
+  secret: 6qh3C2sv6MnfJrcwIsJdXApelnm9s0SxC/oAmv5zzDQ=
+
+slack:
+  webhook:
+    url:
