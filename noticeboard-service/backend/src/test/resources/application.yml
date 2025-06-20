@@ -1,6 +1,11 @@
 spring:
   profiles:
     active: test
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mysql://localhost:3306/testboard?serverTimezone=UTC
+    username: root
+    password: 1234
 
 #MyBatis
 mybatis:

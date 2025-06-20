@@ -1,5 +1,6 @@
 package com.example.noticeboardservice.service;
 
+import com.example.noticeboardservice.dto.AddressRequestDto;
 import com.example.noticeboardservice.dto.LoginRequestDto;
 import com.example.noticeboardservice.dto.MemberRequestDto;
 import com.example.noticeboardservice.dto.MemberResponseDto;
@@ -31,7 +32,7 @@ class MemberServiceTest {
     @DisplayName("회원 가입을 한다.")
     void memberRegisterTest() {
         // given
-        MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
+        MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1", "서울 특별시");
 
         // when
         memberServiceImpl.registerMember(memberRequestDto);
@@ -47,7 +48,7 @@ class MemberServiceTest {
     @DisplayName("로그인 시 회원 정보에 대한 비밀번호가 같아야 한다.")
     void loginWithPasswordMismatchExceptionTest() {
         // given
-        MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
+        MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1", "서울 특별시");
         memberServiceImpl.registerMember(memberRequestDto);
         LoginRequestDto loginRequestDto = LoginRequestDto.builder()
                 .email(memberRequestDto.getEmail())
@@ -79,10 +80,10 @@ class MemberServiceTest {
     @DisplayName("회원 비밀번호와 이름을 수정한다.")
     void updateMemberTest() {
         // given
-        MemberRequestDto memberRequestDto = createMemberDto(0L, "register@test.com", "1234", "limnj1");
+        MemberRequestDto memberRequestDto = createMemberDto(0L, "register@test.com", "1234", "limnj1", "서울 특별시");
         memberServiceImpl.registerMember(memberRequestDto);
         MemberResponseDto findMember = memberServiceImpl.findMemberByEmail(memberRequestDto.getEmail()).orElseThrow();
-        MemberRequestDto updateDto = createMemberDto(findMember.id(), findMember.email(), "12345", "limnj2");
+        MemberRequestDto updateDto = createMemberDto(findMember.id(), findMember.email(), "12345", "limnj2", "서울 특별시");
 
         // when
         memberServiceImpl.updateMember(updateDto, null);
@@ -97,7 +98,7 @@ class MemberServiceTest {
     @DisplayName("회원 탈퇴 한다.")
     void deleteMemberTest() {
         // given
-        MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
+        MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1", "서울 특별시");
         memberServiceImpl.registerMember(memberRequestDto);
         MemberResponseDto findMember = memberMapper.findMemberByEmail(memberRequestDto.getEmail());
 
@@ -112,7 +113,7 @@ class MemberServiceTest {
     @DisplayName("회원 PK로 디폴트 이미지가 저장되어있는 회원 정보를 조회한다")
     void findByMemberIdTest() {
         // given
-        MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1");
+        MemberRequestDto memberRequestDto = createMemberDto(0L,"register@test.com", "1234", "limnj1", "서울 특별시");
         memberServiceImpl.registerMember(memberRequestDto);
         MemberResponseDto member = memberMapper.findMemberByEmail(memberRequestDto.getEmail());
 
@@ -130,10 +131,10 @@ class MemberServiceTest {
     @DisplayName("회원 이미지를 수정한다.")
     void updateMemberImageTest() {
         // given
-        MemberRequestDto memberRequestDto = createMemberDto(0L, "register@test.com", "1234", "limnj1");
+        MemberRequestDto memberRequestDto = createMemberDto(0L, "register@test.com", "1234", "limnj1", "서울 특별시");
         memberServiceImpl.registerMember(memberRequestDto);
         MemberResponseDto findMember = memberServiceImpl.findMemberByEmail(memberRequestDto.getEmail()).orElseThrow();
-        MemberRequestDto updateDto = createMemberDto(findMember.id(), memberRequestDto.getEmail(), memberRequestDto.getPassword(), memberRequestDto.getUsername());
+        MemberRequestDto updateDto = createMemberDto(findMember.id(), memberRequestDto.getEmail(), memberRequestDto.getPassword(), memberRequestDto.getUsername(), "서울 특별시");
         MockMultipartFile memberImg = new MockMultipartFile(
                 "회원 이미지",
                 "memberImg.jpg",
@@ -153,8 +154,8 @@ class MemberServiceTest {
     @DisplayName("회원 가입 시 이미 사용중인 이메일은 사용할 수 없다.")
     void MemberDuplicateExceptionTest() {
         // given
-        MemberRequestDto memberRequestDto1 = createMemberDto(0L,"register1@test.com", "1234", "limnj1");
-        MemberRequestDto memberRequestDto2 = createMemberDto(0L,"register1@test.com", "1234", "limnj1");
+        MemberRequestDto memberRequestDto1 = createMemberDto(0L,"register1@test.com", "1234", "limnj1", "서울 특별시");
+        MemberRequestDto memberRequestDto2 = createMemberDto(0L,"register1@test.com", "1234", "limnj1", "서울 특별시");
         memberMapper.insertMember(memberRequestDto1);
 
         // when // then
@@ -163,12 +164,19 @@ class MemberServiceTest {
         }, "이미 사용중인 이메일입니다.");
     }
 
-    private static MemberRequestDto createMemberDto(Long memberId, String email, String password, String username) {
+    private static MemberRequestDto createMemberDto(Long memberId, String email, String password, String username, String address) {
+        AddressRequestDto addressDto = AddressRequestDto.builder()
+                .roadAddressName("roadAddressName")
+                .latitude("11")
+                .longitude("11")
+                .addressName(address)
+                .build();
         return MemberRequestDto.builder()
                 .id(memberId)
                 .email(email)
                 .password(password)
                 .username(username)
+                .address(addressDto)
                 .build();
     }
 }
