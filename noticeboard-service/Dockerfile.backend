@@ -10,4 +10,4 @@ FROM openjdk:17-jdk
 WORKDIR /app
 COPY --from=builder /app/backend/build/libs/noticeboard-service-0.0.1-SNAPSHOT.jar spring-app.jar
 EXPOSE 8080
-ENTRYPOINT ["/bin/sh", "-c", "java -jar /app/spring-app.jar > /app/logs/nohup.log 2>&1"]
+ENTRYPOINT ["/bin/sh", "-c", "java -jar /app/spring-app.jar"]
