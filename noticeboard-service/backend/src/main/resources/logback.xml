@@ -6,6 +6,20 @@
         </encoder>
     </appender>
 
+    <property name="LOG_PATH" value="/logs/spring-app" />
+    <property name="LOG_FILE" value="${LOG_PATH}/app.log" />
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/app-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory> <!-- 로그 보관 주기 -->
+        </rollingPolicy>
+    </appender>
+
     <logger name="jdbc" level="ON"/>
     <logger name="jdbc.sqlonly" level="OFF"/>
     <logger name="jdbc.sqltiming" level="DEBUG"/>
@@ -15,5 +29,6 @@
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
     </root>
 </configuration>
