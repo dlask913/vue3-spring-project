@@ -7,6 +7,17 @@ spring:
     url: jdbc:log4jdbc:mysql://mysql-app:3306/noticeboard?serverTimezone=UTC
     username: root
     password: 1234
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 server:
   port: 8080
@@ -24,3 +35,13 @@ default-img-path: classpath:/static/default-image/
 member-img-location: /app/images/member
 product-img-location: /app/images/product
 category-img-location: /app/images/category
+
+# COMMON SCOPE
+kakao-rest-api-key: ${KAKAO_API_KEY}
+
+jwt:
+  secret: ${JWT_SECRET}
+
+slack:
+  webhook:
+    url: ${SLACK_WEBHOOK_URL}
