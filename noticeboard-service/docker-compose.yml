@@ -27,7 +27,7 @@ services:
     working_dir: /app
     volumes:
       - app_images:/app/images
-      - ./logs/spring-app-1:/app/logs  # 로그 디렉토리 추가
+      - ./logs/spring-app:/app/logs  # 로그 디렉토리 추가
     environment:
       SPRING_PROFILES_ACTIVE: dev
     expose:
@@ -45,7 +45,7 @@ services:
     working_dir: /app
     volumes:
       - app_images:/app/images
-      - ./logs/spring-app-2:/app/logs  # 로그 디렉토리 추가
+      - ./logs/spring-app:/app/logs  # 로그 디렉토리 추가
     environment:
       SPRING_PROFILES_ACTIVE: dev
     expose:
@@ -66,18 +66,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    networks:
-      - backend
-
-  log-backup:
-    image: alpine:latest
-    container_name: log-backup
-    volumes:
-      - ./backup-logs.sh:/backup-logs.sh:ro
-      - ./logs/spring-app-1:/logs/spring-app-1:ro
-      - ./logs/spring-app-2:/logs/spring-app-2:ro
-      - ./backup_logs:/backup_logs
-    entrypoint: ["/bin/sh", "-c", "apk add --no-cache bash coreutils grep && while true; do /backup-logs.sh; sleep 86400; done"]
     networks:
       - backend
 
