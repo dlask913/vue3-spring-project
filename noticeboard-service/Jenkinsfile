@@ -6,6 +6,12 @@ pipeline {
     JAR_NAME = "${SERVICE_NAME}-0.0.1-SNAPSHOT.jar"
     BUILD_JAR = "build/libs/${JAR_NAME}"
     FRONTEND_DIST_DIR = "dist"
+
+    MAIL_USERNAME = credentials('MAIL_USERNAME')
+    MAIL_PASSWORD = credentials('MAIL_PASSWORD')
+    KAKAO_API_KEY = credentials('KAKAO_API_KEY')
+    JWT_SECRET = credentials('JWT_SECRET')
+    SLACK_WEBHOOK_URL = credentials('SLACK_WEBHOOK_URL')
   }
 
   stages {
