@@ -30,6 +30,11 @@ services:
       - ./logs/spring-app:/app/logs  # 로그 디렉토리 추가
     environment:
       SPRING_PROFILES_ACTIVE: dev
+      JWT_SECRET: "${JWT_SECRET}"
+      KAKAO_API_KEY: "${KAKAO_API_KEY}"
+      MAIL_USERNAME: "${MAIL_USERNAME}"
+      MAIL_PASSWORD: "${MAIL_PASSWORD}"
+      SLACK_WEBHOOK_URL: "${SLACK_WEBHOOK_URL}"
     expose:
       - "8080"
     depends_on:
@@ -48,6 +53,11 @@ services:
       - ./logs/spring-app:/app/logs  # 로그 디렉토리 추가
     environment:
       SPRING_PROFILES_ACTIVE: dev
+      JWT_SECRET: "${JWT_SECRET}"
+      KAKAO_API_KEY: "${KAKAO_API_KEY}"
+      MAIL_USERNAME: "${MAIL_USERNAME}"
+      MAIL_PASSWORD: "${MAIL_PASSWORD}"
+      SLACK_WEBHOOK_URL: "${SLACK_WEBHOOK_URL}"
     expose:
       - "8080"
     depends_on:
