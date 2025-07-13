@@ -10,6 +10,9 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
+  optimizeDeps: {
+    include: ['@ckeditor/ckeditor5-vue', '@ckeditor/ckeditor5-build-classic']
+  },
   server: {
     port: 5174
   },
