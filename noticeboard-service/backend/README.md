@@ -15,7 +15,8 @@ CREATE TABLE Members (
     email VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    address VARCHAR(255)
+    address VARCHAR(255),
+    user_type VARCHAR(20) NOT NULL DEFAULT 'USER'
 );
 
 CREATE TABLE Notices (
