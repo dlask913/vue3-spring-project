@@ -1,7 +1,16 @@
-<script setup>
-</script>
 <template>
-  <h2>Admin Project</h2>
+  <div id="app">
+    <NoticeBoard />
+  </div>
 </template>
-<style scoped>
-</style>
+
+<script>
+import NoticeBoard from '@/components/NoticeBoard.vue'
+
+export default {
+  name: 'App',
+  components: {
+    NoticeBoard
+  }
+}
+</script>
