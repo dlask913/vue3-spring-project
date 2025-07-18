@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://www.nhncorp.com/lucy-xss" extends="lucy-xss-default.xml">
-    <elementRule>
-        <element name="a">
-            <attribute name="href" />
-        </element>
-    </elementRule>
-</config>

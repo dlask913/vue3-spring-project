@@ -1,4 +1,4 @@
-package com.limnj.noticeboardadmin.category;
+package com.limnj.noticeboardadmin.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

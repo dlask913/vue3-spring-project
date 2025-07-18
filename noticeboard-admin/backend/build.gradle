@@ -28,7 +28,6 @@ ext {
 	swaggerVerion = "2.2.0";
 	jwtVersion = "0.11.2";
 	log4jVersion = "1.16";
-	lucyVersion = "2.0.1";
 }
 
 dependencies {
@@ -48,9 +47,6 @@ dependencies {
 
 	// log4j
 	implementation "org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:${log4jVersion}"
-
-	// Lucy XSS Filter
-	implementation "com.navercorp.lucy:lucy-xss-servlet:${lucyVersion}"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
