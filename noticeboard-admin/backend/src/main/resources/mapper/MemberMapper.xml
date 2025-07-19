@@ -1,0 +1,8 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.limnj.noticeboardadmin.member.MemberMapper">
+    <!-- 관리자 회원 가입 -->
+    <insert id="saveAdminMember" parameterType="AdminMemberRequestDto" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Members (username, password, user_type)
+        VALUES (#{username}, #{password}, #{userType})
+    </insert>
+</mapper>

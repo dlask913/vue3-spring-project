@@ -16,7 +16,7 @@ spring:
 # Mapper Xml Location
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.limnj.noticeboardadmin.category, com.limnj.noticeboardadmin.image, com.limnj.noticeboardadmin.notice
+  type-aliases-package: com.limnj.noticeboardadmin.category, com.limnj.noticeboardadmin.image, com.limnj.noticeboardadmin.notice, com.limnj.noticeboardadmin.member
   configuration:
     map-underscore-to-camel-case: true
 
