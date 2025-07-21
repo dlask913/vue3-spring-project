@@ -12,9 +12,9 @@
 ```sql
 CREATE TABLE Members (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
-    username VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255),
+    username VARCHAR(255),
+    password VARCHAR(255),
     address VARCHAR(255),
     user_type VARCHAR(20) NOT NULL DEFAULT 'USER'
 );
