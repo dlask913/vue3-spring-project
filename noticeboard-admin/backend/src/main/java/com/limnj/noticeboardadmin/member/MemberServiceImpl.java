@@ -14,4 +14,9 @@ public class MemberServiceImpl implements MemberService{
     public int saveAdminMember(AdminMemberRequestDto requestDto) {
         return memberMapper.saveAdminMember(requestDto);
     }
+
+    @Override
+    public AdminMemberResponseDto findMemberById(Long memberId) {
+        return memberMapper.findMemberById(memberId);
+    }
 }
