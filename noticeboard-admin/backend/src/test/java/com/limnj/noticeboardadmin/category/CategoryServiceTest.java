@@ -1,6 +1,5 @@
 package com.limnj.noticeboardadmin.category;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +7,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@Transactional
 @ActiveProfiles("test")
 class CategoryServiceTest {
 
@@ -21,11 +22,6 @@ class CategoryServiceTest {
     CategoryService categoryServiceImpl;
     @Autowired
     CategoryMapper categoryMapper;
-
-    @AfterEach
-    void tearDown() {
-        categoryMapper.deleteAll();
-    }
 
     @Test
     @DisplayName("이름, 설명, 이미지를 입력하여 카테고리를 생성한다.")

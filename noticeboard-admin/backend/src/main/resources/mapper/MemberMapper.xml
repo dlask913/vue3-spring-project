@@ -3,6 +3,13 @@
     <!-- 관리자 회원 가입 -->
     <insert id="saveAdminMember" parameterType="AdminMemberRequestDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO Members (username, password, user_type)
-        VALUES (#{username}, #{password}, #{userType})
+        VALUES (#{username}, #{password}, 'ADMIN')
     </insert>
+
+    <!-- 관리자 회원 단일 조회 -->
+    <select id="findMemberById" parameterType="long" resultType="AdminMemberResponseDto">
+        SELECT id, username, password
+        FROM Members
+        WHERE id = #{id}
+    </select>
 </mapper>
