@@ -11,9 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-toolbar-title> 관리자 페이지 </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -41,9 +39,18 @@ import EssentialLink from 'components/EssentialLink.vue';
 
 const linksList = [
   {
-    title: 'NoticeBoard',
-    caption: 'quasar.dev',
-    icon: 'school',
+    title: '회원가입',
+    icon: 'how_to_reg',
+    to: '/signup',
+  },
+  {
+    title: '로그인',
+    icon: 'login',
+    to: '/login',
+  },
+  {
+    title: '공지사항',
+    icon: 'notifications',
     to: '/notice',
   },
 ];
