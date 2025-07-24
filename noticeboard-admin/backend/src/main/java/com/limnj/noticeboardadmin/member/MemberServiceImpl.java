@@ -19,4 +19,9 @@ public class MemberServiceImpl implements MemberService{
     public AdminMemberResponseDto findMemberById(Long memberId) {
         return memberMapper.findMemberById(memberId);
     }
+
+    @Override
+    public boolean loginAdminMember(AdminMemberRequestDto requestDto) {
+        return memberMapper.findMemberByUsername(requestDto.getUsername()).isPresent();
+    }
 }

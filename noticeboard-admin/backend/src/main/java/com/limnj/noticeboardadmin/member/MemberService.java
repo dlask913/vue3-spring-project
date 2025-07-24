@@ -6,4 +6,5 @@ import org.springframework.stereotype.Service;
 public interface MemberService {
     int saveAdminMember(AdminMemberRequestDto requestDto);
     AdminMemberResponseDto findMemberById(Long memberId);
+    boolean loginAdminMember(AdminMemberRequestDto requestDto);
 }

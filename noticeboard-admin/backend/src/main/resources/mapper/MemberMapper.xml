@@ -12,4 +12,11 @@
         FROM Members
         WHERE id = #{id}
     </select>
+
+    <!-- 관리자 회원 단일 조회 -->
+    <select id="findMemberByUsername" parameterType="String" resultType="AdminMemberResponseDto">
+        SELECT id, username, password
+        FROM Members
+        WHERE username = #{username}
+    </select>
 </mapper>

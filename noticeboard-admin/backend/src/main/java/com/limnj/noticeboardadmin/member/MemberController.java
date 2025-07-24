@@ -22,4 +22,13 @@ public class MemberController {
         }
         return ResponseEntity.ok().body("회원 가입이 완료되었습니다.");
     }
+
+    @PostMapping("/login")
+    @Operation(summary = "로그인 API")
+    public ResponseEntity<String> loginMember(@RequestBody AdminMemberRequestDto requestDto){
+        if (!memberServiceImpl.loginAdminMember(requestDto)){
+            return ResponseEntity.badRequest().body("로그인에 실패하였습니다.");
+        }
+        return ResponseEntity.ok().body("로그인에 성공하였습니다.");
+    }
 }
