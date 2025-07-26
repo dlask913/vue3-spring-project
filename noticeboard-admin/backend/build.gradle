@@ -48,6 +48,10 @@ dependencies {
 	// log4j
 	implementation "org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:${log4jVersion}"
 
+	// jwt 토큰 인증 설정
+	implementation "io.jsonwebtoken:jjwt-api:${jwtVersion}"
+	runtimeOnly "io.jsonwebtoken:jjwt-impl:${jwtVersion}", "io.jsonwebtoken:jjwt-jackson:${jwtVersion}"
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
