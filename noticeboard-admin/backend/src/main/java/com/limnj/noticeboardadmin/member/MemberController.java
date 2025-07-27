@@ -25,10 +25,8 @@ public class MemberController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인 API")
-    public ResponseEntity<String> loginMember(@RequestBody AdminMemberRequestDto requestDto){
-        if (!memberServiceImpl.loginAdminMember(requestDto)){
-            return ResponseEntity.badRequest().body("로그인에 실패하였습니다.");
-        }
-        return ResponseEntity.ok().body("로그인에 성공하였습니다.");
+    public ResponseEntity<LoginResponseDto> loginMember(@RequestBody AdminMemberRequestDto requestDto){
+        LoginResponseDto loginResponseDto = memberServiceImpl.loginAdminMember(requestDto);
+        return ResponseEntity.ok().body(loginResponseDto);
     }
 }

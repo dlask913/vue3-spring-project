@@ -1,5 +1,6 @@
 package com.limnj.noticeboardadmin.member;
 
+import com.limnj.noticeboardadmin.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService{
 
     private final MemberMapper memberMapper;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Override
     public int saveAdminMember(AdminMemberRequestDto requestDto) {
@@ -26,8 +28,14 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public boolean loginAdminMember(AdminMemberRequestDto requestDto) {
-        return memberMapper.findMemberByUsername(requestDto.getUsername()).isPresent();
+    public LoginResponseDto loginAdminMember(AdminMemberRequestDto requestDto) {
+        AdminMemberResponseDto findMember = memberMapper.findMemberByUsername(requestDto.getUsername()).orElseThrow();
+        String token = jwtTokenUtil.generateToken(findMember.getUsername());
+
+        return LoginResponseDto.builder()
+                .memberId(findMember.getId())
+                .token(token)
+                .build();
     }
 
     @Override
