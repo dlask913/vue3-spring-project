@@ -1,5 +1,4 @@
-import { defineStore } from '#q-app/wrappers';
-import { createPinia } from 'pinia';
+import { defineStore } from 'pinia';
 
 /*
  * If not building with SSR mode, you can
@@ -10,11 +9,24 @@ import { createPinia } from 'pinia';
  * with the Store instance.
  */
 
-export default defineStore((/* { ssrContext } */) => {
-  const pinia = createPinia();
-
-  // You can add Pinia plugins here
-  // pinia.use(SomePiniaPlugin)
-
-  return pinia;
+export const useUserStore = defineStore('user', {
+  state: () => ({
+    userId: null,
+    token: null,
+  }),
+  getters: {
+    getUserId: (state) => state.userId,
+    getToken: (state) => state.token,
+    isAuthenticated: (state) => !!state.token,
+  },
+  actions: {
+    setAuthInfo(userId, token) {
+      this.userId = userId;
+      this.token = token;
+    },
+    clearAuthInfo() {
+      this.userId = null;
+      this.token = null;
+    },
+  },
 });
