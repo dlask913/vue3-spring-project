@@ -37,6 +37,7 @@
 import { ref } from 'vue';
 import { api } from 'boot/axios';
 import { useRouter } from 'vue-router';
+import { useUserStore } from 'src/stores';
 
 const form = ref({
   userId: '',
@@ -44,6 +45,7 @@ const form = ref({
 });
 
 const router = useRouter();
+const storage = useUserStore();
 
 const onLogin = async () => {
   try {
@@ -51,8 +53,10 @@ const onLogin = async () => {
       ...form.value,
     };
 
-    await api.post('/login', data);
+    const { response } = await api.post('/login', data);
     alert('로그인 성공!');
+
+    storage.login(response.memberId, response.token); // store 에 userId / 토큰 저장
 
     router.push('/');
   } catch (error) {
