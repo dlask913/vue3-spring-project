@@ -1,7 +1,7 @@
 package com.limnj.noticeboardadmin.config.filter;
 
 import com.limnj.noticeboardadmin.member.MemberService;
-import com.limnj.noticeboardadmin.utils.JwtTokenUtil;
+import com.limnj.noticeboardadmin.jwt.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
