@@ -141,4 +141,12 @@ CREATE TABLE Mail_Send_Log (
     template VARCHAR(50) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Refresh Token 저장할 테이블 생성
+CREATE TABLE Refresh_Token (
+    username VARCHAR(255) PRIMARY KEY,
+    token TEXT NOT NULL,
+    expiry TIMESTAMP NOT NULL
+);
+
 ```
