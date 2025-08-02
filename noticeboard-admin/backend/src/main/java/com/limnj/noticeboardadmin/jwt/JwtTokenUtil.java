@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +19,11 @@ import java.util.function.Function;
 public class JwtTokenUtil implements Serializable {
 
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
-    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
+    private final Key key;
     private final TokenMapper tokenMapper;
 
-    public JwtTokenUtil(TokenMapper tokenMapper) {
+    public JwtTokenUtil(@Value("${jwt.secret}") String secret, TokenMapper tokenMapper) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.tokenMapper = tokenMapper;
     }
 
