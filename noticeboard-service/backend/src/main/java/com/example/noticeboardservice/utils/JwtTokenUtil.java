@@ -17,7 +17,8 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil implements Serializable {
 
-    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+    public static final long ACCESS_TOKEN_VALIDITY = 5 * 60 * 60;
+    public static final long REFRESH_TOKEN_VALIDITY = 14 * 24 * 60 * 60;
     private final Key key;
 
     public JwtTokenUtil(@Value("${jwt.secret}") String secret) {
@@ -48,7 +49,14 @@ public class JwtTokenUtil implements Serializable {
 
     public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
-        return Jwts.builder().setClaims(claims).setSubject(userName).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000)).signWith(key).compact();
+        return Jwts.builder().setClaims(claims).setSubject(userName).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY * 1000)).signWith(key).compact();
+    }
+
+    public String generateRefreshToken(String userName) {
+        Map<String, Object> claims = new HashMap<>();
+        return Jwts.builder().setClaims(claims).setSubject(userName).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALIDITY * 1000)).signWith(key).compact();
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {

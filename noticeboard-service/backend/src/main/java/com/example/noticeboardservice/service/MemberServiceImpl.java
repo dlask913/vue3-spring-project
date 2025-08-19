@@ -40,11 +40,13 @@ public class MemberServiceImpl implements MemberService {
             throw new PasswordMismatchException();
         }
 
-        String token = jwtTokenUtil.generateToken(memberResponseDto.email());
+        String accessToken = jwtTokenUtil.generateToken(memberResponseDto.email());
+        String refreshToken = jwtTokenUtil.generateRefreshToken(memberResponseDto.email());
 
         return LoginResponseDto.builder()
                 .memberId(memberResponseDto.id())
-                .token(token)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
