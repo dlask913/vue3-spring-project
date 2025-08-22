@@ -1,10 +1,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.limnj.noticeboardadmin.jwt.TokenMapper">
     <!-- username 별 refresh token 저장 및 갱신 -->
-    <insert id="saveRefreshToken">
-        INSERT INTO Refresh_Token (username, refresh_token, expiry)
-        VALUES (#{username}, #{refreshToken}, NOW() + INTERVAL 7 DAY)
+    <insert id="saveRefreshToken" parameterType="RefreshToken" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Refresh_Token (username, token, expiry_date)
+        VALUES (#{username}, #{token}, #{expiryDate})
         ON DUPLICATE KEY UPDATE
-        refresh_token = #{refreshToken}, expiry = NOW() + INTERVAL 7 DAY
+        token = #{token}, expiry_date = #{expiryDate}
     </insert>
 </mapper>

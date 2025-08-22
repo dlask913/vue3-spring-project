@@ -1,11 +1,8 @@
 package com.limnj.noticeboardadmin.jwt;
 
-import com.limnj.noticeboardadmin.member.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -20,11 +17,11 @@ public class JwtTokenUtil implements Serializable {
 
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
     private final Key key;
-    private final TokenMapper tokenMapper;
+    private final RefreshTokenService refreshTokenServiceImpl;
 
-    public JwtTokenUtil(@Value("${jwt.secret}") String secret, TokenMapper tokenMapper) {
+    public JwtTokenUtil(@Value("${jwt.secret}") String secret, RefreshTokenService refreshTokenService) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.tokenMapper = tokenMapper;
+        this.refreshTokenServiceImpl = refreshTokenService;
     }
 
     public String getUsernameFromToken(String token) {
@@ -57,18 +54,11 @@ public class JwtTokenUtil implements Serializable {
                 .signWith(key)
                 .compact();
 
-        String refreshToken = Jwts.builder()
-                .setSubject(userName)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 7일
-                .signWith(key)
-                .compact();
-
-        tokenMapper.saveRefreshToken(userName, refreshToken);
+        RefreshToken refreshToken = refreshTokenServiceImpl.jenerateRefreshToken(userName);
 
         return JwtToken.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .refreshToken(refreshToken.getToken())
                 .build();
     }
 

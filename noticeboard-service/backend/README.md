@@ -146,7 +146,7 @@ CREATE TABLE Mail_Send_Log (
 CREATE TABLE Refresh_Token (
     username VARCHAR(255) PRIMARY KEY,
     token TEXT NOT NULL,
-    expiry TIMESTAMP NOT NULL
+    expiry_date TIMESTAMP NOT NULL
 );
 
 ```
