@@ -7,4 +7,10 @@
         ON DUPLICATE KEY UPDATE
         token = #{token}, expiry_date = #{expiryDate}
     </insert>
+
+    <select id="findRefreshTokenByUsername" parameterType="string" resultType="RefreshToken">
+        SELECT username, token, expiry_date
+        FROM Refresh_Token
+        WHERE username = #{username}
+    </select>
 </mapper>

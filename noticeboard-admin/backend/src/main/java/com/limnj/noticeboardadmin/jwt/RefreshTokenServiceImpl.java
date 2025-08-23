@@ -24,4 +24,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         tokenMapper.saveRefreshToken(refreshToken);
         return refreshToken;
     }
+
+    @Override
+    public boolean validateRefreshToken(RefreshTokenDto requestDto) {
+        RefreshToken refreshToken = tokenMapper.findRefreshTokenByUsername(requestDto.getUsername());
+        if(refreshToken.getToken().equals(requestDto.getRefreshToken())){
+            return true;
+        }
+        return false;
+    }
 }
