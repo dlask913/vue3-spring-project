@@ -12,15 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class TokenController {
 
     private final RefreshTokenService tokenServiceImpl;
-    private final JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/refresh")
     @Operation(summary = "access 토큰 발급 API")
     public ResponseEntity<String> getNewAccessToken(@RequestBody RefreshTokenDto requestDto){
-        String newAccessToken = "잘못된 토큰 정보입니다.";
-        if(tokenServiceImpl.validateRefreshToken(requestDto)){
-            newAccessToken = jwtTokenUtil.generateToken(requestDto.getUsername()).getAccessToken();
-        }
+        String newAccessToken = tokenServiceImpl.generateNewAccessToken(requestDto);
         return ResponseEntity.ok().body(newAccessToken);
     }
 }

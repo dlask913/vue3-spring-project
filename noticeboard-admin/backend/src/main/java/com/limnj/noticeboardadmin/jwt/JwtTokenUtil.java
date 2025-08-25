@@ -17,11 +17,9 @@ public class JwtTokenUtil implements Serializable {
 
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
     private final Key key;
-    private final RefreshTokenService refreshTokenServiceImpl;
 
-    public JwtTokenUtil(@Value("${jwt.secret}") String secret, RefreshTokenService refreshTokenService) {
+    public JwtTokenUtil(@Value("${jwt.secret}") String secret) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.refreshTokenServiceImpl = refreshTokenService;
     }
 
     public String getUsernameFromToken(String token) {
@@ -46,20 +44,13 @@ public class JwtTokenUtil implements Serializable {
         return expiration.before(new Date());
     }
 
-    public JwtToken generateToken(String userName) {
-        String accessToken = Jwts.builder()
+    public String generateToken(String userName) {
+        return Jwts.builder()
                 .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 15 * 60 * 1000)) // 15 분
                 .signWith(key)
                 .compact();
-
-        RefreshToken refreshToken = refreshTokenServiceImpl.jenerateRefreshToken(userName);
-
-        return JwtToken.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getToken())
-                .build();
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {

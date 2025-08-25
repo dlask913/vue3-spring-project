@@ -4,6 +4,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface RefreshTokenService {
-    RefreshToken jenerateRefreshToken(String username);
-    boolean validateRefreshToken(RefreshTokenDto requestDto);
+    String generateRefreshToken(String username);
+    String generateNewAccessToken(RefreshTokenDto requestDto);
 }

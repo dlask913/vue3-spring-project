@@ -1,5 +1,6 @@
 package com.limnj.noticeboardadmin.jwt;
 
+import com.limnj.noticeboardadmin.exception.RefreshTokenInvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,25 +13,32 @@ import java.util.UUID;
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final TokenMapper tokenMapper;
+    private final JwtTokenUtil jwtTokenUtil;
     public static final long REFRESH_TOKEN_VALIDITY = 7 * 24 * 60 * 60 * 1000L;
 
     @Override
-    public RefreshToken jenerateRefreshToken(String username) {
+    public String generateRefreshToken(String username) {
         RefreshToken refreshToken = RefreshToken.builder()
                 .username(username)
                 .token(UUID.randomUUID().toString())
                 .expiryDate(LocalDateTime.now().plusSeconds(REFRESH_TOKEN_VALIDITY / 1000))
                 .build();
         tokenMapper.saveRefreshToken(refreshToken);
-        return refreshToken;
+        return refreshToken.getToken();
     }
 
     @Override
-    public boolean validateRefreshToken(RefreshTokenDto requestDto) {
-        RefreshToken refreshToken = tokenMapper.findRefreshTokenByUsername(requestDto.getUsername());
-        if(refreshToken.getToken().equals(requestDto.getRefreshToken())){
-            return true;
+    public String generateNewAccessToken(RefreshTokenDto requestDto) {
+        if(!validateRefreshToken(requestDto)){
+            throw new RefreshTokenInvalidException("Refresh Token 이 일치하지 않습니다.");
         }
-        return false;
+        return jwtTokenUtil.generateToken(requestDto.getUsername());
+    }
+
+    public boolean validateRefreshToken(RefreshTokenDto requestDto) {
+        RefreshToken refreshToken = tokenMapper.findRefreshTokenByUsername(requestDto.getUsername()).orElseThrow(
+                () -> new RefreshTokenInvalidException("해당 User 의 Refresh Token 이 존재하지 않습니다.")
+        );
+        return refreshToken.getToken().equals(requestDto.getRefreshToken());
     }
 }
