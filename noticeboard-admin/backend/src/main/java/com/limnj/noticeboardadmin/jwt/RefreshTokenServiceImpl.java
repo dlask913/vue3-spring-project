@@ -28,16 +28,16 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public String generateNewAccessToken(RefreshTokenDto requestDto) {
+    public String generateNewAccessToken(RefreshTokenRequestDto requestDto) {
         if(!validateRefreshToken(requestDto)){
             throw new RefreshTokenInvalidException("Refresh Token 이 일치하지 않습니다.");
         }
         return jwtTokenUtil.generateToken(requestDto.getUsername());
     }
 
-    public boolean validateRefreshToken(RefreshTokenDto requestDto) {
+    public boolean validateRefreshToken(RefreshTokenRequestDto requestDto) {
         RefreshToken refreshToken = tokenMapper.findRefreshTokenByUsername(requestDto.getUsername()).orElseThrow(
-                () -> new RefreshTokenInvalidException("해당 User 의 Refresh Token 이 존재하지 않습니다.")
+                () -> new RefreshTokenInvalidException("해당 User 의 Refresh Token 이 존재하지 않거나 만료되었습니다.")
         );
         return refreshToken.getToken().equals(requestDto.getRefreshToken());
     }

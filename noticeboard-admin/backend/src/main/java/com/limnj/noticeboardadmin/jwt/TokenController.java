@@ -15,7 +15,7 @@ public class TokenController {
 
     @PostMapping("/refresh")
     @Operation(summary = "access 토큰 발급 API")
-    public ResponseEntity<String> getNewAccessToken(@RequestBody RefreshTokenDto requestDto){
+    public ResponseEntity<String> getNewAccessToken(@RequestBody RefreshTokenRequestDto requestDto){
         String newAccessToken = tokenServiceImpl.generateNewAccessToken(requestDto);
         return ResponseEntity.ok().body(newAccessToken);
     }

@@ -8,9 +8,10 @@
         token = #{token}, expiry_date = #{expiryDate}
     </insert>
 
+    <!-- 만료되지 않은 token 정보 조회 -->
     <select id="findRefreshTokenByUsername" parameterType="string" resultType="RefreshToken">
         SELECT username, token, expiry_date
         FROM Refresh_Token
-        WHERE username = #{username}
+        WHERE username = #{username} AND expiry_date > NOW();
     </select>
 </mapper>
