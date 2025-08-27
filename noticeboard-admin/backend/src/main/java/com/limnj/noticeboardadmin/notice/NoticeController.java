@@ -1,6 +1,7 @@
 package com.limnj.noticeboardadmin.notice;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ public class NoticeController {
     private final NoticeService noticeServiceImpl;
 
     @PostMapping("/notice")
-    @Operation(summary = "관리자용 게시글 저장 API")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") },summary = "관리자용 게시글 저장 API")
     public ResponseEntity<?> saveNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
         int result = noticeServiceImpl.saveNotice(noticeRequestDto);
         if (result <= 0) {
@@ -21,7 +22,7 @@ public class NoticeController {
     }
 
     @PutMapping("/notice")
-    @Operation(summary = "관리자용 게시글 수정 API")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") },summary = "관리자용 게시글 수정 API")
     public ResponseEntity<?> updateNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
         int result = noticeServiceImpl.updateNotice(noticeRequestDto);
         if (result <= 0) {
@@ -31,7 +32,7 @@ public class NoticeController {
     }
 
     @DeleteMapping("/notice/{noticeId}")
-    @Operation(summary = "관리자용 게시글 삭제 API")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") },summary = "관리자용 게시글 삭제 API")
     public ResponseEntity<String> deleteNotice(@PathVariable("noticeId") Long noticeId) {
         int result = noticeServiceImpl.deleteNotice(noticeId);
         if (result <= 0){
@@ -41,7 +42,7 @@ public class NoticeController {
     }
 
     @GetMapping("/notice/{noticeId}")
-    @Operation(summary = "게시글 단일 조회 API")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") },summary = "게시글 단일 조회 API")
     public ResponseEntity<?> findNotice(@PathVariable("noticeId") Long noticeId) {
         NoticeResponseDto response = noticeServiceImpl.findNoticeByNoticeId(noticeId);
         return ResponseEntity.ok().body(response);

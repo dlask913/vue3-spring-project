@@ -1,6 +1,7 @@
 package com.limnj.noticeboardadmin.category;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class CategoryController {
     private final CategoryService categoryServiceImpl;
 
     @PostMapping("/category")
-    @Operation(summary = "카테고리 생성 API")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "카테고리 생성 API")
     public ResponseEntity<String> saveCategory(@RequestPart("categoryDto") CategoryDto categoryDto,
                                                @RequestPart(value = "categoryImg") MultipartFile categoryImg) {
         int result = categoryServiceImpl.insertCategory(categoryDto, categoryImg);
@@ -27,7 +28,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/category/{categoryId}")
-    @Operation(summary = "카테고리 삭제 API")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "카테고리 삭제 API")
     public ResponseEntity<String> deleteCategory(@PathVariable("categoryId") Long categoryId) {
         int result = categoryServiceImpl.deleteCategory(categoryId);
         if (result <= 0) {
@@ -37,7 +38,7 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    @Operation(summary = "모든 카테고리 조회 API")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") }, summary = "모든 카테고리 조회 API")
     public ResponseEntity<List<CategoryDto>> getCategories() {
         List<CategoryDto> response = categoryServiceImpl.findAllCategories();
         return ResponseEntity.ok().body(response);
