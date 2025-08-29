@@ -37,7 +37,7 @@
 import { ref } from 'vue';
 import { api } from 'boot/axios';
 import { useRouter } from 'vue-router';
-import { useUserStore } from 'src/stores';
+import { useUserStore } from 'stores/user';
 
 const form = ref({
   userId: '',
