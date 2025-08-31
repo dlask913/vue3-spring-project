@@ -49,14 +49,14 @@ const storage = useUserStore();
 
 const onLogin = async () => {
   try {
-    const data = {
+    const request = {
       ...form.value,
     };
 
-    const { response } = await api.post('/login', data);
+    const { data } = await api.post('/login', request);
     alert('로그인 성공!');
 
-    storage.login(response.memberId, response.token); // store 에 userId / 토큰 저장
+    storage.setAuthInfo(data.memberId, data.accessToken, data.refreshToken); // store 에 userId / 토큰 저장
 
     router.push('/');
   } catch (error) {
