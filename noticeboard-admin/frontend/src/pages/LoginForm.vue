@@ -45,7 +45,7 @@ const form = ref({
 });
 
 const router = useRouter();
-const storage = useUserStore();
+const userStore = useUserStore();
 
 const onLogin = async () => {
   try {
@@ -56,7 +56,7 @@ const onLogin = async () => {
     const { data } = await api.post('/login', request);
     alert('로그인 성공!');
 
-    storage.setAuthInfo(data.memberId, data.accessToken, data.refreshToken); // store 에 userId / 토큰 저장
+    userStore.setAuthInfo(data.memberId, data.accessToken, data.refreshToken); // 토큰 저장
 
     router.push('/');
   } catch (error) {

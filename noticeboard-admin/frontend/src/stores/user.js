@@ -17,11 +17,22 @@ export const useUserStore = defineStore('user', {
       this.userId = userId;
       this.accessToken = accessToken;
       this.refreshToken = refreshToken;
+      localStorage.setItem('userId', userId);
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+    },
+    loadAuthInfo() {
+      this.userId = localStorage.getItem('userId');
+      this.accessToken = localStorage.getItem('accessToken');
+      this.refreshToken = localStorage.getItem('refreshToken');
     },
     clearAuthInfo() {
       this.userId = null;
       this.accessToken = null;
       this.refreshToken = null;
+      localStorage.removeItem('userId');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
     },
   },
 });

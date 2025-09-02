@@ -1,5 +1,6 @@
 import { defineBoot } from '#q-app/wrappers';
 import axios from 'axios';
+import { useUserStore } from 'stores/user';
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -10,6 +11,15 @@ import axios from 'axios';
 const api = axios.create({
   baseURL: 'http://localhost:8081',
   timeout: 10000, // 요청 타임아웃 설정
+});
+
+// 요청 인터셉터
+api.interceptors.request.use(config => {
+  const userStore = useUserStore();
+  if (userStore.accessToken) {
+    config.headers.Authorization = `Bearer ${userStore.accessToken}`;
+  }
+  return config;
 });
 
 export default defineBoot(({ app }) => {
