@@ -1,7 +1,7 @@
 <template>
   <q-form @submit="onLogin" class="q-gutter-md">
     <div class="q-pa-md q-mt-xl">
-      <h2 class="text-h5 text-center q-mb-md"><b>로그인</b></h2>
+      <h2 class="text-h5 text-center q-mb-lg"><b>로그인</b></h2>
 
       <div class="q-mx-auto" style="max-width: 400px">
         <q-input

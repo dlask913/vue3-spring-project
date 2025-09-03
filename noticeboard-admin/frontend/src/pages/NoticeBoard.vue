@@ -1,5 +1,9 @@
 <template>
-  <q-form @submit="onSaveNotice" class="q-gutter-md">
+  <q-form
+    @submit="onSaveNotice"
+    class="q-gutter-md q-mx-auto"
+    style="max-width: 600px"
+  >
     <div class="q-pa-md q-mt-xl">
       <h2 class="text-h5 text-center q-mb-md"><b>게시글 작성</b></h2>
       <q-input
@@ -20,8 +24,8 @@
         required
         class="q-mb-md"
       />
-      <div class="row justify-end">
-        <q-btn type="submit" label="저장" color="primary" class="q-mr-md" />
+      <div class="row justify-center q-mt-md">
+        <q-btn type="submit" label="저장" color="primary" class="q-px-xl" />
       </div>
     </div>
   </q-form>
@@ -29,7 +33,10 @@
 
 <script setup>
 import { ref } from 'vue';
-import axios from 'boot/axios';
+import { api } from 'boot/axios';
+import { useUserStore } from 'stores/user';
+
+const userStore = useUserStore();
 
 const form = ref({
   title: '',
@@ -39,9 +46,10 @@ const form = ref({
 const onSaveNotice = async () => {
   try {
     const data = {
+      memberId: userStore.userId,
       ...form.value,
     };
-    await axios.post('/notice', data);
+    await api.post('/notice', data);
   } catch (error) {
     console.error(error);
   }

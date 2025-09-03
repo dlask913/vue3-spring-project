@@ -30,6 +30,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(
                         request -> request
+                                .requestMatchers("/notice/**").authenticated()
                                 .anyRequest().permitAll()
                 )
                 // security 6.1.0 부터 권장
