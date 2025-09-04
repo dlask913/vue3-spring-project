@@ -16,9 +16,12 @@ spring:
 # Mapper Xml Location
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.limnj.noticeboardadmin.category, com.limnj.noticeboardadmin.image, com.limnj.noticeboardadmin.notice, com.limnj.noticeboardadmin.member
+  type-aliases-package: com.limnj.noticeboardadmin.category, com.limnj.noticeboardadmin.image, com.limnj.noticeboardadmin.notice, com.limnj.noticeboardadmin.member, com.limnj.noticeboardadmin.jwt
   configuration:
     map-underscore-to-camel-case: true
+
+jwt:
+  secret: 6qh3C2sv6MnfJrcwIsJdXApelnm9s0SxC/oAmv5zzDQ=
 
 # 이미지 경로 설정
 uploadPath: file:///C:/images/

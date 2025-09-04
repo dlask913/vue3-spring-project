@@ -37,6 +37,7 @@ public class MemberServiceImpl implements MemberService{
 
         return LoginResponseDto.builder()
                 .memberId(findMember.getId())
+                .username(findMember.getUsername())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

@@ -22,6 +22,45 @@ api.interceptors.request.use(config => {
   return config;
 });
 
+// 응답 인터셉터
+api.interceptors.response.use(
+  response => response,
+  async error => {
+    const userStore = useUserStore();
+    const originalRequest = error.config;
+
+    // access token 만료로 403 발생한 경우
+    if (error.response?.status === 403 && userStore.refreshToken) {
+      try {
+        // refresh API 호출
+        const { data } = await axios.post('http://localhost:8081/refresh', {
+          username: userStore.username,
+          refreshToken: userStore.refreshToken,
+        });
+
+        // 새로운 access token 저장
+        userStore.setAuthInfo(
+          userStore.userId,
+          userStore.username,
+          data.accessToken,
+          userStore.refreshToken,
+        );
+
+        // 실패했던 요청에 새 토큰 넣어서 재시도
+        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        return api(originalRequest);
+      } catch (e) {
+        console.error(e);
+        // refreshToken도 만료 → 로그아웃 처리
+        userStore.clearAuthInfo();
+        window.location.href = '/login';
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
+
 export default defineBoot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 

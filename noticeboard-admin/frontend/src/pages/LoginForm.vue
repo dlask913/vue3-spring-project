@@ -56,7 +56,12 @@ const onLogin = async () => {
     const { data } = await api.post('/login', request);
     alert('로그인 성공!');
 
-    userStore.setAuthInfo(data.memberId, data.accessToken, data.refreshToken); // 토큰 저장
+    userStore.setAuthInfo(
+      data.memberId,
+      data.username,
+      data.accessToken,
+      data.refreshToken,
+    ); // 토큰 저장
 
     router.push('/');
   } catch (error) {
