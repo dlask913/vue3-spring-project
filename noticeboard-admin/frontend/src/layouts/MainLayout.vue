@@ -52,12 +52,22 @@
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered v-if="isLoggedIn">
       <q-list>
         <q-item-label header> Essential Links </q-item-label>
-
-        <EssentialLink
-          v-for="link in linksList"
-          :key="link.title"
-          v-bind="link"
-        />
+        <template v-for="link in linksList" :key="link.title">
+          <q-expansion-item
+            v-if="link.children"
+            :icon="link.icon"
+            :label="link.title"
+          >
+            <q-list class="q-pl-lg">
+              <EssentialLink
+                v-for="subLink in link.children"
+                :key="subLink.title"
+                v-bind="subLink"
+              />
+            </q-list>
+          </q-expansion-item>
+          <EssentialLink v-else v-bind="link" />
+        </template>
       </q-list>
     </q-drawer>
 
@@ -80,7 +90,18 @@ const linksList = [
   {
     title: '공지사항',
     icon: 'notifications',
-    to: '/notice',
+    children: [
+      {
+        title: '공지사항 작성',
+        icon: 'edit',
+        to: '/notice/write',
+      },
+      {
+        title: '공지사항 보기',
+        icon: 'list',
+        to: '/notice/list',
+      },
+    ],
   },
 ];
 

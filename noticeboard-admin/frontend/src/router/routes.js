@@ -4,7 +4,14 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
-      { path: 'notice', component: () => import('pages/NoticeBoard.vue') },
+      {
+        path: 'notice/write',
+        component: () => import('src/pages/NoticeWritePage.vue'),
+      },
+      {
+        path: 'notice/list',
+        component: () => import('src/pages/NoticeListPage.vue'),
+      },
       { path: 'signup', component: () => import('pages/AdminMemberForm.vue') },
       { path: 'login', component: () => import('pages/LoginForm.vue') },
     ],
