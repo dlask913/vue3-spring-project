@@ -1,5 +1,6 @@
 package com.limnj.noticeboardadmin.member;
 
+import com.limnj.noticeboardadmin.exception.MemberDuplicateException;
 import com.limnj.noticeboardadmin.jwt.JwtTokenUtil;
 import com.limnj.noticeboardadmin.jwt.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,15 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public int saveAdminMember(AdminMemberRequestDto requestDto) {
+        if (memberMapper.findMemberByUsername(requestDto.getUsername()).isPresent()) {
+            throw new MemberDuplicateException();
+        }
         return memberMapper.saveAdminMember(requestDto);
     }
 
     @Override
     public AdminMemberResponseDto findMemberById(Long memberId) {
-        return memberMapper.findMemberById(memberId);
+        return memberMapper.findMemberById(memberId).orElseThrow();
     }
 
     @Override

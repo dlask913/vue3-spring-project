@@ -7,6 +7,6 @@ import java.util.Optional;
 @Mapper
 public interface MemberMapper {
     int saveAdminMember(AdminMemberRequestDto requestDto);
-    AdminMemberResponseDto findMemberById(Long memberId);
+    Optional<AdminMemberResponseDto> findMemberById(Long memberId);
     Optional<AdminMemberResponseDto> findMemberByUsername(String username);
 }
