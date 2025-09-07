@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -29,5 +31,10 @@ public class NoticeServiceImpl implements NoticeService{
     @Override
     public NoticeResponseDto findNoticeByNoticeId(Long noticeId) {
         return noticeMapper.findNoticeById(noticeId);
+    }
+
+    @Override
+    public List<NoticeResponseDto> findAllNotices() {
+        return noticeMapper.findAllNotices();
     }
 }

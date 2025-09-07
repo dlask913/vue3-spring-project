@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class NoticeController {
@@ -45,6 +47,13 @@ public class NoticeController {
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") },summary = "게시글 단일 조회 API")
     public ResponseEntity<?> findNotice(@PathVariable("noticeId") Long noticeId) {
         NoticeResponseDto response = noticeServiceImpl.findNoticeByNoticeId(noticeId);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/notices")
+    @Operation(security =  { @SecurityRequirement(name = "bearerAuth") },summary = "게시글 모두 조회 API")
+    public ResponseEntity<List<NoticeResponseDto>> findAllNotices(){
+        List<NoticeResponseDto> response = noticeServiceImpl.findAllNotices();
         return ResponseEntity.ok().body(response);
     }
 }
