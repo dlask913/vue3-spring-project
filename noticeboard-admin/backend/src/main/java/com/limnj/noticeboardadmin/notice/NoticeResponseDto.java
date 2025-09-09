@@ -6,4 +6,5 @@ import lombok.Getter;
 public class NoticeResponseDto {
     String title;
     String content;
+    String postDate;
 }

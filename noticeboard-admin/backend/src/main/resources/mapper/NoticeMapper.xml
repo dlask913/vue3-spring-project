@@ -28,7 +28,7 @@
 
     <!-- 게시글 모두 조회 -->
     <select id="findAllNotices" resultType="NoticeResponseDto">
-        SELECT id, title, content
+        SELECT id, title, content, post_date
         FROM Notices
     </select>
 </mapper>

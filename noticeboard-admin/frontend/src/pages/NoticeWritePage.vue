@@ -2,7 +2,7 @@
   <q-form
     @submit="onSaveNotice"
     class="q-gutter-md q-mx-auto"
-    style="max-width: 600px"
+    style="max-width: 80%"
   >
     <div class="q-pa-md q-mt-xl">
       <h2 class="text-h5 text-center q-mb-md"><b>게시글 작성</b></h2>
