@@ -11,6 +11,5 @@ const userStore = useUserStore();
 onMounted(() => {
   // 새로고침 후에도 로그인 유지
   userStore.loadAuthInfo();
-  console.log('Auth info loaded' + userStore.accessToken);
 });
 </script>
