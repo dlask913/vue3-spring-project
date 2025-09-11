@@ -37,6 +37,7 @@
 import { ref } from 'vue';
 import { api } from 'boot/axios';
 import { useRouter } from 'vue-router';
+import { Notify } from 'quasar';
 
 const form = ref({
   username: '',
@@ -52,12 +53,21 @@ const onSignUp = async () => {
     };
 
     await api.post('/member', data);
-    alert('회원가입이 성공적으로 완료되었습니다!');
+    Notify.create({
+      message: '회원가입이 성공적으로 완료되었습니다!',
+      color: 'positive',
+      position: 'top',
+      timeout: 2000,
+    });
 
     router.push('/login');
   } catch (error) {
     console.error('회원가입 중 오류 발생:', error);
-    alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+    Notify.create({
+      message: '회원가입에 실패했습니다. 다시 시도해주세요.',
+      color: 'negative',
+      position: 'top',
+    });
   }
 };
 </script>

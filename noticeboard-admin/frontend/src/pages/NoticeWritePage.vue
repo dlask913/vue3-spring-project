@@ -35,6 +35,7 @@
 import { ref } from 'vue';
 import { api } from 'boot/axios';
 import { useUserStore } from 'stores/user';
+import { Notify } from 'quasar';
 
 const userStore = useUserStore();
 
@@ -50,8 +51,20 @@ const onSaveNotice = async () => {
       ...form.value,
     };
     await api.post('/notice', data);
+
+    Notify.create({
+      message: '게시글이 성공적으로 저장되었습니다!',
+      color: 'positive',
+      position: 'top',
+      timeout: 2000,
+    });
   } catch (error) {
     console.error(error);
+    Notify.create({
+      message: '저장 중 오류가 발생했습니다.',
+      color: 'negative',
+      position: 'top',
+    });
   }
 };
 </script>

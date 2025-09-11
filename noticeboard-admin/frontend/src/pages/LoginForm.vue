@@ -38,6 +38,7 @@ import { ref } from 'vue';
 import { api } from 'boot/axios';
 import { useRouter } from 'vue-router';
 import { useUserStore } from 'stores/user';
+import { Notify } from 'quasar';
 
 const form = ref({
   userId: '',
@@ -54,7 +55,12 @@ const onLogin = async () => {
     };
 
     const { data } = await api.post('/login', request);
-    alert('로그인 성공!');
+    Notify.create({
+      message: '로그인 성공!',
+      color: 'positive',
+      position: 'top',
+      timeout: 2000,
+    });
 
     userStore.setAuthInfo(
       data.memberId,
@@ -66,7 +72,11 @@ const onLogin = async () => {
     router.push('/');
   } catch (error) {
     console.error('로그인 중 오류 발생:', error);
-    alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
+    Notify.create({
+      message: '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.',
+      color: 'negative',
+      position: 'top',
+    });
   }
 };
 </script>
