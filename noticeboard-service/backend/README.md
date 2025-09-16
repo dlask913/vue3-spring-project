@@ -50,13 +50,13 @@ CREATE TABLE Hearts (
     FOREIGN KEY (comment_id) REFERENCES Comments(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Images (
+CREATE TABLE Files (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     type_id BIGINT NOT NULL,
-    img_name VARCHAR(255) NOT NULL,
-    ori_img_name VARCHAR(255) NOT NULL,
-    img_url VARCHAR(255) NOT NULL,
-    image_type VARCHAR(20) NOT NULL,
+    file_name VARCHAR(255) NOT NULL,
+    ori_file_name VARCHAR(255) NOT NULL,
+    file_url VARCHAR(255) NOT NULL,
+    file_type VARCHAR(20) NOT NULL,
     file_size BIGINT NOT NULL,
     upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
