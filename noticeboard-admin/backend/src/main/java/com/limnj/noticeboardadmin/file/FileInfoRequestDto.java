@@ -1,6 +1,5 @@
 package com.limnj.noticeboardadmin.file;
 
-import com.limnj.noticeboardadmin.image.ImageType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter @NoArgsConstructor
-public class FileRequestDto {
+public class FileInfoRequestDto {
     Long id;
     Long typeId;
     String fileName; // 파일 파일명
@@ -19,7 +18,7 @@ public class FileRequestDto {
     FileType fileType;
 
     @Builder
-    public FileRequestDto(Long id, Long typeId, String fileName, String oriFileName, String fileUrl, Long fileSize, LocalDateTime uploadDate, FileType fileType) {
+    public FileInfoRequestDto(Long id, Long typeId, String fileName, String oriFileName, String fileUrl, Long fileSize, LocalDateTime uploadDate, FileType fileType) {
         this.id = id;
         this.typeId = typeId;
         this.fileName = fileName;

@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface FileInfoMapper {
-    int saveFile(FileRequestDto requestDto);
+    int saveFile(FileInfoRequestDto requestDto);
     int deleteFile(Long imageId);
-    FileResponseDto findByType(@Param("typeId") Long typeId, @Param("type") FileType type);
+    FileInfoResponseDto findByType(@Param("typeId") Long typeId, @Param("type") FileType type);
 }

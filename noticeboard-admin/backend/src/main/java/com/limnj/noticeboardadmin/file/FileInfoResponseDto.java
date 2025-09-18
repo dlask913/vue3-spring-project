@@ -2,7 +2,7 @@ package com.limnj.noticeboardadmin.file;
 
 import java.time.LocalDateTime;
 
-public class FileResponseDto {
+public class FileInfoResponseDto {
     Long id;
     Long typeId;
     String fileName; // 파일명

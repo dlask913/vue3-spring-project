@@ -1,0 +1,25 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.limnj.noticeboardadmin.file.FileInfoMapper">
+    <!-- 파일 데이터 저장 -->
+    <insert id="saveFile" parameterType="FileInfoRequestDto">
+        INSERT INTO Files (file_name, ori_file_name, file_url, file_size, upload_date, file_type, type_id)
+        VALUES (#{fileName}, #{oriFileName}, #{fileUrl}, #{fileSize}, #{uploadDate}, #{fileType}, #{typeId})
+    </insert>
+
+    <!-- 파일 데이터 삭제 -->
+    <delete id="deleteFile" parameterType="long">
+        DELETE FROM Files
+        WHERE id = #{id}
+    </delete>
+
+    <!-- type 및 typeId 로 파일 조회 ( 1:1 관계 ) -->
+    <select id="findByType" resultMap="FileInfoResponseDto">
+        SELECT id, file_name, file_url, upload_date, type_id, file_type
+        FROM Files
+        WHERE type_id = #{typeId} AND file_type = #{type}
+    </select>
+
+    <delete id="deleteAll">
+        DELETE FROM Files
+    </delete>
+</mapper>

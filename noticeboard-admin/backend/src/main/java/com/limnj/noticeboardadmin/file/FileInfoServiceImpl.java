@@ -16,7 +16,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     private final FileService fileService;
 
     @Override
-    public int saveFile(FileRequestDto requestDto, MultipartFile multipartFile, String location) {
+    public int saveFile(FileInfoRequestDto requestDto, MultipartFile multipartFile, String location) {
         String oriFileName = multipartFile.getOriginalFilename();
         String fileName = fileService.uploadFile(location, multipartFile);
         String fileUrl = "/files/" + requestDto.getFileType().toString().toLowerCase() + "/" + fileName;
@@ -33,7 +33,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     }
 
     @Override
-    public Optional<FileResponseDto> findByTypeId(Long typeId, FileType fileType) {
+    public Optional<FileInfoResponseDto> findByTypeId(Long typeId, FileType fileType) {
         return Optional.ofNullable(fileInfoMapper.findByType(typeId, fileType));
     }
 }
