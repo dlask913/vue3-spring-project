@@ -1,7 +1,10 @@
 package com.limnj.noticeboardadmin.file;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class FileInfoResponseDto {
     Long id;
     Long typeId;

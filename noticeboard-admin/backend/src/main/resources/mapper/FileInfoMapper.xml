@@ -13,7 +13,7 @@
     </delete>
 
     <!-- type 및 typeId 로 파일 조회 ( 1:1 관계 ) -->
-    <select id="findByType" resultMap="FileInfoResponseDto">
+    <select id="findByType" resultType="FileInfoResponseDto">
         SELECT id, file_name, file_url, upload_date, type_id, file_type
         FROM Files
         WHERE type_id = #{typeId} AND file_type = #{type}
