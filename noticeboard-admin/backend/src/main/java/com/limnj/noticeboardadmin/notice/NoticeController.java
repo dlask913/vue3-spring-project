@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,8 +16,9 @@ public class NoticeController {
 
     @PostMapping("/notice")
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") },summary = "관리자용 게시글 저장 API")
-    public ResponseEntity<?> saveNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
-        int result = noticeServiceImpl.saveNotice(noticeRequestDto);
+    public ResponseEntity<?> saveNotice(@RequestPart(value = "noticeRequestDto") NoticeRequestDto noticeRequestDto,
+                                        @RequestPart(value = "noticeFile", required = false) MultipartFile noticeFile) {
+        int result = noticeServiceImpl.saveNotice(noticeRequestDto, noticeFile);
         if (result <= 0) {
             return ResponseEntity.badRequest().body("게시글 저장에 실패하였습니다.");
         }

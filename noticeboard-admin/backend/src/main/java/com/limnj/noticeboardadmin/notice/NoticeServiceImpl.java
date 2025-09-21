@@ -1,8 +1,13 @@
 package com.limnj.noticeboardadmin.notice;
 
+import com.limnj.noticeboardadmin.file.FileInfoRequestDto;
+import com.limnj.noticeboardadmin.file.FileInfoService;
+import com.limnj.noticeboardadmin.file.FileType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -12,10 +17,21 @@ import java.util.List;
 public class NoticeServiceImpl implements NoticeService{
 
     private final NoticeMapper noticeMapper;
+    private final FileInfoService fileInfoServiceImpl;
+    @Value("${fileLocation}")
+    private String fileLocation;
 
     @Override
-    public int saveNotice(NoticeRequestDto noticeRequestDto) {
-        return noticeMapper.insertNotice(noticeRequestDto);
+    public int saveNotice(NoticeRequestDto noticeRequestDto, MultipartFile noticeFile) {
+        int result = noticeMapper.insertNotice(noticeRequestDto);
+
+        FileInfoRequestDto fileInfoRequestDto = FileInfoRequestDto.builder()
+                .typeId(noticeRequestDto.getId())
+                .fileType(FileType.NOTICE)
+                .build();
+        fileInfoServiceImpl.saveFile(fileInfoRequestDto, noticeFile, fileLocation);
+
+        return result;
     }
 
     @Override
