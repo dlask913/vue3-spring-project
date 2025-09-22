@@ -42,7 +42,7 @@ public class NoticeController {
         if (result <= 0){
             return ResponseEntity.badRequest().body("게시글 삭제에 실패하였습니다.");
         }
-        return ResponseEntity.ok().body("게시글 삭제가 완료되었습니다.");
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/notice/{noticeId}")

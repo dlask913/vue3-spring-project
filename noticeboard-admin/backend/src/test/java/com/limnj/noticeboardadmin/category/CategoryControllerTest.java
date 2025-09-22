@@ -28,13 +28,12 @@ class CategoryControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
     @DisplayName("관리자가 이미지와 함께 카테고리를 생성한다.")
-    void createCategoryTest_Success() throws Exception {
+    void createCategory_withImage_200OkAndSuccessMessage() throws Exception {
         // given
         CategoryDto category = createCategoryDto("FURNITURE", "가구");
         MockMultipartFile categoryDto = new MockMultipartFile(
@@ -58,7 +57,7 @@ class CategoryControllerTest {
 
     @Test
     @DisplayName("카테고리 생성 시 이미지를 넣지 않으면 실패한다.")
-    void createCategoryTest_Failure() throws Exception {
+    void createCategory_withoutImage_400BadRequest() throws Exception {
         // given
         CategoryDto category = createCategoryDto("FURNITURE", "가구");
         MockMultipartFile categoryDto = new MockMultipartFile(

@@ -1,9 +1,8 @@
 package com.limnj.noticeboardadmin.category;
 
-import com.limnj.noticeboardadmin.image.ImageRequestDto;
-import com.limnj.noticeboardadmin.image.ImageService;
-import com.limnj.noticeboardadmin.image.ImageType;
-import com.limnj.noticeboardadmin.category.CategoryMapper;
+import com.limnj.noticeboardadmin.file.FileInfoRequestDto;
+import com.limnj.noticeboardadmin.file.FileInfoService;
+import com.limnj.noticeboardadmin.file.FileType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService{
     private final CategoryMapper categoryMapper;
-    private final ImageService imageServiceImpl;
+    private final FileInfoService fileInfoService;
     @Value("${categoryImgLocation}")
     private String categoryImgLocation;
 
@@ -24,20 +23,20 @@ public class CategoryServiceImpl implements CategoryService{
     public int insertCategory(CategoryDto categoryDto, MultipartFile categoryImg) {
         int result = categoryMapper.insertCategory(categoryDto);
 
-        ImageRequestDto imageRequestDto = ImageRequestDto.builder()
+        FileInfoRequestDto fileInfoRequestDto = FileInfoRequestDto.builder()
                 .typeId(categoryDto.getId())
-                .imageType(ImageType.CATEGORY)
+                .fileType(FileType.CATEGORY)
                 .build();
-        imageServiceImpl.saveImage(imageRequestDto, categoryImg, categoryImgLocation);
+        fileInfoService.saveFile(fileInfoRequestDto, categoryImg, categoryImgLocation);
 
         return result;
     }
 
     @Override
     public int deleteCategory(Long categoryId) {
-        imageServiceImpl.findByTypeId(categoryId, ImageType.CATEGORY)
-                .ifPresent(imageDto -> imageServiceImpl.deleteImage(
-                        imageDto.id(), categoryImgLocation, imageDto.imgName()));
+        fileInfoService.findByTypeId(categoryId, FileType.CATEGORY)
+                .ifPresent(fileDto -> fileInfoService.deleteFile(
+                        fileDto.getId(), categoryImgLocation, fileDto.getFileName()));
         return categoryMapper.deleteCategory(categoryId);
     }
 
