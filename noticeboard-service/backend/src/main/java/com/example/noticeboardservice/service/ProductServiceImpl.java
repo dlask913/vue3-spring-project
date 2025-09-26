@@ -18,7 +18,7 @@ import java.util.Map;
 public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final ProductBidHistoryMapper productBidHistoryMapper;
-    private final ImageService imageServiceImpl;
+    private final FileInfoService fileInfoServiceImpl;
 
     @Value("${product-img-location}")
     private String productImgLocation;
@@ -27,11 +27,11 @@ public class ProductServiceImpl implements ProductService {
     public Long insertProduct(ProductRequestDto productRequestDto, MultipartFile productImg) {
         productMapper.insertProduct(productRequestDto);
         if (productImg != null){
-            ImageRequestDto imageRequestDto = ImageRequestDto.builder()
+            FileInfoRequestDto fileInfoRequestDto = FileInfoRequestDto.builder()
                     .typeId(productRequestDto.getId())
-                    .imageType(ImageType.PRODUCT)
+                    .fileType(FileType.PRODUCT)
                     .build();
-            imageServiceImpl.saveImage(imageRequestDto, productImg, productImgLocation);
+            fileInfoServiceImpl.saveFile(fileInfoRequestDto, productImg, productImgLocation);
         }
 
         // 초기 History 추가

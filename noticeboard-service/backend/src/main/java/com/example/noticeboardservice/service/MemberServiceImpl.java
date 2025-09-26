@@ -25,7 +25,7 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
     private final JwtTokenUtil jwtTokenUtil;
-    private final ImageService imageServiceImpl;
+    private final FileInfoService fileInfoServiceImpl;
     private final AddressService addressServiceImpl;
     @Value("${member-img-location}")
     private String memberImgLocation;
@@ -66,17 +66,17 @@ public class MemberServiceImpl implements MemberService {
     }
     @Override
     public int updateMember(MemberRequestDto memberRequestDto, MultipartFile memberImg) {
-        ImageRequestDto imageRequestDto = ImageRequestDto.builder()
+        FileInfoRequestDto fileInfoRequestDto = FileInfoRequestDto.builder()
                 .typeId(memberRequestDto.getId())
-                .imageType(ImageType.MEMBER)
+                .fileType(FileType.MEMBER)
                 .build();
 
         if(memberImg != null){ // 이미지 있을 때만 저장
-            imageServiceImpl.findByTypeId(memberRequestDto.getId(), ImageType.MEMBER)
-                    .ifPresent(image -> imageServiceImpl.deleteImage(
-                            image.id(), memberImgLocation, image.imgName())); // 기존 이미지 삭제
+            fileInfoServiceImpl.findByTypeId(memberRequestDto.getId(), FileType.MEMBER)
+                    .ifPresent(file -> fileInfoServiceImpl.deleteFile(
+                            file.getId(), memberImgLocation, file.getFileName())); // 기존 이미지 삭제
 
-            imageServiceImpl.saveImage(imageRequestDto, memberImg, memberImgLocation);
+            fileInfoServiceImpl.saveFile(fileInfoRequestDto, memberImg, memberImgLocation);
         }
 
         return memberMapper.updateMember(memberRequestDto);
@@ -95,9 +95,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public int deleteMember(Long memberId) {
-        imageServiceImpl.findByTypeId(memberId, ImageType.MEMBER)
-                .ifPresent(imageDto -> imageServiceImpl.deleteImage(
-                        imageDto.id(), memberImgLocation, imageDto.imgName())); // 있으면 삭제
+        fileInfoServiceImpl.findByTypeId(memberId, FileType.MEMBER)
+                .ifPresent(fileDto -> fileInfoServiceImpl.deleteFile(
+                        fileDto.getId(), memberImgLocation, fileDto.getFileName())); // 있으면 삭제
 
         return memberMapper.deleteMember(memberId);
     }
