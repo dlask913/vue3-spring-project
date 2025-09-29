@@ -25,13 +25,13 @@
     <!-- 댓글 조회 by Notice -->
     <select id="findCommentsByNoticeId" parameterType="long" resultMap="CommentResponseDtoMap">
         WITH MemberImages AS (
-            SELECT type_id, img_url
-            FROM Images
-            WHERE image_type = 'MEMBER'
+            SELECT type_id, file_url
+            FROM Files
+            WHERE file_type = 'MEMBER'
         )
 
         SELECT c.id, c.content, c.post_date, m.username,
-            COALESCE(i.img_url, '/image/memberDefaultImg.jpg') AS member_img_url, c.member_id,
+            COALESCE(i.file_url, '/image/memberDefaultImg.jpg') AS member_img_url, c.member_id,
             c.notice_id, NULL AS reply_count
         FROM Comments c
             LEFT JOIN Members m ON c.member_id = m.id

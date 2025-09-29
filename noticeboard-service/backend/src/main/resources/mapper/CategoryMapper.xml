@@ -4,11 +4,11 @@
     <select id="findAllCategories" resultType="CategoryDto">
         WITH CategoryImg AS (
             SELECT *
-            FROM Images
-            WHERE image_type = 'CATEGORY'
+            FROM Files
+            WHERE file_type = 'CATEGORY'
         )
 
-        SELECT A.id, A.name, A.description, B.img_url
+        SELECT A.id, A.name, A.description, B.file_url
         FROM Categories A
             LEFT JOIN CategoryImg B ON A.id = B.type_id
     </select>

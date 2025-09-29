@@ -17,12 +17,12 @@
     <select id="findMember" resultMap="MemberResponseDtoMap" parameterType="long">
         WITH MemberImg AS (
             SELECT *
-            FROM images
-            WHERE image_type = 'MEMBER'
+            FROM Files
+            WHERE file_type = 'MEMBER'
         )
 
         SELECT A.id, A.username, A.email, A.password,
-            COALESCE(B.img_url, '/image/memberDefaultImg.jpg') AS img_url,
+            COALESCE(B.file_url, '/image/memberDefaultImg.jpg') AS img_url,
             C.address_name AS address
         FROM Members A
             LEFT JOIN MemberImg B ON A.id = B.type_id

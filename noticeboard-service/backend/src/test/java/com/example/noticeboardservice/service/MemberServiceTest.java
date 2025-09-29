@@ -147,7 +147,7 @@ class MemberServiceTest {
 
         // then
         MemberResponseDto updateMember = memberMapper.findMember(findMember.id());
-        Assertions.assertThat(updateMember.imgUrl()).startsWith("/images/member/");
+        Assertions.assertThat(updateMember.imgUrl()).startsWith("/files/member/");
     }
 
     @Test

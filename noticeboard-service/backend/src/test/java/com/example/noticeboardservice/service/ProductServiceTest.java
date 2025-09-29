@@ -93,7 +93,7 @@ class ProductServiceTest {
         assertThat(findProduct.content()).isEqualTo(requestDto.getContent());
         assertThat(findProduct.standardPrice()).isEqualTo(requestDto.getStandardPrice());
         assertThat(findProduct.ownerId()).isEqualTo(requestDto.getOwnerId());
-        assertThat(findProduct.imgUrl()).startsWith("/images/product/");
+        assertThat(findProduct.imgUrl()).startsWith("/files/product/");
         assertThat(findProduct.deadline()).isEqualTo(requestDto.getDeadline());
     }
 

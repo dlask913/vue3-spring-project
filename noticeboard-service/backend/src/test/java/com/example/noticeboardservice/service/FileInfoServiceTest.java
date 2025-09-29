@@ -1,7 +1,7 @@
 package com.example.noticeboardservice.service;
 
 import com.example.noticeboardservice.dto.*;
-import com.example.noticeboardservice.mapper.ImageMapper;
+import com.example.noticeboardservice.mapper.FileInfoMapper;
 import com.example.noticeboardservice.mapper.MemberMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -15,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-class ImageServiceTest {
+class FileInfoServiceTest {
 
     @Autowired
-    ImageService imageServiceImpl;
+    FileInfoService fileInfoServiceImpl;
     @Autowired
-    ImageMapper imageMapper;
+    FileInfoMapper fileInfoMapper;
     @Autowired
     MemberMapper memberMapper;
     @Value("${member-img-location}")
@@ -37,18 +37,18 @@ class ImageServiceTest {
                 String.valueOf(MediaType.IMAGE_JPEG),
                 "memberImg!".getBytes()
         );
-        ImageRequestDto imageRequestDto = ImageRequestDto.builder()
-                .imageType(ImageType.MEMBER)
+        FileInfoRequestDto fileInfoRequestDto = FileInfoRequestDto.builder()
+                .fileType(FileType.MEMBER)
                 .typeId(memberId)
                 .build();
 
         // when
-        imageServiceImpl.saveImage(imageRequestDto, memberImg, memberImgLocation);
+        fileInfoServiceImpl.saveFile(fileInfoRequestDto, memberImg, memberImgLocation);
 
         // then
-        ImageResponseDto findImage = imageMapper.findByType(memberId, ImageType.MEMBER);
-        Assertions.assertThat(findImage.imageType()).isEqualTo(imageRequestDto.getImageType().toString());
-        Assertions.assertThat(findImage.typeId()).isEqualTo(imageRequestDto.getTypeId());
+        FileInfoResponseDto findFile = fileInfoMapper.findByType(memberId, FileType.MEMBER);
+        Assertions.assertThat(findFile.getFileType()).isEqualTo(fileInfoRequestDto.getFileType().toString());
+        Assertions.assertThat(findFile.getTypeId()).isEqualTo(fileInfoRequestDto.getTypeId());
     }
 
     @Test
@@ -62,19 +62,19 @@ class ImageServiceTest {
                 String.valueOf(MediaType.IMAGE_JPEG),
                 "memberImg!".getBytes()
         );
-        ImageRequestDto imageRequestDto = ImageRequestDto.builder()
-                .imageType(ImageType.MEMBER)
+        FileInfoRequestDto fileInfoRequestDto = FileInfoRequestDto.builder()
+                .fileType(FileType.MEMBER)
                 .typeId(memberId)
                 .build();
 
-        imageServiceImpl.saveImage(imageRequestDto, memberImg, memberImgLocation); // 비즈니스 로직대로 저장
-        ImageResponseDto findImage = imageMapper.findByType(memberId, ImageType.MEMBER);
+        fileInfoServiceImpl.saveFile(fileInfoRequestDto, memberImg, memberImgLocation); // 비즈니스 로직대로 저장
+        FileInfoResponseDto findFile = fileInfoMapper.findByType(memberId, FileType.MEMBER);
 
         // when
-        imageServiceImpl.deleteImage(findImage.id(), memberImgLocation, findImage.imgName());
+        fileInfoServiceImpl.deleteFile(findFile.getId(), memberImgLocation, findFile.getFileName());
 
         // then
-        Assertions.assertThat(imageMapper.findByType(memberId, ImageType.MEMBER)).isNull();
+        Assertions.assertThat(fileInfoMapper.findByType(memberId, FileType.MEMBER)).isNull();
     }
 
     @Test
@@ -88,21 +88,21 @@ class ImageServiceTest {
                 String.valueOf(MediaType.IMAGE_JPEG),
                 "memberImg!".getBytes()
         );
-        ImageRequestDto imageRequestDto = ImageRequestDto.builder()
-                .imageType(ImageType.MEMBER)
+        FileInfoRequestDto fileInfoRequestDto = FileInfoRequestDto.builder()
+                .fileType(FileType.MEMBER)
                 .typeId(memberId)
                 .build();
 
-        imageServiceImpl.saveImage(imageRequestDto, memberImg, memberImgLocation); // 비즈니스 로직대로 저장
+        fileInfoServiceImpl.saveFile(fileInfoRequestDto, memberImg, memberImgLocation); // 비즈니스 로직대로 저장
 
         // when
-        ImageResponseDto findImage = imageServiceImpl
-                .findByTypeId(memberId, ImageType.MEMBER)
+        FileInfoResponseDto findImage = fileInfoServiceImpl
+                .findByTypeId(memberId, FileType.MEMBER)
                 .orElseThrow();
 
         // then
-        Assertions.assertThat(findImage.imageType()).isEqualTo(imageRequestDto.getImageType().toString());
-        Assertions.assertThat(findImage.typeId()).isEqualTo(imageRequestDto.getTypeId());
+        Assertions.assertThat(findImage.getFileType()).isEqualTo(fileInfoRequestDto.getFileType().toString());
+        Assertions.assertThat(findImage.getTypeId()).isEqualTo(fileInfoRequestDto.getTypeId());
 
     }
 

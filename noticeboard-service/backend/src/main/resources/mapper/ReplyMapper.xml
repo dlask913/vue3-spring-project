@@ -20,13 +20,13 @@
     <!-- 대댓글 조회 by CommentId -->
     <select id="findRepliesByCommentId" resultMap="ReplyResponseDtoMap" parameterType="long">
         WITH MemberImages AS (
-            SELECT type_id, img_url
-            FROM Images
-            WHERE image_type = 'MEMBER'
+            SELECT type_id, file_url
+            FROM Files
+            WHERE file_type = 'MEMBER'
         )
 
         SELECT r.id, r.content, r.post_date, r.update_date, r.comment_id, r.member_id, m.username,
-            COALESCE(i.img_url, '/image/memberDefaultImg.jpg') AS member_img_url
+            COALESCE(i.file_url, '/image/memberDefaultImg.jpg') AS member_img_url
         FROM Replies r
             LEFT JOIN Members m ON r.member_id = m.id
             LEFT JOIN MemberImages i ON m.id = i.type_id

@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 public class XssRequestWrapper extends HttpServletRequestWrapper {
     public XssRequestWrapper(HttpServletRequest request) {
         super(request);
-        }
+    }
     @Override
     public String getParameter(String name) {
         String value = super.getParameter(name);
