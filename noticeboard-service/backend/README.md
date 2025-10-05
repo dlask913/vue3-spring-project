@@ -149,4 +149,13 @@ CREATE TABLE Refresh_Token (
     expiry_date TIMESTAMP NOT NULL
 );
 
+-- 접근 로그 저장할 테이블 생성
+CREATE TABLE Access_Log (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    method VARCHAR(10),
+    uri VARCHAR(255),
+    client_ip VARCHAR(50),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 ```
