@@ -18,14 +18,13 @@ public class AccessLogInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         try {
-            AccessLogDto log = AccessLogDto.builder()
+            AccessLogDto accessLog = AccessLogDto.builder()
                     .method(request.getMethod())
                     .uri(request.getRequestURI())
                     .clientIp(request.getRemoteAddr())
                     .createdAt(LocalDateTime.now())
                     .build();
-
-            accessLogMapper.insertAccessLog(log);
+            accessLogMapper.insertAccessLog(accessLog);
         } catch (Exception e) {
             e.printStackTrace();
         }
