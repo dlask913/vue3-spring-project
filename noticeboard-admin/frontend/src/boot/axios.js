@@ -13,9 +13,7 @@ const api = axios.create({
   timeout: 10000, // 요청 타임아웃 설정
 });
 
-
 export default defineBoot(({ router, store }) => {
-
   // 요청 인터셉터
   api.interceptors.request.use(config => {
     const userStore = useUserStore(store);
@@ -36,7 +34,7 @@ export default defineBoot(({ router, store }) => {
       if (error.response?.status === 403 && userStore.refreshToken) {
         try {
           // refresh API 호출
-          const { newAccessToken } = await axios.post(
+          const newAccessToken = await axios.post(
             'http://localhost:8081/refresh',
             {
               username: userStore.username,
@@ -44,24 +42,32 @@ export default defineBoot(({ router, store }) => {
             },
           );
 
+          if (!newAccessToken.data) {
+            console.warn('Refresh token response is invalid');
+            userStore.clearAuthInfo();
+            router.push('/login');
+            return Promise.reject(error);
+          }
+
           // 새로운 access token 저장
           userStore.setAuthInfo(
             userStore.userId,
             userStore.username,
-            newAccessToken,
+            newAccessToken.data,
             userStore.refreshToken,
           );
 
           // 실패했던 요청에 새 토큰 넣어서 재시도
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken.data}`;
           return api(originalRequest);
         } catch (e) {
           console.error(e);
-          // refreshToken도 만료 → 로그아웃 처리
+
+          // refreshToken 만료 → 로그아웃 처리
           userStore.clearAuthInfo();
           router.push('/login');
         }
-      } else if (error.response?.status === 403){
+      } else if (error.response?.status === 403) {
         // 토큰이 없거나 다른 이유로 403 발생 → 로그아웃 처리
         userStore.clearAuthInfo();
         router.push('/login');
