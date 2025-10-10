@@ -110,12 +110,21 @@ const form = ref({
 const onSaveNotice = async () => {
   try {
     const formData = new FormData();
-    formData.append('memberId', userStore.userId);
-    formData.append('title', form.value.title);
-    formData.append('content', form.value.content);
+
+    const noticeRequestDto = {
+      memberId: userStore.userId,
+      title: form.value.title,
+      content: form.value.content,
+    };
+    formData.append(
+      'noticeRequestDto',
+      new Blob([JSON.stringify(noticeRequestDto)], {
+        type: 'application/json',
+      }),
+    );
 
     if (form.value.file) {
-      formData.append('file', form.value.file);
+      formData.append('noticeFile', form.value.file);
     }
 
     await api.post('/notice', formData, {
