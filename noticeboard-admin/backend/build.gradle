@@ -52,6 +52,9 @@ dependencies {
 	implementation "io.jsonwebtoken:jjwt-api:${jwtVersion}"
 	runtimeOnly "io.jsonwebtoken:jjwt-impl:${jwtVersion}", "io.jsonwebtoken:jjwt-jackson:${jwtVersion}"
 
+	// 이메일 전송
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
