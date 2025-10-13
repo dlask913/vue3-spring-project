@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     private final JavaMailSender mailSender;
 
-    public void sendVerificationCode(String to, String subject, String text, String code){
+    public void sendVerificationCode(String to, String subject, String body){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);
-        message.setText(text);
+        message.setText(body);
         mailSender.send(message);
     }
 }
