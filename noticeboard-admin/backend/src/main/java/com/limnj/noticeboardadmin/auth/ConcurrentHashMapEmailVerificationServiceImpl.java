@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class ConcurrentHashMapEmailVerificationServiceImpl implements EmailVerificationService{
 
     private final EmailService emailService;
     private final MemberMapper memberMapper;
@@ -19,6 +19,7 @@ public class AuthService {
     private final Map<String, Long> codeExpiry = new ConcurrentHashMap<>();
 
     /** 1. 이메일로 인증 코드 발송 "**/
+    @Override
     public boolean sendVerificationCode(String email) {
         // 사용자 존재 확인
         if (!memberMapper.existsByEmail(email)) {
@@ -38,6 +39,7 @@ public class AuthService {
     }
 
     /** 2. 코드 검증 **/
+    @Override
     public boolean verifyCode(String email, String code) {
         String stored = codeStore.get(email);
         Long expiry = codeExpiry.get(email);
