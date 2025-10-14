@@ -2,21 +2,30 @@
 <mapper namespace="com.limnj.noticeboardadmin.member.MemberMapper">
     <!-- 관리자 회원 가입 -->
     <insert id="saveAdminMember" parameterType="AdminMemberRequestDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Members (username, password, user_type)
-        VALUES (#{username}, #{password}, 'ADMIN')
+        INSERT INTO Members (username, password, email, user_type)
+        VALUES (#{username}, #{password}, #{email}, 'ADMIN')
     </insert>
 
-    <!-- 관리자 회원 단일 조회 -->
+    <!-- 관리자 회원 단일 조회 by PK -->
     <select id="findMemberById" parameterType="long" resultType="AdminMemberResponseDto">
         SELECT id, username, password
         FROM Members
-        WHERE id = #{id}
+        WHERE id = #{id} AND user_type = 'ADMIN'
     </select>
 
-    <!-- 관리자 회원 단일 조회 -->
+    <!-- 관리자 회원 단일 조회 by Username -->
     <select id="findMemberByUsername" parameterType="String" resultType="AdminMemberResponseDto">
-        SELECT id, username, password
+        SELECT id, username, password, email
         FROM Members
-        WHERE username = #{username}
+        WHERE username = #{username} AND user_type = 'ADMIN'
+    </select>
+
+    <!-- 특정 이메일을 갖는 회원 존재 여부 확인 -->
+    <select id="existsByEmail" parameterType="String" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM Members
+            WHERE email = #{email} AND user_type = 'ADMIN'
+        )
     </select>
 </mapper>

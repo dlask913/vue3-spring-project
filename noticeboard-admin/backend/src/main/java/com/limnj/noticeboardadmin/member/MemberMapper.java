@@ -9,4 +9,5 @@ public interface MemberMapper {
     int saveAdminMember(AdminMemberRequestDto requestDto);
     Optional<AdminMemberResponseDto> findMemberById(Long memberId);
     Optional<AdminMemberResponseDto> findMemberByUsername(String username);
+    boolean existsByEmail(String email);
 }
