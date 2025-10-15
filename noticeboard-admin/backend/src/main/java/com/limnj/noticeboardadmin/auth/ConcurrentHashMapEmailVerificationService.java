@@ -3,15 +3,16 @@ package com.limnj.noticeboardadmin.auth;
 import com.limnj.noticeboardadmin.member.MemberMapper;
 import com.limnj.noticeboardadmin.util.EmailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
+@Service("concurrentHashMapEmailVerificationService")
 @RequiredArgsConstructor
-public class ConcurrentHashMapEmailVerificationServiceImpl implements EmailVerificationService{
+public class ConcurrentHashMapEmailVerificationService implements EmailVerificationService{
 
     private final EmailService emailService;
     private final MemberMapper memberMapper;

@@ -55,6 +55,9 @@ dependencies {
 	// 이메일 전송
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+	// Caffeine Cache 설정 ( in-memory+TTL )
+	implementation 'com.github.ben-manes.caffeine:caffeine'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
