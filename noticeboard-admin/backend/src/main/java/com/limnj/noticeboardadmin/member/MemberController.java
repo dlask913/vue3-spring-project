@@ -1,17 +1,24 @@
 package com.limnj.noticeboardadmin.member;
 
+import com.limnj.noticeboardadmin.auth.EmailVerificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
 public class MemberController {
-
     private final MemberService memberServiceImpl;
+    private final EmailVerificationService emailVerificationService;
+
+    public MemberController(MemberService memberServiceImpl,
+                            @Qualifier("concurrentEmailVerificationServiceImpl") EmailVerificationService emailVerificationService) {
+        this.memberServiceImpl = memberServiceImpl;
+        this.emailVerificationService = emailVerificationService;
+    }
 
     @PostMapping("/member")
     @Operation(summary = "회원 가입 API")
@@ -25,8 +32,12 @@ public class MemberController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인 API")
-    public ResponseEntity<LoginResponseDto> loginMember(@RequestBody AdminMemberRequestDto requestDto){
+    public ResponseEntity<?> loginMember(@RequestBody AdminMemberRequestDto requestDto){
         LoginResponseDto loginResponseDto = memberServiceImpl.loginAdminMember(requestDto);
+        boolean authResult = emailVerificationService.sendVerificationCode(loginResponseDto.getEmail());// 인증 코드 전송
+        if(authResult){
+            return ResponseEntity.badRequest().body("인증 코드 전송에 실패하였습니다.");
+        }
         return ResponseEntity.ok().body(loginResponseDto);
     }
 }

@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-@Service("caffeineEmailVerificationService")
+@Service
 @RequiredArgsConstructor
-public class CaffeineEmailVerificationService implements EmailVerificationService{
+public class CaffeineEmailVerificationServiceImpl implements EmailVerificationService{
 
     private final EmailService emailService;
     private final MemberMapper memberMapper;
