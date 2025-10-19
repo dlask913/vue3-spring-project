@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class EmailVerificationServiceTest {
 
     @Autowired
-    @Qualifier("concurrentEmailVerificationServiceImpl")
+    @Qualifier("caffeineEmailVerificationServiceImpl")
     private EmailVerificationService emailVerificationService;
 
     @Autowired
@@ -30,8 +30,8 @@ class EmailVerificationServiceTest {
     private EmailService emailService; // 실제 이메일 발송은 mock
 
     @Test
-    @DisplayName("이메일 인증 코드 검증 성공")
-    void verifyCode_success() throws Exception {
+    @DisplayName("ConcurrentHashMap 을 통해 이메일 인증 코드를 저장 및 검증한다.")
+    void verifyCodeByConcurrentHashMapTest() throws Exception {
         // given
         String email = "user@example.com";
         saveMember(email);
@@ -48,6 +48,26 @@ class EmailVerificationServiceTest {
         assertThat(result).isTrue();
     }
 
+    @Test
+    @DisplayName("Caffeine Cache 를 통해 이메일 인증 코드를 저장 및 검증한다.")
+    void verifyCodeByCaffeineCacheTest() throws Exception {
+        // given
+        String email = "user@example.com";
+        saveMember(email);
+        emailVerificationService.sendVerificationCode(email);
+
+        Map<String, String> cacheMap = getPrivateCacheMap(emailVerificationService);
+        String storedCode = cacheMap.get(email);
+
+        // when
+        boolean result = emailVerificationService.verifyCode(email, storedCode);
+
+        // then
+        assertThat(result).isTrue();
+        assertThat(cacheMap).doesNotContainKey(email);
+    }
+
+
     private void saveMember(String email) {
         AdminMemberRequestDto requestDto = AdminMemberRequestDto.builder()
                 .username("username")
@@ -57,11 +77,23 @@ class EmailVerificationServiceTest {
         memberMapper.saveAdminMember(requestDto);
     }
 
-    // private 필드 접근용 유틸
+    // private 필드 접근 - ConcurrentHashMap
     @SuppressWarnings("unchecked")
     private <T> T getPrivateField(Object target, String fieldName) throws Exception {
         Field field = target.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
         return (T) field.get(target);
+    }
+
+    // 내부 캐시 접근 - Caffeine Cache
+    @SuppressWarnings("unchecked")
+    private Map<String, String> getPrivateCacheMap(Object target) throws Exception {
+        Field field = target.getClass().getDeclaredField("codeCache");
+        field.setAccessible(true);
+        Object cache = field.get(target);
+        if (cache instanceof com.github.benmanes.caffeine.cache.Cache<?, ?> caffeineCache) {
+            return (Map<String, String>) caffeineCache.asMap();
+        }
+        throw new IllegalStateException("Cache field is not a Caffeine Cache");
     }
 }
