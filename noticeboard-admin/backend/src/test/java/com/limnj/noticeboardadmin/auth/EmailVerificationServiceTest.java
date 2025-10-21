@@ -5,11 +5,13 @@ import com.limnj.noticeboardadmin.member.MemberMapper;
 import com.limnj.noticeboardadmin.util.EmailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -20,12 +22,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 class EmailVerificationServiceTest {
 
+    private static final Logger log = LoggerFactory.getLogger(EmailVerificationServiceTest.class);
     @Autowired
-    @Qualifier("caffeineEmailVerificationServiceImpl")
+    @Qualifier("redisEmailVerificationServiceImpl")
     private EmailVerificationService emailVerificationService;
 
     @Autowired
     private MemberMapper memberMapper;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     private EmailService emailService; // 실제 이메일 발송은 mock
 
@@ -67,12 +73,31 @@ class EmailVerificationServiceTest {
         assertThat(cacheMap).doesNotContainKey(email);
     }
 
+    @Test
+    @DisplayName("Redis 를 통해 이메일 인증 코드를 저장 및 검증한다.")
+    void verifyCodeByRedisTest() throws Exception {
+        // given
+        String email = "user@example.com";
+        saveMember(email);
+        emailVerificationService.sendVerificationCode(email);
+        String key = "email:verify:" + email;
+        String storedCode = redisTemplate.opsForValue().get(key);
+//        log.info("key: {}, code: {}",key, storedCode);
+
+        // when
+        boolean result = emailVerificationService.verifyCode(email, storedCode);
+
+        // then
+        assertThat(result).isTrue();
+        assertThat(redisTemplate.opsForValue().get(key)).isNull();
+    }
+
 
     private void saveMember(String email) {
         AdminMemberRequestDto requestDto = AdminMemberRequestDto.builder()
                 .username("username")
                 .email(email)
-                .password("paaword")
+                .password("password")
                 .build();
         memberMapper.saveAdminMember(requestDto);
     }
