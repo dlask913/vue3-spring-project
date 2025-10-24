@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.limnj.noticeboardadmin.member.MemberMapper;
 import com.limnj.noticeboardadmin.util.EmailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -17,14 +18,16 @@ public class CaffeineEmailVerificationServiceImpl implements EmailVerificationSe
     private final EmailService emailService;
     private final MemberMapper memberMapper;
 
+    @Value("AUTH_EMAIL_SUBJECT")
+    private final String AUTH_EMAIL_SUBJECT;
+    @Value("AUTH_EMAIL_TEMPLATE")
+    private final String AUTH_EMAIL_TEMPLATE;
+
     // Caffeine Cache: key=email, value=code
     private final Cache<String, String> codeCache = Caffeine.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES) // 5분 후 자동 만료
             .maximumSize(1000) // 최대 캐시 항목 수
             .build();
-
-    private static final String AUTH_EMAIL_SUBJECT = "[인증코드 발송]";
-    private static final String AUTH_EMAIL_BODY = "인증코드 {%s}를 입력해주세요.";
 
     /** 1. 이메일로 인증 코드 발송 **/
     @Override
@@ -34,7 +37,8 @@ public class CaffeineEmailVerificationServiceImpl implements EmailVerificationSe
         }
 
         String code = String.format("%06d", new Random().nextInt(999999));
-        String body = String.format(AUTH_EMAIL_BODY, code);
+        String htmlTemplate = loadHtmlTemplate(AUTH_EMAIL_TEMPLATE);
+        String body = htmlTemplate.replace("${code}", code);
 
         emailService.sendVerificationCode(email, AUTH_EMAIL_SUBJECT, body);
 

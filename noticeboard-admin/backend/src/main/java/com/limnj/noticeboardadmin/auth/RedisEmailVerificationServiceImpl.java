@@ -3,6 +3,7 @@ package com.limnj.noticeboardadmin.auth;
 import com.limnj.noticeboardadmin.member.MemberMapper;
 import com.limnj.noticeboardadmin.util.EmailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,11 @@ public class RedisEmailVerificationServiceImpl implements EmailVerificationServi
     private final StringRedisTemplate redisTemplate;
     private final EmailService emailService;
     private final MemberMapper memberMapper;
+
+    @Value("AUTH_EMAIL_SUBJECT")
+    private final String AUTH_EMAIL_SUBJECT;
+    @Value("AUTH_EMAIL_TEMPLATE")
+    private final String AUTH_EMAIL_TEMPLATE;
 
     private static final String PREFIX = "email:verify:";
     private static final long EXPIRE_TIME = 3 * 60; // 3분
@@ -32,9 +38,9 @@ public class RedisEmailVerificationServiceImpl implements EmailVerificationServi
         redisTemplate.opsForValue().set(key, code, EXPIRE_TIME, TimeUnit.SECONDS);
 
         // 이메일 전송
-        String subject = "[인증코드 발송]";
-        String body = String.format("인증코드 {%s}를 입력해주세요.", code);
-        emailService.sendVerificationCode(email, subject, body);
+        String htmlTemplate = loadHtmlTemplate(AUTH_EMAIL_TEMPLATE);
+        String body = htmlTemplate.replace("${code}", code);
+        emailService.sendVerificationCode(email, AUTH_EMAIL_SUBJECT, body);
         return true;
     }
 
