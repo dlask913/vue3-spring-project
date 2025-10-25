@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 public interface MemberService extends UserDetailsService {
     int saveAdminMember(AdminMemberRequestDto requestDto);
     AdminMemberResponseDto findMemberById(Long memberId);
-    LoginResponseDto loginAdminMember(AdminMemberRequestDto requestDto);
+    LoginResponseDto loginAdminMember(LoginRequestDto requestDto);
 }

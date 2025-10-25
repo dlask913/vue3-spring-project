@@ -34,7 +34,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public LoginResponseDto loginAdminMember(AdminMemberRequestDto requestDto) {
+    public LoginResponseDto loginAdminMember(LoginRequestDto requestDto) {
         AdminMemberResponseDto findMember = memberMapper.findMemberByUsername(requestDto.getUsername()).orElseThrow();
         String accessToken = jwtTokenUtil.generateToken(findMember.getUsername());
         String refreshToken = refreshTokenServiceImpl.generateRefreshToken(findMember.getUsername());
@@ -42,6 +42,7 @@ public class MemberServiceImpl implements MemberService{
         return LoginResponseDto.builder()
                 .memberId(findMember.getId())
                 .username(findMember.getUsername())
+                .email(findMember.getEmail())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

@@ -8,7 +8,7 @@
 
     <!-- 관리자 회원 단일 조회 by PK -->
     <select id="findMemberById" parameterType="long" resultType="AdminMemberResponseDto">
-        SELECT id, username, password
+        SELECT id, username, password, email
         FROM Members
         WHERE id = #{id} AND user_type = 'ADMIN'
     </select>

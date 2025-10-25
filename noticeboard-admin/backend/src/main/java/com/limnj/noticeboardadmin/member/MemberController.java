@@ -2,7 +2,7 @@ package com.limnj.noticeboardadmin.member;
 
 import com.limnj.noticeboardadmin.auth.EmailVerificationService;
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Slf4j
 public class MemberController {
     private final MemberService memberServiceImpl;
     private final EmailVerificationService emailVerificationService;
@@ -32,12 +33,24 @@ public class MemberController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인 API")
-    public ResponseEntity<?> loginMember(@RequestBody AdminMemberRequestDto requestDto){
+    public ResponseEntity<?> loginMember(@RequestBody LoginRequestDto requestDto){
         LoginResponseDto loginResponseDto = memberServiceImpl.loginAdminMember(requestDto);
         boolean authResult = emailVerificationService.sendVerificationCode(loginResponseDto.getEmail());// 인증 코드 전송
-        if(authResult){
+        if(!authResult){
             return ResponseEntity.badRequest().body("인증 코드 전송에 실패하였습니다.");
         }
         return ResponseEntity.ok().body(loginResponseDto);
     }
+
+    @PostMapping("/verify-code")
+    @Operation(summary = "로그인 인증 코드 검증 API")
+    public ResponseEntity<?> verifyAuthenticationCode(@RequestBody LoginRequestDto requestDto) {
+        log.info("requestDto.toString(): {}", requestDto.toString());
+        boolean authResult = emailVerificationService.verifyCode(requestDto.getEmail(), requestDto.getAuthenticationCode());
+        if(!authResult){
+            return ResponseEntity.badRequest().body("인증 코드 검증에 실패하였습니다.");
+        }
+        return ResponseEntity.noContent().build();
+    }
+
 }
