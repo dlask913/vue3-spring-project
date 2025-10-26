@@ -14,6 +14,10 @@ const routes = [
       },
       { path: 'signup', component: () => import('pages/AdminMemberForm.vue') },
       { path: 'login', component: () => import('pages/LoginForm.vue') },
+      {
+        path: 'verify-code',
+        component: () => import('pages/EmailCodeVerifyForm.vue'),
+      },
     ],
   },
 

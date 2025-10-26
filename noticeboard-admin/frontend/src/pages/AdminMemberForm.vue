@@ -5,6 +5,16 @@
 
       <div class="q-mx-auto" style="max-width: 400px">
         <q-input
+          v-model="form.email"
+          label="이메일"
+          placeholder="이메일을 입력하세요"
+          outlined
+          required
+          class="q-mb-md"
+          :rules="[val => !!val || '이메일을 입력해주세요']"
+        />
+
+        <q-input
           v-model="form.username"
           label="아이디"
           placeholder="아이디를 입력하세요"

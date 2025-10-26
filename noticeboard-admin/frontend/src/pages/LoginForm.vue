@@ -69,7 +69,10 @@ const onLogin = async () => {
       data.refreshToken,
     ); // 토큰 저장
 
-    router.push('/');
+    router.push(
+      '/verify-code',
+      { query: { email: data.email } }, // 이메일 전달
+    ); // 이메일 인증 페이지로 이동
   } catch (error) {
     console.error('로그인 중 오류 발생:', error);
     Notify.create({
