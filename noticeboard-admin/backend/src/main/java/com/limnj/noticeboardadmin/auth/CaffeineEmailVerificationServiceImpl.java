@@ -19,9 +19,9 @@ public class CaffeineEmailVerificationServiceImpl implements EmailVerificationSe
     private final MemberMapper memberMapper;
 
     @Value("AUTH_EMAIL_SUBJECT")
-    private final String AUTH_EMAIL_SUBJECT;
+    private String AUTH_EMAIL_SUBJECT;
     @Value("AUTH_EMAIL_TEMPLATE")
-    private final String AUTH_EMAIL_TEMPLATE;
+    private String AUTH_EMAIL_TEMPLATE;
 
     // Caffeine Cache: key=email, value=code
     private final Cache<String, String> codeCache = Caffeine.newBuilder()

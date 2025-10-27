@@ -17,10 +17,10 @@ public class RedisEmailVerificationServiceImpl implements EmailVerificationServi
     private final EmailService emailService;
     private final MemberMapper memberMapper;
 
-    @Value("AUTH_EMAIL_SUBJECT")
-    private final String AUTH_EMAIL_SUBJECT;
-    @Value("AUTH_EMAIL_TEMPLATE")
-    private final String AUTH_EMAIL_TEMPLATE;
+    @Value("${AUTH_EMAIL_SUBJECT}")
+    private String AUTH_EMAIL_SUBJECT;
+    @Value("${AUTH_EMAIL_TEMPLATE}")
+    private String AUTH_EMAIL_TEMPLATE;
 
     private static final String PREFIX = "email:verify:";
     private static final long EXPIRE_TIME = 3 * 60; // 3분

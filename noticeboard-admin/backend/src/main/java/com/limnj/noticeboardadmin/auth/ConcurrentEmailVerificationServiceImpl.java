@@ -17,10 +17,10 @@ public class ConcurrentEmailVerificationServiceImpl implements EmailVerification
     private final EmailService emailService;
     private final MemberMapper memberMapper;
 
-    @Value("AUTH_EMAIL_SUBJECT")
-    private final String AUTH_EMAIL_SUBJECT;
-    @Value("AUTH_EMAIL_TEMPLATE")
-    private final String AUTH_EMAIL_TEMPLATE;
+    @Value("${AUTH_EMAIL_SUBJECT}")
+    private String AUTH_EMAIL_SUBJECT;
+    @Value("${AUTH_EMAIL_TEMPLATE}")
+    private String AUTH_EMAIL_TEMPLATE;
 
     private final Map<String, String> codeStore = new ConcurrentHashMap<>(); // 임시 저장소
     private final Map<String, Long> codeExpiry = new ConcurrentHashMap<>();
