@@ -50,7 +50,8 @@ public class MemberController {
         if(!authResult){
             return ResponseEntity.badRequest().body("인증 코드 검증에 실패하였습니다.");
         }
-        return ResponseEntity.noContent().build();
+        LoginResponseDto loginResponseDto = memberServiceImpl.loginAdminMember(requestDto);
+        return ResponseEntity.ok().body(loginResponseDto);
     }
 
 }

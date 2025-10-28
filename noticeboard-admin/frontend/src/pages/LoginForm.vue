@@ -37,7 +37,6 @@
 import { ref } from 'vue';
 import { api } from 'boot/axios';
 import { useRouter } from 'vue-router';
-import { useUserStore } from 'stores/user';
 import { Notify } from 'quasar';
 
 const form = ref({
@@ -46,7 +45,6 @@ const form = ref({
 });
 
 const router = useRouter();
-const userStore = useUserStore();
 
 const onLogin = async () => {
   try {
@@ -55,24 +53,10 @@ const onLogin = async () => {
     };
 
     const { data } = await api.post('/login', request);
-    Notify.create({
-      message: '로그인 성공!',
-      color: 'positive',
-      position: 'top',
-      timeout: 2000,
-    });
-
-    userStore.setAuthInfo(
-      data.memberId,
-      data.username,
-      data.accessToken,
-      data.refreshToken,
-    ); // 토큰 저장
-
-    router.push(
-      '/verify-code',
-      { query: { email: data.email } }, // 이메일 전달
-    ); // 이메일 인증 페이지로 이동
+    router.push({
+      path: '/verify-code',
+      query: { email: data.email, username: data.username },
+    }); // 이메일 인증 페이지로 이동
   } catch (error) {
     console.error('로그인 중 오류 발생:', error);
     Notify.create({

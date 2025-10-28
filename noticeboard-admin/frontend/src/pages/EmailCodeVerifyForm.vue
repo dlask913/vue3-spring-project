@@ -44,12 +44,15 @@
 <script setup>
 import { ref } from 'vue';
 import { api } from 'boot/axios';
-import { useQuasar } from 'quasar';
 import { useRoute } from 'vue-router';
+import { useUserStore } from 'stores/user';
+import { Notify } from 'quasar';
+import router from 'src/router';
+
 const route = useRoute();
 const email = route.query.email;
-
-const $q = useQuasar();
+const username = route.query.username;
+const userStore = useUserStore();
 const code = ref('');
 const loading = ref(false);
 const resending = ref(false);
@@ -58,15 +61,29 @@ const onSubmit = async () => {
   if (!code.value) return;
   loading.value = true;
   try {
-    await api.post('/verify-code', {
+    const { data } = await api.post('/verify-code', {
       email: email,
+      username: username,
       authenticationCode: code.value,
     });
-    $q.notify({ type: 'positive', message: '인증이 완료되었습니다!' });
+
+    Notify.create({
+      type: 'positive',
+      message: '로그인 성공!',
+      position: 'top',
+      timeout: 2000,
+    });
+    userStore.setAuthInfo(
+      data.memberId,
+      data.username,
+      data.accessToken,
+      data.refreshToken,
+    ); // 토큰 저장
+
+    router.push({ path: '/' }); // 메인 페이지로 이동
   } catch (err) {
     console.log(err);
-
-    $q.notify({
+    Notify.create({
       type: 'negative',
       message: '인증에 실패했습니다. 다시 시도하세요.',
     });
@@ -79,13 +96,13 @@ const resendCode = async () => {
   resending.value = true;
   try {
     // TODO: 실제 코드 재발송 API 호출
-    $q.notify({
+    Notify.create({
       type: 'info',
       message: '인증 코드가 이메일로 전송되었습니다.',
     });
   } catch (err) {
     console.log(err);
-    $q.notify({
+    Notify.create({
       type: 'negative',
       message: '코드 전송 중 오류가 발생했습니다.',
     });
