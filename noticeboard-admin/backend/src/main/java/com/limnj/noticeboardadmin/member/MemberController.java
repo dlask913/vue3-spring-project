@@ -54,4 +54,13 @@ public class MemberController {
         return ResponseEntity.ok().body(loginResponseDto);
     }
 
+    @PostMapping("/resend-code")
+    @Operation(summary = "로그인 인증 코드 발송 API")
+    public ResponseEntity<?> resendAuthenticationCode(@RequestBody LoginRequestDto requestDto) {
+        boolean authResult = emailVerificationService.sendVerificationCode(requestDto.getEmail());
+        if(!authResult){
+            return ResponseEntity.badRequest().body("코드 재발송에 실패하였습니다.");
+        }
+        return ResponseEntity.noContent().build();
+    }
 }

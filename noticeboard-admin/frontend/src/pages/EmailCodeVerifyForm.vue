@@ -47,9 +47,10 @@ import { api } from 'boot/axios';
 import { useRoute } from 'vue-router';
 import { useUserStore } from 'stores/user';
 import { Notify } from 'quasar';
-import router from 'src/router';
+import { useRouter } from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
 const email = route.query.email;
 const username = route.query.username;
 const userStore = useUserStore();
@@ -95,7 +96,10 @@ const onSubmit = async () => {
 const resendCode = async () => {
   resending.value = true;
   try {
-    // TODO: 실제 코드 재발송 API 호출
+    await api.post('/resend-code', {
+      email: email,
+      username: username,
+    });
     Notify.create({
       type: 'info',
       message: '인증 코드가 이메일로 전송되었습니다.',
