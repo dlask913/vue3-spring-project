@@ -11,6 +11,11 @@ public class NoticeRequestDto {
     String title;
     String content;
     Long memberId;
+    PostType postType;
+
+    public static enum PostType {
+        NOTICE
+    }
 
     @Builder
     public NoticeRequestDto(Long id, String title, String content, Long memberId) {
@@ -18,5 +23,9 @@ public class NoticeRequestDto {
         this.title = title;
         this.content = content;
         this.memberId = memberId;
+    }
+
+    void savePostType(){
+        this.postType = PostType.NOTICE;
     }
 }

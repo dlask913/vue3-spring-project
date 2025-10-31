@@ -1,14 +1,17 @@
 # backend
 
 ### 개발 환경
+
 - Build Tool: Gradle
 - Framework: Spring Boot 3.2.5
 - Programming Language: Java, JDK 17
-- ORM: MyBatis 
+- ORM: MyBatis
 - DBMS: MySQL
 
-* * *
+---
+
 ### DDL script
+
 ```sql
 CREATE TABLE Members (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -19,7 +22,7 @@ CREATE TABLE Members (
     user_type VARCHAR(20) NOT NULL DEFAULT 'USER'
 );
 
-CREATE TABLE Notices (
+CREATE TABLE Contents (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content MEDIUMTEXT NOT NULL,
@@ -28,6 +31,7 @@ CREATE TABLE Notices (
     update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     view_count BIGINT DEFAULT 0,
     member_id BIGINT NOT NULL,
+    post_type VARCHAR(50) NOT NULL,
     FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE
 );
 
@@ -45,7 +49,7 @@ CREATE TABLE Comments (
 CREATE TABLE Hearts (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id BIGINT,
-    comment_id BIGINT, 
+    comment_id BIGINT,
     FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE,
     FOREIGN KEY (comment_id) REFERENCES Comments(id) ON DELETE CASCADE
 );
@@ -74,7 +78,7 @@ CREATE TABLE Replies (
 
 CREATE TABLE Products (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL, 
+    title VARCHAR(255) NOT NULL,
 	content VARCHAR(255) NOT NULL,
     standard_price INT NOT NULL DEFAULT 0,
     category VARCHAR(20) NOT NULL,
@@ -99,7 +103,7 @@ CREATE INDEX idx_bid_productid_bidprice ON Bid_History (product_id, bid_price DE
 
 CREATE TABLE Categories (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL, 
+    name VARCHAR(50) NOT NULL,
     description VARCHAR(50) NOT NULL
 );
 

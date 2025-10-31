@@ -23,14 +23,16 @@ public class NoticeServiceImpl implements NoticeService{
 
     @Override
     public int saveNotice(NoticeRequestDto noticeRequestDto, MultipartFile noticeFile) {
+        noticeRequestDto.savePostType();
         int result = noticeMapper.insertNotice(noticeRequestDto);
 
-        FileInfoRequestDto fileInfoRequestDto = FileInfoRequestDto.builder()
-                .typeId(noticeRequestDto.getId())
-                .fileType(FileType.NOTICE)
-                .build();
-        fileInfoServiceImpl.saveFile(fileInfoRequestDto, noticeFile, fileLocation);
-
+        if(noticeFile != null){
+            FileInfoRequestDto fileInfoRequestDto = FileInfoRequestDto.builder()
+                    .typeId(noticeRequestDto.getId())
+                    .fileType(FileType.NOTICE)
+                    .build();
+            fileInfoServiceImpl.saveFile(fileInfoRequestDto, noticeFile, fileLocation);
+        }
         return result;
     }
 

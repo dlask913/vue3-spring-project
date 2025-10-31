@@ -2,33 +2,34 @@
 <mapper namespace="com.limnj.noticeboardadmin.notice.NoticeMapper">
     <!-- 게시글 생성 -->
     <insert id="insertNotice" parameterType="NoticeRequestDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Notices (title, content, member_id)
-        VALUES (#{title}, #{content}, #{memberId})
+        INSERT INTO Contents (title, content, member_id, post_type)
+        VALUES (#{title}, #{content}, #{memberId}, #{postType})
     </insert>
 
     <!-- 게시글 수정 -->
     <update id="updateNotice" parameterType="NoticeRequestDto">
-        UPDATE Notices
+        UPDATE Contents
         SET title = #{title}, content = #{content}, update_date = NOW()
-        WHERE id = #{id}
+        WHERE id = #{id} AND post_type = 'NOTICE'
     </update>
 
     <!-- 게시글 단일 조회 -->
     <select id="findNotice" resultType="NoticeResponseDto" parameterType="long">
         SELECT id, title, content
-        FROM Notices
-        WHERE id = #{noticeId}
+        FROM Contents
+        WHERE id = #{noticeId} AND post_type = 'NOTICE'
     </select>
 
     <!-- 게시글 삭제 -->
     <delete id="deleteNotice" parameterType="long">
-        DELETE FROM Notices
-        WHERE id = #{noticeId}
+        DELETE FROM Contents
+        WHERE id = #{noticeId} AND post_type = 'NOTICE'
     </delete>
 
     <!-- 게시글 모두 조회 -->
     <select id="findAllNotices" resultType="NoticeResponseDto">
         SELECT id, title, content, post_date
-        FROM Notices
+        FROM Contents
+        WHERE post_type = 'NOTICE'
     </select>
 </mapper>
