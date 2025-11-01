@@ -1,12 +1,14 @@
 package com.limnj.noticeboardadmin.member;
 
 import com.limnj.noticeboardadmin.exception.MemberDuplicateException;
+import com.limnj.noticeboardadmin.exception.PasswordMismatchException;
 import com.limnj.noticeboardadmin.jwt.JwtTokenUtil;
 import com.limnj.noticeboardadmin.jwt.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +21,14 @@ public class MemberServiceImpl implements MemberService{
     private final MemberMapper memberMapper;
     private final JwtTokenUtil jwtTokenUtil;
     private final RefreshTokenService refreshTokenServiceImpl;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public int saveAdminMember(AdminMemberRequestDto requestDto) {
+        // password 단방향 암호화 적용
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+        requestDto.saveEncodedPassword(encodedPassword);
+
         if (memberMapper.findMemberByUsername(requestDto.getUsername()).isPresent()) {
             throw new MemberDuplicateException();
         }
@@ -35,7 +42,14 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public LoginResponseDto loginAdminMember(LoginRequestDto requestDto) {
-        AdminMemberResponseDto findMember = memberMapper.findMemberByUsername(requestDto.getUsername()).orElseThrow();
+        AdminMemberResponseDto findMember = memberMapper.findMemberByUsername(requestDto.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
+
+        boolean authResult = passwordEncoder.matches(requestDto.getPassword(), findMember.getPassword());
+        if(!authResult){
+            throw new PasswordMismatchException();
+        }
+
         String accessToken = jwtTokenUtil.generateToken(findMember.getUsername());
         String refreshToken = refreshTokenServiceImpl.generateRefreshToken(findMember.getUsername());
 

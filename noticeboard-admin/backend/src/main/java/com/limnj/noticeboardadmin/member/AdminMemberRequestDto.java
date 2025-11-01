@@ -16,4 +16,8 @@ public class AdminMemberRequestDto {
         this.email = email;
         this.password = password;
     }
+
+    void saveEncodedPassword(String encodedPassword){
+        this.password = encodedPassword;
+    }
 }
