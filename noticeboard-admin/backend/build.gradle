@@ -61,6 +61,11 @@ dependencies {
 	// Redis 설정
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	// QR 코드 인증 설정
+	implementation 'com.warrenstrange:googleauth:1.5.0'
+	implementation 'com.google.zxing:core:3.5.3'
+	implementation 'com.google.zxing:javase:3.5.3'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
