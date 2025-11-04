@@ -41,26 +41,4 @@ public class MemberController {
         }
         return ResponseEntity.ok().body(loginResponseDto);
     }
-
-    @PostMapping("/verify-code")
-    @Operation(summary = "로그인 인증 코드 검증 API")
-    public ResponseEntity<?> verifyAuthenticationCode(@RequestBody LoginRequestDto requestDto) {
-        log.info("requestDto.toString(): {}", requestDto.toString());
-        boolean authResult = emailVerificationService.verifyCode(requestDto.getEmail(), requestDto.getAuthenticationCode());
-        if(!authResult){
-            return ResponseEntity.badRequest().body("인증 코드 검증에 실패하였습니다.");
-        }
-        LoginResponseDto loginResponseDto = memberServiceImpl.loginAdminMember(requestDto);
-        return ResponseEntity.ok().body(loginResponseDto);
-    }
-
-    @PostMapping("/resend-code")
-    @Operation(summary = "로그인 인증 코드 발송 API")
-    public ResponseEntity<?> resendAuthenticationCode(@RequestBody LoginRequestDto requestDto) {
-        boolean authResult = emailVerificationService.sendVerificationCode(requestDto.getEmail());
-        if(!authResult){
-            return ResponseEntity.badRequest().body("코드 재발송에 실패하였습니다.");
-        }
-        return ResponseEntity.noContent().build();
-    }
 }
