@@ -8,4 +8,6 @@ public interface MemberService extends UserDetailsService {
     int saveAdminMember(AdminMemberRequestDto requestDto);
     AdminMemberResponseDto findMemberById(Long memberId);
     LoginResponseDto loginAdminMember(LoginRequestDto requestDto);
+    void updateSecretKeyByEmail(String email, String secretKey);
+    String findSecretKeyByEmail(String email);
 }

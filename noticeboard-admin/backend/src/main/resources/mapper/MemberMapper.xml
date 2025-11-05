@@ -2,21 +2,21 @@
 <mapper namespace="com.limnj.noticeboardadmin.member.MemberMapper">
     <!-- 관리자 회원 가입 -->
     <insert id="saveAdminMember" parameterType="AdminMemberRequestDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Members (username, password, email, user_type)
+        INSERT INTO members (username, password, email, user_type)
         VALUES (#{username}, #{password}, #{email}, 'ADMIN')
     </insert>
 
     <!-- 관리자 회원 단일 조회 by PK -->
     <select id="findMemberById" parameterType="long" resultType="AdminMemberResponseDto">
         SELECT id, username, password, email
-        FROM Members
+        FROM members
         WHERE id = #{id} AND user_type = 'ADMIN'
     </select>
 
     <!-- 관리자 회원 단일 조회 by Username -->
     <select id="findMemberByUsername" parameterType="String" resultType="AdminMemberResponseDto">
         SELECT id, username, password, email
-        FROM Members
+        FROM members
         WHERE username = #{username} AND user_type = 'ADMIN'
     </select>
 
@@ -24,8 +24,22 @@
     <select id="existsByEmail" parameterType="String" resultType="boolean">
         SELECT EXISTS (
             SELECT 1
-            FROM Members
+            FROM members
             WHERE email = #{email} AND user_type = 'ADMIN'
         )
+    </select>
+
+    <!-- 회원 2FA QR secretKey 저장 -->
+    <update id ="updateSecretKeyByEmail">
+        UPDATE members
+        SET secret_key = #{secretKey}, update_at = NOW()
+        WHERE email = #{email} AND user_type = 'ADMIN'
+    </update>
+
+    <!-- 회원 2FA QR secretKey 조회 -->
+    <select id="findSecretKeyByEmail" parameterType="String" resultType="String">
+        SELECT secret_key
+        FROM members
+        WHERE email = #{email} AND user_type = 'ADMIN'
     </select>
 </mapper>

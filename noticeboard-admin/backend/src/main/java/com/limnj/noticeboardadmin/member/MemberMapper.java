@@ -1,6 +1,7 @@
 package com.limnj.noticeboardadmin.member;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Optional;
 
@@ -10,4 +11,6 @@ public interface MemberMapper {
     Optional<AdminMemberResponseDto> findMemberById(Long memberId);
     Optional<AdminMemberResponseDto> findMemberByUsername(String username);
     boolean existsByEmail(String email);
+    int updateSecretKeyByEmail(@Param("email") String email, @Param("secretKey") String secretKey);
+    String findSecretKeyByEmail(String email);
 }

@@ -63,6 +63,21 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
+    public void updateSecretKeyByEmail(String email, String secretKey) {
+        // 사용자 존재 확인
+        if (!memberMapper.existsByEmail(email)) {
+            throw new UsernameNotFoundException("존재하지 않는 사용자입니다.");
+        }
+        memberMapper.updateSecretKeyByEmail(email, secretKey);
+    }
+
+    @Override
+    public String findSecretKeyByEmail(String email) {
+        return memberMapper.findSecretKeyByEmail(email);
+    }
+
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<AdminMemberResponseDto> findMember = memberMapper.findMemberByUsername(username);
         if (findMember.isEmpty()) {
