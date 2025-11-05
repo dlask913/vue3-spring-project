@@ -1,7 +1,7 @@
 package com.example.noticeboardservice.config;
 
-import com.example.noticeboardservice.dto.AccessLogDto;
-import com.example.noticeboardservice.mapper.AccessLogMapper;
+import com.example.noticeboardservice.dto.common.AccessLogDto;
+import com.example.noticeboardservice.mapper.common.AccessLogMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

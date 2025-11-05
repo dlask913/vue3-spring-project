@@ -1,15 +1,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.noticeboardservice.mapper.RoomMapper">
+<mapper namespace="com.example.noticeboardservice.mapper.message.RoomMapper">
     <!-- 채팅방 생성 -->
     <insert id="insertRoom" parameterType="RoomDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Rooms (member_id_lower, member_id_higher)
+        INSERT INTO rooms (member_id_lower, member_id_higher)
         VALUES (#{lowerId}, #{higherId})
     </insert>
 
     <!-- 채팅방 조회 -->
     <select id="findRoomByMembers" parameterType="RoomDto" resultType="RoomDto">
         SELECT id, member_id_lower AS lowerId, member_id_higher AS higherId
-        FROM Rooms
+        FROM rooms
         WHERE member_id_lower = LEAST(#{senderId}, #{receiverId}) AND member_id_higher = GREATEST(#{senderId}, #{receiverId})
     </select>
 
@@ -17,13 +17,13 @@
     <select id="findRoomsByMemberId" parameterType="long" resultType="RoomDto">
         SELECT r.id, r.member_id_lower AS lowerId, r.member_id_higher AS higherId,
             m1.username AS lowerIdUsername, m2.username AS higherIdUsername
-        FROM Rooms r
-            LEFT JOIN Members m1 ON r.member_id_lower = m1.id
-            LEFT JOIN Members m2 ON r.member_id_higher = m2.id
+        FROM rooms r
+            LEFT JOIN members m1 ON r.member_id_lower = m1.id
+            LEFT JOIN members m2 ON r.member_id_higher = m2.id
         WHERE member_id_lower = #{memberId} OR member_id_higher = #{memberId}
     </select>
 
     <delete id="deleteAllRooms">
-        DELETE FROM Rooms
+        DELETE FROM rooms
     </delete>
 </mapper>

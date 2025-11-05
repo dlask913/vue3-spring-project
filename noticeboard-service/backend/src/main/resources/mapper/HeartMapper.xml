@@ -1,41 +1,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.noticeboardservice.mapper.HeartMapper">
+<mapper namespace="com.example.noticeboardservice.mapper.heart.HeartMapper">
     <!-- 댓글에 걸린 좋아요 모두 조회 -->
     <select id="findHeartByCommentId" parameterType="HeartDto">
         SELECT id, member_id, comment_id
-        FROM Hearts
+        FROM hearts
         WHERE comment_id = #{commentId}
     </select>
 
     <!-- 좋아요 상태 조회 -->
     <select id="findHeart" parameterType="HeartDto">
         SELECT id, member_id, comment_id
-        FROM Hearts
+        FROM hearts
         WHERE member_id = #{memberId} AND comment_id = #{commentId}
     </select>
 
     <!-- 좋아요 생성 -->
     <insert id="saveHeart" parameterType="HeartDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Hearts (member_id, comment_id)
+        INSERT INTO hearts (member_id, comment_id)
         VALUES (#{memberId}, #{commentId})
     </insert>
 
     <!-- 좋아요 취소 -->
     <delete id="deleteHeart" parameterType="long">
         DELETE
-        FROM Hearts
+        FROM hearts
         WHERE id = #{id}
     </delete>
 
     <!-- 좋아요 데이터 모두 조회 -->
     <select id="findAllHearts" parameterType="HeartDto">
         SELECT id, member_id, comment_id
-        FROM Hearts
+        FROM hearts
     </select>
 
     <!-- 좋아요 데이터 모두 삭제 -->
     <delete id="deleteAll">
-        DELETE FROM Hearts
+        DELETE FROM hearts
     </delete>
 
 </mapper>

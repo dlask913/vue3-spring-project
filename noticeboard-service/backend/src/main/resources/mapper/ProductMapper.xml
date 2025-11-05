@@ -1,8 +1,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.noticeboardservice.mapper.ProductMapper">
+<mapper namespace="com.example.noticeboardservice.mapper.product.ProductMapper">
     <!-- 상품 등록 -->
     <insert id="insertProduct" parameterType="ProductRequestDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Products (title, content, category, standard_price, owner_id, deadline)
+        INSERT INTO products (title, content, category, standard_price, owner_id, deadline)
         VALUES (#{title}, #{content}, #{category}, #{standardPrice}, #{ownerId}, #{deadline})
     </insert>
 
@@ -10,19 +10,19 @@
     <select id="findProduct" resultMap="ProductDetailsResponseDtoMap" parameterType="long">
         WITH ProductImg AS (
             SELECT *
-            FROM Files
+            FROM files
             WHERE file_type = 'PRODUCT'
         ),
         RankedBids AS (
             SELECT product_id, bid_price, customer_id,
                 ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY created_at DESC) AS latest
-            FROM Bid_History
+            FROM bid_history
         )
 
         SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
             COALESCE(B.file_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date, A.deadline,
             c.bid_price AS latest_price, c.customer_id
-        FROM Products A
+        FROM products A
             LEFT JOIN ProductImg B ON A.id = B.type_id
             LEFT JOIN RankedBids C ON A.id = C.product_id AND C.latest = 1
         WHERE A.id = #{id}
@@ -30,50 +30,50 @@
 
     <!-- 상품 설명 수정 -->
     <update id="updateProduct" parameterType="ProductRequestDto">
-        UPDATE Products
+        UPDATE products
         SET title = #{title}, content = #{content}, standard_price = #{standardPrice}
         WHERE id = #{id}
     </update>
 
     <!-- 상품 삭제 -->
     <delete id="deleteProduct" parameterType="long">
-        DELETE FROM Products
+        DELETE FROM products
         WHERE id = #{id}
     </delete>
 
     <!-- 모든 상품들 삭제 -->
     <delete id="deleteAll">
-        DELETE FROM Products
+        DELETE FROM products
     </delete>
 
     <select id="findAllProducts" resultMap="ProductResponseDtoMap">
         WITH ProductImg AS (
             SELECT *
-            FROM Files
+            FROM files
             WHERE file_type = 'PRODUCT'
         )
 
         SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
             COALESCE(B.file_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date
-        FROM Products A
+        FROM products A
             LEFT JOIN ProductImg B ON A.id = B.type_id
     </select>
 
     <select id="searchProductsByKeyword" resultMap="ProductResponseDtoMap">
         WITH ProductImg AS (
             SELECT *
-            FROM Files
+            FROM files
             WHERE file_type = 'PRODUCT'
         ),
         RankedBids AS (
             SELECT product_id, bid_price, customer_id,
             ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY created_at DESC) AS latest
-            FROM Bid_History
+            FROM bid_history
         )
 
         SELECT A.id, A.title, A.content, A.category, COALESCE(C.bid_price, A.standard_price) AS standard_price,
             A.owner_id, COALESCE(B.file_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date
-        FROM Products A
+        FROM products A
             LEFT JOIN ProductImg B ON A.id = B.type_id
             LEFT JOIN RankedBids C ON A.id = C.product_id AND C.latest = 1
         WHERE 1=1
@@ -90,13 +90,13 @@
     <select id="findProductsByCategory" parameterType="string" resultMap="ProductResponseDtoMap">
         WITH ProductImg AS (
             SELECT *
-            FROM Files
+            FROM files
             WHERE file_type = 'PRODUCT'
         )
 
         SELECT A.id, A.title, A.content, A.category, A.standard_price, A.owner_id,
             COALESCE(B.file_url, '/image/productDefaultImg.jpg') AS img_url, A.post_date
-        FROM Products A
+        FROM products A
             LEFT JOIN ProductImg B ON A.id = B.type_id
         WHERE category = #{category}
     </select>
@@ -104,20 +104,20 @@
     <select id="findProductsByMemberId" resultMap="ProductResponseDtoMap">
         SELECT id, title, content, category, NULL AS standard_price, owner_id AS owner_id,
             NULL AS img_url, post_date
-        FROM Products
+        FROM products
         WHERE owner_id = #{memberId}
     </select>
 
     <select id="findProductsByDeadline" resultMap="ProductResponseDtoMap">
         SELECT id, title, content, category, NULL AS standard_price, owner_id AS owner_id,
-        NULL AS img_url, post_date
-        FROM Products
+            NULL AS img_url, post_date
+        FROM products
         WHERE DATE(deadline) = CURRENT_DATE();
     </select>
 
 
     <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
-    <resultMap id="ProductResponseDtoMap" type="com.example.noticeboardservice.dto.ProductResponseDto">
+    <resultMap id="ProductResponseDtoMap" type="com.example.noticeboardservice.dto.product.ProductResponseDto">
         <constructor>
             <arg column="id" javaType="java.lang.Long"/>
             <arg column="title" javaType="java.lang.String"/>
@@ -130,7 +130,7 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="ProductDetailsResponseDtoMap" type="com.example.noticeboardservice.dto.ProductDetailsResponseDto">
+    <resultMap id="ProductDetailsResponseDtoMap" type="com.example.noticeboardservice.dto.product.ProductDetailsResponseDto">
         <constructor>
             <arg column="id" javaType="java.lang.Long"/>
             <arg column="title" javaType="java.lang.String"/>

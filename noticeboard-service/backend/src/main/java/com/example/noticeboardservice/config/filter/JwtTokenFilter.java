@@ -1,8 +1,8 @@
 package com.example.noticeboardservice.config.filter;
 
-import com.example.noticeboardservice.exception.TokenExpiredException;
-import com.example.noticeboardservice.exception.TokenInvalidException;
-import com.example.noticeboardservice.service.MemberService;
+import com.example.noticeboardservice.exception.token.TokenExpiredException;
+import com.example.noticeboardservice.exception.token.TokenInvalidException;
+import com.example.noticeboardservice.service.member.MemberService;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

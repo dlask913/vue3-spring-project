@@ -1,14 +1,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.noticeboardservice.mapper.NoticeMapper">
+<mapper namespace="com.example.noticeboardservice.mapper.notice.NoticeMapper">
     <!-- 게시글 생성 -->
     <insert id="insertNotice" parameterType="NoticeRequestDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Notices (title, content, member_id)
-        VALUES (#{title}, #{content}, #{memberId})
+        INSERT INTO contents (title, content, member_id, post_type)
+        VALUES (#{title}, #{content}, #{memberId}, #{postType})
     </insert>
 
     <!-- 게시글 수정 -->
     <update id="updateNotice" parameterType="NoticeRequestDto">
-        UPDATE Notices
+        UPDATE contents
         SET title = #{title}, content = #{content}, update_date = NOW()
         WHERE id = #{id}
     </update>
@@ -19,14 +19,14 @@
                 DATE_FORMAT(n.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
                 DATE_FORMAT(n.update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
                 n.member_id, m.username, m.email, n.view_count
-        FROM Notices n
+        FROM contents n
             LEFT JOIN Members m ON n.member_id = m.id
         WHERE n.id = #{noticeId}
     </select>
 
     <!-- 게시글 조회수 증가 -->
     <update id="incrementViewCount" parameterType="long">
-        UPDATE Notices
+        UPDATE contents
         SET view_count = (view_count+1)
         WHERE id = #{noticeId}
     </update>
@@ -35,7 +35,7 @@
     <select id="findNoticeByMemberId" resultMap="NoticeResponseDtoMap" parameterType="long">
         SELECT id, title, content, post_date, NULL AS update_date,
             member_id, NULL AS username, NULL AS email, view_count
-        FROM Notices
+        FROM contents
         WHERE member_id = #{memberId}
     </select>
 
@@ -44,7 +44,7 @@
         SELECT n.id, n.title, n.content, n.view_count,
             DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, NULL AS update_date,
             n.member_id, m.username, NULL AS email, n.view_count
-        FROM Notices n
+        FROM contents n
             LEFT JOIN Members m ON n.member_id = m.id
         WHERE 1=1
         <if test="params.title != null">
@@ -61,7 +61,7 @@
         SELECT n.id, n.title, n.content,
             DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, NULL AS update_date,
             n.member_id, m.username, NULL AS email, n.view_count
-        FROM Notices n
+        FROM contents n
              LEFT JOIN Members m ON n.member_id = m.id
         WHERE 1=1
         <if test="params.title != null">
@@ -76,13 +76,13 @@
 
     <!-- 게시글 삭제 -->
     <delete id="deleteNotice" parameterType="long">
-        DELETE FROM Notices
+        DELETE FROM contents
         WHERE id = #{id}
     </delete>
 
     <!-- 게시글 데이터 모두 삭제 -->
     <delete id="deleteAll">
-        DELETE FROM Notices
+        DELETE FROM contents
     </delete>
 
     <!-- 내가 쓴 게시글 모두 조회 -->
@@ -90,13 +90,13 @@
         SELECT n.id, n.title, n.content,
             DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, NULL AS update_date,
             n.member_id, m.username, NULL AS email, n.view_count
-        FROM Notices n
+        FROM contents n
             LEFT JOIN Members m ON n.member_id = m.id
         WHERE m.email = #{email}
     </select>
 
     <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
-    <resultMap id="NoticeResponseDtoMap" type="com.example.noticeboardservice.dto.NoticeResponseDto">
+    <resultMap id="NoticeResponseDtoMap" type="com.example.noticeboardservice.dto.notice.NoticeResponseDto">
         <constructor>
             <arg column="id" javaType="java.lang.Long"/>
             <arg column="title" javaType="java.lang.String"/>

@@ -1,65 +1,65 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.noticeboardservice.mapper.MessageMapper">
+<mapper namespace="com.example.noticeboardservice.mapper.message.MessageMapper">
     <!-- 메시지 전송 -->
     <insert id="insertMessage" parameterType="MessageRequestDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Messages (room_id, sender_id, receiver_id, content)
+        INSERT INTO messages (room_id, sender_id, receiver_id, content)
         VALUES (#{roomId}, #{senderId}, #{receiverId}, #{content})
     </insert>
     <!-- 메시지 상세 조회 -->
     <select id="findMessageById" parameterType="long" resultMap="MessageResponseDtoMap">
         SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
-        FROM Messages
+        FROM messages
         WHERE id = #{id}
     </select>
     <!-- 메시지 삭제 -->
     <delete id="deleteMessage" parameterType="long">
-        DELETE FROM Messages
+        DELETE FROM messages
         WHERE id = #{id}
     </delete>
     <!-- 모든 메시지 조회 -->
     <select id="findAllMessages" resultMap="MessageResponseDtoMap">
         SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
-        FROM Messages
+        FROM messages
     </select>
     <!-- 모든 메시지 삭제 -->
     <delete id="deleteAllMessages">
-        DELETE FROM Messages
+        DELETE FROM messages
     </delete>
     <!-- 받은 메시지 모두 조회 -->
     <select id="findReceivedMessagesByMemberId" parameterType="long" resultMap="MessageResponseDtoMap">
         SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
-        FROM Messages
+        FROM messages
         WHERE receiver_id = #{memberId}
     </select>
     <!-- 보낸 메시지 모두 조회 -->
     <select id="findSentMessagesByMemberId" parameterType="long" resultMap="MessageResponseDtoMap">
         SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
-        FROM Messages
+        FROM messages
         WHERE sender_id = #{memberId}
     </select>
     <!-- 메시지 읽음 상태 업데이트 -->
     <update id="updateReadStatus">
-        UPDATE Messages
+        UPDATE messages
         SET is_read = 'Y'
         WHERE sender_id = #{otherId} AND receiver_id = #{userId}
     </update>
     <!-- 특정 채팅방 내 모든 메시지 조회 -->
     <select id="findMessagesByRoomId" parameterType="long" resultMap="MessageResponseDtoMap">
         SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
-        FROM Messages
+        FROM messages
         WHERE room_id = #{roomId}
     </select>
     <!-- 채팅방에서 가장 최근 메시지 조회 -->
     <select id="findLatestMessageByRoomId" parameterType="long" resultMap="MessageResponseDtoMap">
         SELECT id, sender_id, receiver_id, content, created_at, is_read, room_id
-        FROM Messages
+        FROM messages
         WHERE room_id = #{roomId}
         ORDER BY created_at DESC
         LIMIT 1;
     </select>
 
     <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
-    <resultMap id="MessageResponseDtoMap" type="com.example.noticeboardservice.dto.MessageResponseDto">
+    <resultMap id="MessageResponseDtoMap" type="com.example.noticeboardservice.dto.message.MessageResponseDto">
         <constructor>
             <arg column="id" javaType="java.lang.Long"/>
             <arg column="sender_id" javaType="java.lang.Long"/>

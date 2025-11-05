@@ -13,16 +13,18 @@
 ### DDL script
 
 ```sql
-CREATE TABLE Members (
+CREATE TABLE members (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255),
     username VARCHAR(255),
     password VARCHAR(255),
     address VARCHAR(255),
-    user_type VARCHAR(20) NOT NULL DEFAULT 'USER'
+    user_type VARCHAR(20) NOT NULL DEFAULT 'USER',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE Contents (
+CREATE TABLE contents (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content MEDIUMTEXT NOT NULL,
@@ -32,29 +34,29 @@ CREATE TABLE Contents (
     view_count BIGINT DEFAULT 0,
     member_id BIGINT NOT NULL,
     post_type VARCHAR(50) NOT NULL,
-    FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE
+    FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Comments (
+CREATE TABLE comments (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     content VARCHAR(255) NOT NULL,
     post_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     member_id BIGINT NOT NULL,
     notice_id BIGINT NOT NULL,
-    FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE,
-    FOREIGN KEY (notice_id) REFERENCES Notices(id) ON DELETE CASCADE
+    FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
+    FOREIGN KEY (notice_id) REFERENCES contents(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Hearts (
+CREATE TABLE hearts (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id BIGINT,
     comment_id BIGINT,
-    FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE,
-    FOREIGN KEY (comment_id) REFERENCES Comments(id) ON DELETE CASCADE
+    FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
+    FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Files (
+CREATE TABLE files (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     type_id BIGINT NOT NULL,
     file_name VARCHAR(255) NOT NULL,
@@ -65,18 +67,18 @@ CREATE TABLE Files (
     upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE Replies (
+CREATE TABLE replies (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     content VARCHAR(255) NOT NULL,
     post_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     comment_id BIGINT,
     member_id BIGINT,
-    FOREIGN KEY (comment_id) REFERENCES Comments(id) ON DELETE CASCADE,
-    FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE
+    FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE,
+    FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Products (
+CREATE TABLE products (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
 	content VARCHAR(255) NOT NULL,
@@ -86,38 +88,38 @@ CREATE TABLE Products (
 	post_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 	update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	owner_id BIGINT,
-	FOREIGN KEY (owner_id) REFERENCES Members(id) ON DELETE CASCADE
+	FOREIGN KEY (owner_id) REFERENCES members(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Bid_History (
+CREATE TABLE bid_history (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
     bid_price INT,
     customer_id BIGINT,
     product_id BIGINT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (customer_id) REFERENCES Members(id),
-    FOREIGN KEY (product_id) REFERENCES Products(id)
+    FOREIGN KEY (customer_id) REFERENCES members(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
-CREATE INDEX idx_bid_productid_bidprice ON Bid_History (product_id, bid_price DESC);
+CREATE INDEX idx_bid_productid_bidprice ON bid_history (product_id, bid_price DESC);
 
-CREATE TABLE Categories (
+CREATE TABLE categories (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     description VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE Addresses (
+CREATE TABLE addresses (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id BIGINT NOT NULL,
     address_name VARCHAR(255),
     road_address_name VARCHAR(255),
     latitude DECIMAL(10, 8) NOT NULL,
     longitude DECIMAL(11, 8) NOT NULL,
-    FOREIGN KEY (member_id) REFERENCES Members(id) ON DELETE CASCADE
+    FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Messages (
+CREATE TABLE messages (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     room_id BIGINT NOT NULL,
     sender_id BIGINT NOT NULL,
@@ -127,7 +129,7 @@ CREATE TABLE Messages (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE Rooms (
+CREATE TABLE rooms (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id_lower BIGINT NOT NULL,
     member_id_higher BIGINT NOT NULL,
@@ -135,10 +137,10 @@ CREATE TABLE Rooms (
     UNIQUE (member_id_lower, member_id_higher) -- 동일한 두 사람 간 중복된 방 생성 방지
 );
 
-CREATE INDEX idx_messages_room_created ON Messages (room_id, created_at DESC);
+CREATE INDEX idx_messages_room_created ON messages (room_id, created_at DESC);
 
 -- 메일 보낸 이력을 저장할 로그 테이블 생성
-CREATE TABLE Mail_Send_Log (
+CREATE TABLE mail_send_log (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     receiver_id BIGINT NOT NULL,
     receiver_email VARCHAR(50) NOT NULL,
@@ -147,14 +149,14 @@ CREATE TABLE Mail_Send_Log (
 );
 
 -- Refresh Token 저장할 테이블 생성
-CREATE TABLE Refresh_Token (
+CREATE TABLE refresh_token (
     username VARCHAR(255) PRIMARY KEY,
     token TEXT NOT NULL,
     expiry_date TIMESTAMP NOT NULL
 );
 
 -- 접근 로그 저장할 테이블 생성
-CREATE TABLE Access_Log (
+CREATE TABLE access_log (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     method VARCHAR(10),
     uri VARCHAR(255),

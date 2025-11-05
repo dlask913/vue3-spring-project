@@ -1,8 +1,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.noticeboardservice.mapper.ReplyMapper">
+<mapper namespace="com.example.noticeboardservice.mapper.comment.ReplyMapper">
     <!-- 대댓글 생성 -->
     <insert id="insertReply" parameterType="ReplyRequestDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Replies (content, comment_id, member_id)
+        INSERT INTO replies (content, comment_id, member_id)
         VALUES (#{content}, #{commentId}, #{memberId})
     </insert>
 
@@ -12,8 +12,8 @@
             DATE_FORMAT(r.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
             DATE_FORMAT(r.update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
             r.comment_id, r.member_id, m.username, NULL AS member_img_url
-        FROM Replies r
-            LEFT JOIN Members m ON r.member_id = m.id
+        FROM replies r
+            LEFT JOIN members m ON r.member_id = m.id
         WHERE r.id = #{id}
     </select>
 
@@ -21,28 +21,28 @@
     <select id="findRepliesByCommentId" resultMap="ReplyResponseDtoMap" parameterType="long">
         WITH MemberImages AS (
             SELECT type_id, file_url
-            FROM Files
+            FROM files
             WHERE file_type = 'MEMBER'
         )
 
         SELECT r.id, r.content, r.post_date, r.update_date, r.comment_id, r.member_id, m.username,
             COALESCE(i.file_url, '/image/memberDefaultImg.jpg') AS member_img_url
-        FROM Replies r
-            LEFT JOIN Members m ON r.member_id = m.id
+        FROM replies r
+            LEFT JOIN members m ON r.member_id = m.id
             LEFT JOIN MemberImages i ON m.id = i.type_id
         WHERE comment_id = #{commentId}
     </select>
 
     <!-- 대댓글 수정 -->
     <update id="updateReply" parameterType="ReplyRequestDto">
-        UPDATE Replies
+        UPDATE replies
         SET content = #{content}
         WHERE id = #{id}
     </update>
 
     <!-- 대댓글 삭제 -->
     <delete id="deleteReply" parameterType="long">
-        DELETE FROM Replies
+        DELETE FROM replies
         WHERE id = #{id}
     </delete>
 
@@ -52,24 +52,24 @@
             DATE_FORMAT(r.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
             DATE_FORMAT(r.update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
             r.comment_id, r.member_id, m.username, NULL AS member_img_url
-        FROM Replies r
-            LEFT JOIN Members m ON r.member_id = m.id
+        FROM replies r
+            LEFT JOIN members m ON r.member_id = m.id
     </select>
 
     <!-- 모든 대댓글 삭제 -->
     <delete id="deleteAll">
-        DELETE FROM Replies
+        DELETE FROM replies
     </delete>
 
     <!-- 댓글의 대댓글 수 계산 -->
     <select id="calculateRepliesByCommentId" parameterType="long" resultType="long">
         SELECT COUNT(*) AS reply_count
-        FROM Replies
+        FROM replies
         WHERE comment_id = #{commentId}
     </select>
 
     <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
-    <resultMap id="ReplyResponseDtoMap" type="com.example.noticeboardservice.dto.ReplyResponseDto">
+    <resultMap id="ReplyResponseDtoMap" type="com.example.noticeboardservice.dto.comment.ReplyResponseDto">
         <constructor>
             <arg column="id" javaType="java.lang.Long"/>
             <arg column="content" javaType="java.lang.String"/>

@@ -1,14 +1,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.noticeboardservice.mapper.CommentMapper">
+<mapper namespace="com.example.noticeboardservice.mapper.comment.CommentMapper">
     <!-- 댓글 생성 -->
     <insert id="insertComment" parameterType="CommentRequestDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Comments (content, member_id, notice_id)
+        INSERT INTO comments (content, member_id, notice_id)
         VALUES (#{content}, #{memberId}, #{noticeId})
     </insert>
 
     <!-- 댓글 수정 -->
     <update id="updateComment" parameterType="CommentRequestDto">
-        UPDATE Comments
+        UPDATE comments
         SET content = #{content}, update_date = NOW()
         WHERE id = #{id}
     </update>
@@ -17,7 +17,7 @@
     <select id="findCommentById" parameterType="long" resultMap="CommentResponseDtoMap">
         SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id,
             NULL AS member_img_url, NULL AS reply_count
-        FROM Comments c
+        FROM comments c
             LEFT JOIN Members m ON c.member_id = m.id
         WHERE c.id = #{id}
     </select>
@@ -26,22 +26,22 @@
     <select id="findCommentsByNoticeId" parameterType="long" resultMap="CommentResponseDtoMap">
         WITH MemberImages AS (
             SELECT type_id, file_url
-            FROM Files
+            FROM files
             WHERE file_type = 'MEMBER'
         )
 
         SELECT c.id, c.content, c.post_date, m.username,
             COALESCE(i.file_url, '/image/memberDefaultImg.jpg') AS member_img_url, c.member_id,
             c.notice_id, NULL AS reply_count
-        FROM Comments c
-            LEFT JOIN Members m ON c.member_id = m.id
+        FROM comments c
+            LEFT JOIN members m ON c.member_id = m.id
             LEFT JOIN MemberImages i ON m.id = i.type_id
         WHERE c.notice_id = #{noticeId}
     </select>
 
     <!-- 댓글 삭제 -->
     <delete id="deleteComment" parameterType="long">
-        DELETE FROM Comments
+        DELETE FROM comments
         WHERE id = #{id}
     </delete>
 
@@ -49,26 +49,26 @@
     <select id="findAllComments" resultMap="CommentResponseDtoMap">
         SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id,
             NULL AS member_img_url, NULL AS reply_count
-        FROM Comments c
-            LEFT JOIN Members m ON c.member_id = m.id
+        FROM comments c
+            LEFT JOIN members m ON c.member_id = m.id
     </select>
 
     <!-- 댓글 데이터 모두 삭제 -->
     <delete id="deleteAll" >
-        DELETE FROM Comments
+        DELETE FROM comments
     </delete>
 
     <!-- 내가 작성한 댓글 조회 -->
     <select id="findCommentsByEmail" resultMap="CommentResponseDtoMap" parameterType="String">
         SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id,
             NULL AS member_img_url, NULL AS reply_count
-        FROM Comments c
-            LEFT JOIN Members m ON c.member_id = m.id
+        FROM comments c
+            LEFT JOIN members m ON c.member_id = m.id
         WHERE m.email = #{email}
     </select>
 
     <!-- record 에는 setter 가 존재하지 않기 때문에 생성자 기반 필드 매핑 -->
-    <resultMap id="CommentResponseDtoMap" type="com.example.noticeboardservice.dto.CommentResponseDto">
+    <resultMap id="CommentResponseDtoMap" type="com.example.noticeboardservice.dto.comment.CommentResponseDto">
         <constructor>
             <arg column="id" javaType="java.lang.Long"/>
             <arg column="content" javaType="java.lang.String"/>

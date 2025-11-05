@@ -1,15 +1,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.noticeboardservice.mapper.CategoryMapper">
+<mapper namespace="com.example.noticeboardservice.mapper.product.CategoryMapper">
     <!-- 카테고리 모두 조회 -->
     <select id="findAllCategories" resultType="CategoryDto">
         WITH CategoryImg AS (
             SELECT *
-            FROM Files
+            FROM files
             WHERE file_type = 'CATEGORY'
         )
 
         SELECT A.id, A.name, A.description, B.file_url
-        FROM Categories A
+        FROM categories A
             LEFT JOIN CategoryImg B ON A.id = B.type_id
     </select>
 </mapper>

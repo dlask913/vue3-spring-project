@@ -1,0 +1,30 @@
+package com.example.noticeboardservice.service.message;
+
+import com.example.noticeboardservice.dto.message.RoomDto;
+import com.example.noticeboardservice.mapper.message.RoomMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service @Transactional @RequiredArgsConstructor
+public class RoomServiceImpl implements RoomService{
+    private final RoomMapper roomMapper;
+    @Override
+    public int insertRoom(RoomDto roomDto) {
+        return roomMapper.insertRoom(roomDto);
+    }
+
+    @Override
+    public Optional<RoomDto> findRoomByMembers(Long senderId, Long receiverId) {
+        RoomDto roomDto = roomMapper.findRoomByMembers(senderId, receiverId);
+        return Optional.ofNullable(roomDto);
+    }
+
+    @Override
+    public List<RoomDto> findRoomsByMemberId(Long memberId) {
+        return roomMapper.findRoomsByMemberId(memberId);
+    }
+}

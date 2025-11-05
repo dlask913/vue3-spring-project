@@ -1,15 +1,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.noticeboardservice.mapper.ProductBidHistoryMapper">
+<mapper namespace="com.example.noticeboardservice.mapper.product.ProductBidHistoryMapper">
     <!-- 가격 등록 -->
     <insert id="addBidHistory" parameterType="ProductBidDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Bid_History (bid_price, customer_id, product_id)
+        INSERT INTO bid_history (bid_price, customer_id, product_id)
         VALUES (#{bidPrice}, #{customerId}, #{productId})
     </insert>
 
     <!-- 상품의 가장 최근 히스토리 조회 -->
     <select id="findLatestBidHistory" parameterType="long" resultType="ProductBidDto">
         SELECT bh.id, bh.bid_price, bh.customer_id, m.email AS customer_email, bh.product_id, bh.created_at
-        FROM Bid_History bh JOIN Members m ON bh.customer_id = m.id
+        FROM bid_history bh
+            JOIN Members m ON bh.customer_id = m.id
         WHERE bh.product_id = #{productId}
         ORDER BY bh.bid_price DESC
         LIMIT 1
@@ -17,12 +18,12 @@
 
     <!-- 모든 가격 히스토리 삭제 ( 테스트용 ) -->
     <delete id="deleteAll">
-        DELETE FROM Bid_History
+        DELETE FROM bid_history
     </delete>
 
     <!-- 모든 가격 히스토리 조회 ( 테스트용 ) -->
     <select id="findAllBidHistories" resultType="ProductBidDto">
         SELECT id, bid_price, customer_id, product_id, created_at
-        FROM Bid_History
+        FROM bid_history
     </select>
 </mapper>

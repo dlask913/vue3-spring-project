@@ -1,8 +1,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.noticeboardservice.mapper.AccessLogMapper">
+<mapper namespace="com.example.noticeboardservice.mapper.common.AccessLogMapper">
     <!-- 접근 로그 저장 -->
     <insert id="insertAccessLog">
-        INSERT INTO Access_Log (method, uri, client_ip, created_at)
+        INSERT INTO access_log (method, uri, client_ip, created_at)
         VALUES (#{method}, #{uri}, #{clientIp}, #{createdAt})
     </insert>
 </mapper>

@@ -1,9 +1,9 @@
 package com.example.noticeboardservice.batch;
 
-import com.example.noticeboardservice.dto.ProductBidDto;
-import com.example.noticeboardservice.dto.ProductResponseDto;
-import com.example.noticeboardservice.service.ProductBidService;
-import com.example.noticeboardservice.service.ProductService;
+import com.example.noticeboardservice.dto.product.ProductBidDto;
+import com.example.noticeboardservice.dto.product.ProductResponseDto;
+import com.example.noticeboardservice.service.product.ProductBidService;
+import com.example.noticeboardservice.service.product.ProductService;
 import com.limnj.mail_sender.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;

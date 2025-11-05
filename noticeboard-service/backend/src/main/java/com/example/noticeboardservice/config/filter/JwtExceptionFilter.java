@@ -1,15 +1,14 @@
 package com.example.noticeboardservice.config.filter;
 
-import com.example.noticeboardservice.dto.ExceptionDto;
-import com.example.noticeboardservice.exception.TokenExpiredException;
-import com.example.noticeboardservice.exception.TokenInvalidException;
+import com.example.noticeboardservice.dto.common.ExceptionDto;
+import com.example.noticeboardservice.exception.token.TokenExpiredException;
+import com.example.noticeboardservice.exception.token.TokenInvalidException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
