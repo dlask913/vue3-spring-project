@@ -32,7 +32,7 @@
     <!-- 회원 2FA QR secretKey 저장 -->
     <update id ="updateSecretKeyByEmail">
         UPDATE members
-        SET secret_key = #{secretKey}, update_at = NOW()
+        SET secret_key = #{secretKey}, updated_at = NOW()
         WHERE email = #{email} AND user_type = 'ADMIN'
     </update>
 

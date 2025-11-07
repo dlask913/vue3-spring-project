@@ -60,4 +60,16 @@ public class AuthController {
         QrResponseDto qrResponseDto = qrVerificationService.generateQrCodeForUser(email);
         return ResponseEntity.ok().body(qrResponseDto);
     }
+
+    @PostMapping("/qr-verify")
+    @Operation(summary = "2FA QR 인증 코드 검증 API")
+    public ResponseEntity<?> verifyQrAuthenticationCode(@RequestBody LoginRequestDto requestDto) {
+        boolean authResult = qrVerificationService.verifyCode(
+                requestDto.getEmail(), Integer.parseInt(requestDto.getAuthenticationCode()));
+        if(!authResult){
+            return ResponseEntity.badRequest().body("인증 코드 검증에 실패하였습니다.");
+        }
+        LoginResponseDto loginResponseDto = memberServiceImpl.loginAdminMember(requestDto);
+        return ResponseEntity.ok().body(loginResponseDto);
+    }
 }
