@@ -1,9 +1,11 @@
 package com.example.noticeboardservice.controller;
 
 import com.example.noticeboardservice.config.filter.JwtTokenFilter;
-import com.example.noticeboardservice.dto.ReplyRequestDto;
-import com.example.noticeboardservice.dto.ReplyResponseDto;
-import com.example.noticeboardservice.service.ReplyService;
+import com.example.noticeboardservice.controller.comment.ReplyController;
+import com.example.noticeboardservice.dto.comment.ReplyRequestDto;
+import com.example.noticeboardservice.dto.comment.ReplyResponseDto;
+import com.example.noticeboardservice.mapper.common.AccessLogMapper;
+import com.example.noticeboardservice.service.comment.ReplyService;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -18,8 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ReplyController.class)
 @AutoConfigureMockMvc(addFilters = false) // Security 필터 비활성화
 class ReplyControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -37,6 +36,8 @@ class ReplyControllerTest {
     private JwtTokenUtil jwtTokenUtil;
     @MockBean
     private JwtTokenFilter jwtTokenFilter;
+    @MockBean
+    private AccessLogMapper accessLogMapper;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -79,7 +80,7 @@ class ReplyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(responseDtos.get(0).id()))
-                .andExpect(jsonPath("$[0].content").value(responseDtos.get(0).id()));
+                .andExpect(jsonPath("$[0].content").value(responseDtos.get(0).content()));
 
         Mockito.verify(replyServiceImpl, Mockito.times(1)).findRepliesByCommentId(commentId);
     }

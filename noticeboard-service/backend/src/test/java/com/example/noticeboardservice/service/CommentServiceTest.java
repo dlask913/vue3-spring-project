@@ -1,13 +1,20 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.*;
-import com.example.noticeboardservice.mapper.CommentMapper;
-import com.example.noticeboardservice.mapper.MemberMapper;
-import com.example.noticeboardservice.mapper.NoticeMapper;
+import com.example.noticeboardservice.dto.comment.CommentRequestDto;
+import com.example.noticeboardservice.dto.comment.CommentResponseDto;
+import com.example.noticeboardservice.dto.member.MemberRequestDto;
+import com.example.noticeboardservice.dto.member.MemberResponseDto;
+import com.example.noticeboardservice.dto.notice.NoticeRequestDto;
+import com.example.noticeboardservice.mapper.comment.CommentMapper;
+import com.example.noticeboardservice.mapper.common.AccessLogMapper;
+import com.example.noticeboardservice.mapper.member.MemberMapper;
+import com.example.noticeboardservice.mapper.notice.NoticeMapper;
+import com.example.noticeboardservice.service.comment.CommentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -27,6 +34,9 @@ class CommentServiceTest {
     private MemberMapper memberMapper;
     @Autowired
     private NoticeMapper noticeMapper;
+
+    @MockBean
+    private AccessLogMapper accessLogMapper;
 
     @Test
     @DisplayName("댓글을 생성한다")

@@ -1,13 +1,14 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.AddressRequestDto;
-import com.example.noticeboardservice.dto.LoginRequestDto;
-import com.example.noticeboardservice.dto.MemberRequestDto;
-import com.example.noticeboardservice.dto.MemberResponseDto;
-import com.example.noticeboardservice.exception.MemberDuplicateException;
-import com.example.noticeboardservice.exception.MemberNotFoundException;
-import com.example.noticeboardservice.exception.PasswordMismatchException;
-import com.example.noticeboardservice.mapper.MemberMapper;
+import com.example.noticeboardservice.dto.member.AddressRequestDto;
+import com.example.noticeboardservice.dto.member.LoginRequestDto;
+import com.example.noticeboardservice.dto.member.MemberRequestDto;
+import com.example.noticeboardservice.dto.member.MemberResponseDto;
+import com.example.noticeboardservice.exception.member.MemberDuplicateException;
+import com.example.noticeboardservice.exception.member.MemberNotFoundException;
+import com.example.noticeboardservice.exception.member.PasswordMismatchException;
+import com.example.noticeboardservice.mapper.member.MemberMapper;
+import com.example.noticeboardservice.service.member.MemberService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

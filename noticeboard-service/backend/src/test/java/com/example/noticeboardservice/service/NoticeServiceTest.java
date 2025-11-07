@@ -1,8 +1,13 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.*;
-import com.example.noticeboardservice.mapper.MemberMapper;
-import com.example.noticeboardservice.mapper.NoticeMapper;
+import com.example.noticeboardservice.dto.member.MemberRequestDto;
+import com.example.noticeboardservice.dto.member.MemberResponseDto;
+import com.example.noticeboardservice.dto.notice.NoticeRequestDto;
+import com.example.noticeboardservice.dto.notice.NoticeResponseDto;
+import com.example.noticeboardservice.dto.notice.PostType;
+import com.example.noticeboardservice.mapper.member.MemberMapper;
+import com.example.noticeboardservice.mapper.notice.NoticeMapper;
+import com.example.noticeboardservice.service.notice.NoticeService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

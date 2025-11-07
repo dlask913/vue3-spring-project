@@ -1,9 +1,11 @@
 package com.example.noticeboardservice.controller;
 
 import com.example.noticeboardservice.config.filter.JwtTokenFilter;
-import com.example.noticeboardservice.dto.NoticeRequestDto;
-import com.example.noticeboardservice.dto.NoticeResponseDto;
-import com.example.noticeboardservice.service.NoticeService;
+import com.example.noticeboardservice.controller.notice.NoticeController;
+import com.example.noticeboardservice.dto.notice.NoticeRequestDto;
+import com.example.noticeboardservice.dto.notice.NoticeResponseDto;
+import com.example.noticeboardservice.mapper.common.AccessLogMapper;
+import com.example.noticeboardservice.service.notice.NoticeService;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -40,6 +41,8 @@ class NoticeControllerTest {
     private JwtTokenUtil jwtTokenUtil;
     @MockBean
     private JwtTokenFilter jwtTokenFilter;
+    @MockBean
+    private AccessLogMapper accessLogMapper;
 
     @Autowired
     private ObjectMapper objectMapper;

@@ -1,11 +1,13 @@
 package com.example.noticeboardservice.controller;
 
 import com.example.noticeboardservice.config.filter.JwtTokenFilter;
-import com.example.noticeboardservice.dto.ProductDetailsResponseDto;
-import com.example.noticeboardservice.dto.ProductRequestDto;
-import com.example.noticeboardservice.dto.ProductResponseDto;
-import com.example.noticeboardservice.service.CategoryService;
-import com.example.noticeboardservice.service.ProductService;
+import com.example.noticeboardservice.controller.product.ProductController;
+import com.example.noticeboardservice.dto.product.ProductDetailsResponseDto;
+import com.example.noticeboardservice.dto.product.ProductRequestDto;
+import com.example.noticeboardservice.dto.product.ProductResponseDto;
+import com.example.noticeboardservice.mapper.common.AccessLogMapper;
+import com.example.noticeboardservice.service.product.CategoryService;
+import com.example.noticeboardservice.service.product.ProductService;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +41,8 @@ class ProductControllerTest {
     private JwtTokenUtil jwtTokenUtil;
     @MockBean
     private JwtTokenFilter jwtTokenFilter;
+    @MockBean
+    private AccessLogMapper accessLogMapper;
 
     @Autowired
     private ObjectMapper objectMapper;

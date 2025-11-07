@@ -1,10 +1,15 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.*;
-import com.example.noticeboardservice.mapper.CommentMapper;
-import com.example.noticeboardservice.mapper.HeartMapper;
-import com.example.noticeboardservice.mapper.MemberMapper;
-import com.example.noticeboardservice.mapper.NoticeMapper;
+import com.example.noticeboardservice.dto.comment.CommentRequestDto;
+import com.example.noticeboardservice.dto.heart.HeartDto;
+import com.example.noticeboardservice.dto.member.MemberRequestDto;
+import com.example.noticeboardservice.dto.member.MemberResponseDto;
+import com.example.noticeboardservice.dto.notice.NoticeRequestDto;
+import com.example.noticeboardservice.mapper.comment.CommentMapper;
+import com.example.noticeboardservice.mapper.heart.HeartMapper;
+import com.example.noticeboardservice.mapper.member.MemberMapper;
+import com.example.noticeboardservice.mapper.notice.NoticeMapper;
+import com.example.noticeboardservice.service.heart.HeartService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

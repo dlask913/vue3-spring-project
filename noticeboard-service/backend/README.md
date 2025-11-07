@@ -19,6 +19,7 @@ CREATE TABLE members (
     username VARCHAR(255),
     password VARCHAR(255),
     address VARCHAR(255),
+    secret_key VARCHAR(50),
     user_type VARCHAR(20) NOT NULL DEFAULT 'USER',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP

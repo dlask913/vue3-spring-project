@@ -1,11 +1,13 @@
 package com.example.noticeboardservice.controller;
 
 import com.example.noticeboardservice.config.filter.JwtTokenFilter;
-import com.example.noticeboardservice.dto.LoginRequestDto;
-import com.example.noticeboardservice.dto.LoginResponseDto;
-import com.example.noticeboardservice.dto.MemberRequestDto;
-import com.example.noticeboardservice.dto.MemberResponseDto;
-import com.example.noticeboardservice.service.MemberService;
+import com.example.noticeboardservice.controller.member.MemberController;
+import com.example.noticeboardservice.dto.member.LoginRequestDto;
+import com.example.noticeboardservice.dto.member.LoginResponseDto;
+import com.example.noticeboardservice.dto.member.MemberRequestDto;
+import com.example.noticeboardservice.dto.member.MemberResponseDto;
+import com.example.noticeboardservice.mapper.common.AccessLogMapper;
+import com.example.noticeboardservice.service.member.MemberService;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -35,8 +37,11 @@ public class MemberControllerTest {
     private JwtTokenUtil jwtTokenUtil;
     @MockBean
     private JwtTokenFilter jwtTokenFilter;
+    @MockBean
+    private AccessLogMapper accessLogMapper;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     @DisplayName("회원 가입을 한다")

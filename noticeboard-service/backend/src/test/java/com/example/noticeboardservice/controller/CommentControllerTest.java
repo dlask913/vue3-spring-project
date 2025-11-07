@@ -1,9 +1,12 @@
 package com.example.noticeboardservice.controller;
 
+import com.example.noticeboardservice.config.AccessLogInterceptor;
 import com.example.noticeboardservice.config.filter.JwtTokenFilter;
-import com.example.noticeboardservice.dto.CommentRequestDto;
-import com.example.noticeboardservice.dto.CommentResponseDto;
-import com.example.noticeboardservice.service.CommentService;
+import com.example.noticeboardservice.controller.comment.CommentController;
+import com.example.noticeboardservice.dto.comment.CommentRequestDto;
+import com.example.noticeboardservice.dto.comment.CommentResponseDto;
+import com.example.noticeboardservice.mapper.common.AccessLogMapper;
+import com.example.noticeboardservice.service.comment.CommentService;
 import com.example.noticeboardservice.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +41,8 @@ class CommentControllerTest {
     private JwtTokenUtil jwtTokenUtil;
     @MockBean
     private JwtTokenFilter jwtTokenFilter;
+    @MockBean
+    private AccessLogMapper accessLogMapper;
 
     @Autowired
     private ObjectMapper objectMapper;

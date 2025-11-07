@@ -1,8 +1,13 @@
 package com.example.noticeboardservice.service;
 
-import com.example.noticeboardservice.dto.*;
-import com.example.noticeboardservice.mapper.FileInfoMapper;
-import com.example.noticeboardservice.mapper.MemberMapper;
+import com.example.noticeboardservice.dto.file.FileInfoRequestDto;
+import com.example.noticeboardservice.dto.file.FileInfoResponseDto;
+import com.example.noticeboardservice.dto.file.FileType;
+import com.example.noticeboardservice.dto.member.MemberRequestDto;
+import com.example.noticeboardservice.dto.member.MemberResponseDto;
+import com.example.noticeboardservice.mapper.file.FileInfoMapper;
+import com.example.noticeboardservice.mapper.member.MemberMapper;
+import com.example.noticeboardservice.service.file.FileInfoService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
