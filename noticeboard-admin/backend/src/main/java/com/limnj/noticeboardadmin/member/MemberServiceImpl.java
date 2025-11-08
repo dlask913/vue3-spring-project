@@ -37,7 +37,8 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public AdminMemberResponseDto findMemberById(Long memberId) {
-        return memberMapper.findMemberById(memberId).orElseThrow();
+        return memberMapper.findMemberById(memberId)
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
     }
 
     @Override
