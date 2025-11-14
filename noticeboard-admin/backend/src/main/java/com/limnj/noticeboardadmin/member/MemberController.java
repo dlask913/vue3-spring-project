@@ -32,9 +32,9 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "로그인 API")
+    @Operation(summary = "1차 로그인 API - ID&Password 검증")
     public ResponseEntity<?> loginMember(@RequestBody LoginRequestDto requestDto){
-        LoginResponseDto loginResponseDto = memberServiceImpl.loginAdminMember(requestDto);
+        LoginResponseDto loginResponseDto = memberServiceImpl.loginWithCredentials(requestDto);
         boolean authResult = emailVerificationService.sendVerificationCode(loginResponseDto.getEmail());// 인증 코드 전송
         if(!authResult){
             return ResponseEntity.badRequest().body("인증 코드 전송에 실패하였습니다.");

@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public LoginResponseDto loginAdminMember(LoginRequestDto requestDto) {
+    public LoginResponseDto loginWithCredentials(LoginRequestDto requestDto) {
         AdminMemberResponseDto findMember = memberMapper.findMemberByUsername(requestDto.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
 
@@ -50,6 +50,18 @@ public class MemberServiceImpl implements MemberService{
         if(!authResult){
             throw new PasswordMismatchException();
         }
+
+        return LoginResponseDto.builder()
+                .memberId(findMember.getId())
+                .username(findMember.getUsername())
+                .email(findMember.getEmail())
+                .build();
+    }
+
+    @Override
+    public LoginResponseDto generateSecondaryAuthToken(LoginRequestDto requestDto) {
+        AdminMemberResponseDto findMember = memberMapper.findMemberByUsername(requestDto.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
 
         String accessToken = jwtTokenUtil.generateToken(findMember.getUsername());
         String refreshToken = refreshTokenServiceImpl.generateRefreshToken(findMember.getUsername());
