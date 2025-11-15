@@ -103,6 +103,17 @@ const linksList = [
       },
     ],
   },
+  {
+    title: '계정 정보',
+    icon: 'person',
+    children: [
+      {
+        title: '2차 인증 설정',
+        icon: 'vpn_key',
+        to: '/security/2fa',
+      },
+    ],
+  },
 ];
 
 // 로그아웃 수행
