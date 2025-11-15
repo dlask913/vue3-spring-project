@@ -50,6 +50,7 @@ import { useRouter } from 'vue-router';
 import { Notify } from 'quasar';
 
 const form = ref({
+  email: '',
   username: '',
   password: '',
 });

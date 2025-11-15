@@ -4,10 +4,16 @@
       <h2 class="text-h5 text-center q-mb-lg">
         <b>인증 코드를 입력해주세요.</b>
       </h2>
+      <div class="text-center q-mt-md q-mb-lg">
+        <q-icon name="email" class="q-mr-sm" />
+        이메일로 인증번호가 발송되었습니다.
+        <span class="text-negative">3분 이내</span> 입력해주세요.
+      </div>
       <div class="q-mx-auto" style="max-width: 400px">
         <q-input
           v-model="code"
           label="인증 코드"
+          class="q-mb-sm"
           outlined
           maxlength="6"
           autofocus
@@ -29,8 +35,17 @@
 
         <div class="text-center q-mt-sm">
           <q-btn
-            flat
             label="인증 코드 다시 보내기"
+            color="secondary"
+            class="full-width"
+            @click="resendCode"
+            :disable="resending"
+          />
+        </div>
+        <div class="text-center q-mt-sm">
+          <q-btn
+            flat
+            label="다른 방법으로 인증하기"
             color="secondary"
             @click="resendCode"
             :disable="resending"
