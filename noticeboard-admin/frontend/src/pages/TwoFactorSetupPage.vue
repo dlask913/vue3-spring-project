@@ -8,7 +8,14 @@
           <p class="text-caption text-grey-7 q-mt-xs">
             현재 등록되어있는 이메일로 인증 코드가 발송됩니다.
           </p>
-          <q-input outlined dense class="q-mt-sm" style="max-width: 400px" />
+          <q-input
+            v-model="email"
+            outlined
+            dense
+            class="q-mt-sm"
+            style="max-width: 400px"
+            :disable="true"
+          />
         </div>
 
         <q-separator class="q-my-lg" />
@@ -34,7 +41,6 @@
               Google Authenticator로 아래 QR 코드를 스캔하세요
               <q-icon name="warning" color="negative" class="q-ml-sm" />
             </h5>
-
             <img
               :src="qrCode"
               alt="QR Code"
@@ -58,14 +64,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { api } from 'boot/axios'; // Quasar 설정에 따라 api 경로는 다를 수 있습니다.
 import { Notify } from 'quasar';
+import { useUserStore } from 'stores/user';
 
 // State 정의
-const email = ref('test@example.com');
 const qrCode = ref('');
 const loading = ref(false); // 로딩 상태 추가
+const userStore = useUserStore();
+const email = computed(() => userStore.email);
+console.log(email.value);
 
 const generateQr = async () => {
   try {

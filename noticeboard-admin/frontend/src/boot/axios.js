@@ -55,6 +55,7 @@ export default defineBoot(({ router, store }) => {
             userStore.username,
             newAccessToken.data,
             userStore.refreshToken,
+            userStore.email,
           );
 
           // 실패했던 요청에 새 토큰 넣어서 재시도

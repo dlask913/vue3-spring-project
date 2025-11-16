@@ -94,6 +94,7 @@ const onSubmit = async () => {
       data.username,
       data.accessToken,
       data.refreshToken,
+      data.email,
     ); // 토큰 저장
 
     router.push({ path: '/' }); // 메인 페이지로 이동
