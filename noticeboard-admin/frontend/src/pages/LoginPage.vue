@@ -54,7 +54,7 @@ const onLogin = async () => {
 
     const { data } = await api.post('/login', request);
     router.push({
-      path: '/verify-code',
+      path: '/auth/email-verify',
       query: { email: data.email, username: data.username },
     }); // 이메일 인증 페이지로 이동
   } catch (error) {

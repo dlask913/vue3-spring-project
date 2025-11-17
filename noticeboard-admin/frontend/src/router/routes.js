@@ -15,13 +15,22 @@ const routes = [
       { path: 'signup', component: () => import('src/pages/SignUpPage.vue') },
       { path: 'login', component: () => import('src/pages/LoginPage.vue') },
       {
-        path: 'verify-code',
+        path: '/auth/email-verify',
         component: () => import('src/pages/EmailCodeVerifyPage.vue'),
+      },
+      {
+        path: '/auth/qr-verify',
+        component: () => import('src/pages/QrCodeVerifyPage.vue'),
       },
       {
         path: '/security/2fa',
         name: 'TwoFactorSetupPage',
         component: () => import('pages/TwoFactorSetupPage.vue'),
+      },
+      {
+        path: '/2fa/select',
+        name: 'TwoFactorMethodSelectPage',
+        component: () => import('pages/TwoFactorMethodSelectPage.vue'),
       },
     ],
   },
