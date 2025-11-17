@@ -29,7 +29,7 @@ public class AuthController {
         this.qrVerificationService = qrVerificationService;
     }
 
-    @PostMapping("/verify-code")
+    @PostMapping("/email-verify")
     @Operation(summary = "2FA 이메일 인증 코드 검증 API")
     public ResponseEntity<?> verifyAuthenticationCode(@RequestBody LoginRequestDto requestDto) {
         log.info("requestDto.toString(): {}", requestDto.toString());
