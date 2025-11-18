@@ -89,6 +89,10 @@ public class MemberServiceImpl implements MemberService{
         return memberMapper.findSecretKeyByEmail(email);
     }
 
+    @Override
+    public boolean existsByEmail(String email) {
+        return memberMapper.existsByEmail(email);
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

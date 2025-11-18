@@ -17,4 +17,5 @@ public interface MemberService extends UserDetailsService {
     void updateSecretKeyByEmail(String email, String secretKey);
     /* QR 시크릿 키 조회 */
     String findSecretKeyByEmail(String email);
+    boolean existsByEmail(String email);
 }
