@@ -29,6 +29,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { api } from 'boot/axios';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const columns = [
   {
@@ -36,7 +39,7 @@ const columns = [
     required: true,
     label: '순서',
     align: 'center',
-    field: 'id',
+    field: 'index',
     format: val => `${val}`,
     sortable: true,
     style: 'width: 10%;',
@@ -77,7 +80,7 @@ const fetchNotices = async () => {
     const response = await api.get('/notices');
     notices.value = response.data.map((notice, index) => ({
       ...notice,
-      id: index + 1,
+      index: index + 1,
       hidden: notice.hidden || false,
       createdAt: notice.postDate || new Date().toISOString(),
     }));
@@ -89,7 +92,7 @@ const fetchNotices = async () => {
 };
 
 const onRowClick = (evt, row) => {
-  console.log('게시글이 클릭되었습니다:', row);
+  router.push(`/notice/${row.id}`);
 };
 
 onMounted(() => {

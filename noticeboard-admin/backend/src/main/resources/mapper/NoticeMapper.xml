@@ -14,8 +14,8 @@
     </update>
 
     <!-- 게시글 단일 조회 -->
-    <select id="findNotice" resultType="NoticeResponseDto" parameterType="long">
-        SELECT id, title, content
+    <select id="findNoticeById" resultType="NoticeResponseDto" parameterType="long">
+        SELECT id, title, content, post_date
         FROM Contents
         WHERE id = #{noticeId} AND post_type = 'NOTICE'
     </select>

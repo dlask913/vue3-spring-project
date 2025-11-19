@@ -97,13 +97,16 @@ import { ref } from 'vue';
 import { api } from 'boot/axios';
 import { useUserStore } from 'stores/user';
 import { Notify } from 'quasar';
+import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
+const router = useRouter();
 const previewDialog = ref(false);
 
 const form = ref({
   title: '',
   content: '',
+  contentType: 'text',
   file: null,
 });
 
@@ -137,9 +140,7 @@ const onSaveNotice = async () => {
       position: 'top',
       timeout: 2000,
     });
-
-    // 초기화
-    form.value = { title: '', content: '', file: null };
+    router.push({ path: '/notice/list' }); // 메인 페이지로 이동
   } catch (error) {
     console.error(error);
     Notify.create({

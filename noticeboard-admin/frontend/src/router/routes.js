@@ -5,12 +5,16 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
       {
-        path: 'notice/write',
+        path: '/notice/write',
         component: () => import('src/pages/NoticeWritePage.vue'),
       },
       {
-        path: 'notice/list',
+        path: '/notice/list',
         component: () => import('src/pages/NoticeListPage.vue'),
+      },
+      {
+        path: '/notice/:id',
+        component: () => import('src/pages/NoticeViewPage.vue'),
       },
       { path: 'signup', component: () => import('src/pages/SignUpPage.vue') },
       { path: 'login', component: () => import('src/pages/LoginPage.vue') },
