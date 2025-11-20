@@ -5,6 +5,7 @@ import com.limnj.noticeboardadmin.member.MemberMapper;
 import com.limnj.noticeboardadmin.util.EmailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ class EmailVerificationServiceTest {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @Mock
     private EmailService emailService; // 실제 이메일 발송은 mock
 
     @Test
