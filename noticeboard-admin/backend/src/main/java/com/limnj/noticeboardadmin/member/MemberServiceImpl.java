@@ -2,6 +2,8 @@ package com.limnj.noticeboardadmin.member;
 
 import com.limnj.noticeboardadmin.exception.MemberDuplicateException;
 import com.limnj.noticeboardadmin.exception.PasswordMismatchException;
+import com.limnj.noticeboardadmin.exception.QrNotGenerateException;
+import com.limnj.noticeboardadmin.exception.UserEmailNotFoundException;
 import com.limnj.noticeboardadmin.jwt.JwtTokenUtil;
 import com.limnj.noticeboardadmin.jwt.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
@@ -79,14 +81,15 @@ public class MemberServiceImpl implements MemberService{
     public void updateSecretKeyByEmail(String email, String secretKey) {
         // 사용자 존재 확인
         if (!memberMapper.existsByEmail(email)) {
-            throw new UsernameNotFoundException("존재하지 않는 사용자입니다.");
+            throw new UserEmailNotFoundException();
         }
         memberMapper.updateSecretKeyByEmail(email, secretKey);
     }
 
     @Override
     public String findSecretKeyByEmail(String email) {
-        return memberMapper.findSecretKeyByEmail(email);
+        return memberMapper.findSecretKeyByEmail(email)
+                .orElseThrow(QrNotGenerateException::new); // QR 생성하지 않은 회원 예외 처리
     }
 
     @Override
