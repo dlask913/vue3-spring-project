@@ -8,4 +8,6 @@ public class NoticeResponseDto {
     String title;
     String content;
     String postDate;
+    String hideYn;
+    NoticeRequestDto.PostType postType;
 }
