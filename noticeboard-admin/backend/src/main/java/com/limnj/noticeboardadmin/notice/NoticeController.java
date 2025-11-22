@@ -27,8 +27,9 @@ public class NoticeController {
 
     @PutMapping("/notice")
     @Operation(security =  { @SecurityRequirement(name = "bearerAuth") },summary = "관리자용 게시글 수정 API")
-    public ResponseEntity<?> updateNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
-        int result = noticeServiceImpl.updateNotice(noticeRequestDto);
+    public ResponseEntity<?> updateNotice(@RequestPart(value = "noticeRequestDto") NoticeRequestDto noticeRequestDto,
+                                          @RequestPart(value = "noticeFile", required = false) MultipartFile noticeFile) {
+        int result = noticeServiceImpl.updateNotice(noticeRequestDto, noticeFile);
         if (result <= 0) {
             return ResponseEntity.badRequest().body("게시글 수정에 실패하였습니다.");
         }

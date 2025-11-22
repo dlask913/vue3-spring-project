@@ -36,4 +36,11 @@ public class FileInfoServiceImpl implements FileInfoService {
     public Optional<FileInfoResponseDto> findByTypeId(Long typeId, FileType fileType) {
         return Optional.ofNullable(fileInfoMapper.findByType(typeId, fileType));
     }
+
+    @Override
+    public void deleteFileIfPresent(Long typeId, String location, FileType fileType) {
+        findByTypeId(typeId, FileType.NOTICE)
+                .ifPresent(
+                        file -> deleteFile(file.getId(), location, file.getFileName()));
+    }
 }

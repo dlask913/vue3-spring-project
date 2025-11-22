@@ -10,4 +10,5 @@ public interface FileInfoService {
     int saveFile(FileInfoRequestDto requestDto, MultipartFile multipartFile, String location);
     int deleteFile(Long imageId, String location, String fileName);
     Optional<FileInfoResponseDto> findByTypeId(Long typeId, FileType fileType);
+    void deleteFileIfPresent(Long typeId, String location, FileType fileType);
 }

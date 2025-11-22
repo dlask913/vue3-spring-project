@@ -1,6 +1,7 @@
 package com.limnj.noticeboardadmin.notice;
 
 import com.limnj.noticeboardadmin.file.FileInfoRequestDto;
+import com.limnj.noticeboardadmin.file.FileInfoResponseDto;
 import com.limnj.noticeboardadmin.file.FileInfoService;
 import com.limnj.noticeboardadmin.file.FileType;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,7 +28,7 @@ public class NoticeServiceImpl implements NoticeService{
         noticeRequestDto.savePostType();
         int result = noticeMapper.insertNotice(noticeRequestDto);
 
-        if(noticeFile != null){
+        if(noticeFile != null){ // 첨부파일 있으면 저장
             FileInfoRequestDto fileInfoRequestDto = FileInfoRequestDto.builder()
                     .typeId(noticeRequestDto.getId())
                     .fileType(FileType.NOTICE)
@@ -37,7 +39,16 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public int updateNotice(NoticeRequestDto noticeRequestDto) {
+    public int updateNotice(NoticeRequestDto noticeRequestDto, MultipartFile noticeFile) {
+        fileInfoServiceImpl.deleteFileIfPresent(noticeRequestDto.getId(), fileLocation, FileType.NOTICE);
+
+        if(noticeFile != null){ // 첨부파일 있으면 저장
+            FileInfoRequestDto fileInfoRequestDto = FileInfoRequestDto.builder()
+                    .typeId(noticeRequestDto.getId())
+                    .fileType(FileType.NOTICE)
+                    .build();
+            fileInfoServiceImpl.saveFile(fileInfoRequestDto, noticeFile, fileLocation);
+        }
         return noticeMapper.updateNotice(noticeRequestDto);
     }
 
