@@ -1,0 +1,10 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.limnj.noticeboardadmin.statistics.LogStatisticsMapper">
+    <!-- 일별 접속 로그 통계 조회 -->
+    <select id="findDailyLogs" parameterType="LogStatisticsRequestDto" resultType="LogStatisticsResponseDto">
+        SELECT DATE(created_at) as logDate, method, uri, count(*) as count
+        FROM access_log
+        GROUP BY DATE(created_at), method, uri
+        ORDER BY logDate
+    </select>
+</mapper>
