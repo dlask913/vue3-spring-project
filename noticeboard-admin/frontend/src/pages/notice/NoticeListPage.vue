@@ -56,7 +56,7 @@ const columns = [
     name: 'hidden',
     align: 'center',
     label: '숨김여부',
-    field: 'hidden',
+    field: 'hide_yn',
     sortable: true,
     style: 'width: 10%;',
   },
@@ -81,9 +81,10 @@ const fetchNotices = async () => {
     notices.value = response.data.map((notice, index) => ({
       ...notice,
       index: index + 1,
-      hidden: notice.hidden || false,
+      hidden: notice.hide_yn === 'N' || false,
       createdAt: notice.postDate || new Date().toISOString(),
     }));
+    console.log(notices.value);
   } catch (error) {
     console.error('게시글 목록을 불러오는 중 오류 발생:', error);
   } finally {

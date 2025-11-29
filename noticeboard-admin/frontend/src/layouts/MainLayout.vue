@@ -104,6 +104,17 @@ const linksList = [
     ],
   },
   {
+    title: '통계',
+    icon: 'bar_chart',
+    children: [
+      {
+        title: '접속 로그',
+        icon: 'analytics',
+        to: '/statistics/log',
+      },
+    ],
+  },
+  {
     title: '계정 정보',
     icon: 'person',
     children: [
