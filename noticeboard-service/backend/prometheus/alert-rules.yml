@@ -21,3 +21,23 @@ groups:
         annotations:
           summary: "API 응답시간 지연"
           description: "90% 요청의 응답시간이 1.5초를 넘습니다."
+      
+      # 메모리 부족
+      - alert: HighMemoryUsage
+        expr: sum(jvm_memory_used_bytes{area="heap"}) / sum(jvm_memory_max_bytes{area="heap"}) > 0.9
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "메모리 사용량 과다"
+          description: "JVM 메모리 사용량이 90%를 초과했습니다."
+
+      # CPU 사용량 증가
+      - alert: HighCpuUsage
+        expr: process_cpu_usage > 0.8
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU 사용량 높음"
+          description: "CPU 사용량이 80% 이상입니다."

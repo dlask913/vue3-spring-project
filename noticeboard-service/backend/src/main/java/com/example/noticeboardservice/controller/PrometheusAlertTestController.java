@@ -13,4 +13,21 @@ public class PrometheusAlertTestController {
         Thread.sleep(5000); // 5초
         return "done";
     }
+
+    @GetMapping("/oom")
+    public void oom() {
+        List<byte[]> list = new ArrayList<>();
+        while (true) {
+            list.add(new byte[50* 1024 * 1024]); // 50MB
+        }
+    }
+
+    @GetMapping("/cpu")
+    public String highCpu() {
+        long end = System.currentTimeMillis() + 60000; // 60초 동안 CPU 태우기
+        while (System.currentTimeMillis() < end) {
+            Math.pow(Math.random(), Math.random());
+        }
+        return "CPU test done (60 seconds)";
+    }
 }
