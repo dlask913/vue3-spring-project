@@ -21,6 +21,11 @@ management:
   metrics:
     enable:
       all: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true      # <-- latency bucket 생성
+      percentiles:
+        http.server.requests: 0.5, 0.9, 0.95, 0.99
 
 upload-path: file:///C:/images/
 default-img-path: classpath:/static/default-image/
