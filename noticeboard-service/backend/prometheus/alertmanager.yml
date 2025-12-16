@@ -9,7 +9,6 @@ receivers:
   - name: 'slack'
     slack_configs:
       - api_url: 'slack-webhook-url-넣기'
-        channel: '#monitoring'
         send_resolved: true
 
 inhibit_rules:
