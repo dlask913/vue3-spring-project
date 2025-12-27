@@ -1,0 +1,15 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.limnj.noticeboardadmin.inventory.InventoryMapper">
+    <insert id="saveAll">
+        INSERT INTO product_order
+        (product_code, product_name, order_qty, unit_price, order_date)
+        VALUES
+        <foreach collection="list" item="o" separator=",">
+            (#{o.productCode},
+            #{o.productName},
+            #{o.orderQty},
+            #{o.unitPrice},
+            #{o.orderDate})
+        </foreach>
+    </insert>
+</mapper>
