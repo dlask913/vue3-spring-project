@@ -7,4 +7,5 @@ import java.util.List;
 @Mapper
 public interface InventoryMapper {
     void saveAll(List<InventoryRequestDto> inventories);
+    List<InventoryResponseDto> findAllInventories();
 }

@@ -12,4 +12,9 @@
             #{o.orderDate})
         </foreach>
     </insert>
+
+    <select id="findAllInventories" resultType="InventoryResponseDto">
+        SELECT product_code, product_name, order_qty, unit_price, order_date
+        FROM product_order
+    </select>
 </mapper>
