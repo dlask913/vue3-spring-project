@@ -1,10 +1,7 @@
 package com.limnj.noticeboardadmin.inventory;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +18,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public void uploadInventoryBulk(MultipartFile multipartFile) {
+        DataFormatter formatter = new DataFormatter();
         try (Workbook workbook = WorkbookFactory.create(multipartFile.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
 
@@ -30,12 +28,20 @@ public class InventoryServiceImpl implements InventoryService {
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
 
+                String productCode = formatter.formatCellValue(row.getCell(0));
+                String productName = formatter.formatCellValue(row.getCell(1));
+                String orderQtyStr = formatter.formatCellValue(row.getCell(2));
+                String unitPriceStr = formatter.formatCellValue(row.getCell(3));
+                String orderDate = formatter.formatCellValue(row.getCell(4));
+
+                if (productCode.isBlank()) continue; // 필수값 체크 예시
+
                 inventories.add(InventoryRequestDto.builder()
-                        .productCode(row.getCell(0).getStringCellValue())
-                        .productName(row.getCell(1).getStringCellValue())
-                        .orderQty(Long.parseLong(row.getCell(2).getStringCellValue()))
-                        .unitPrice(Integer.parseInt(row.getCell(3).getStringCellValue()))
-                        .orderDate(row.getCell(4).getStringCellValue())
+                        .productCode(productCode)
+                        .productName(productName)
+                        .orderQty(Long.parseLong(orderQtyStr.replace(",", "")))
+                        .unitPrice(Integer.parseInt(unitPriceStr.replace(",", "")))
+                        .orderDate(orderDate)
                         .build());
             }
 
