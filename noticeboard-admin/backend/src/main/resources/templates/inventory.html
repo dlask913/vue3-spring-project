@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 6px;
+            font-size: 10px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h2>재고 목록</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>상품코드</th>
+        <th>상품명</th>
+        <th>수량</th>
+        <th>단가</th>
+        <th>주문일자</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${inventories}">
+        <td th:text="${item.productCode}"></td>
+        <td th:text="${item.productName}"></td>
+        <td th:text="${item.orderQty}"></td>
+        <td th:text="${item.unitPrice}"></td>
+        <td th:text="${item.orderDate}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

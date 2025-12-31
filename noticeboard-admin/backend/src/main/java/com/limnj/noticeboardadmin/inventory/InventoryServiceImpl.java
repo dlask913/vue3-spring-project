@@ -51,4 +51,9 @@ public class InventoryServiceImpl implements InventoryService {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public List<InventoryResponseDto> findAllInventories() {
+        return inventoryMapper.findAllInventories();
+    }
 }

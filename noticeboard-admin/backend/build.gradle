@@ -28,6 +28,10 @@ ext {
 	swaggerVerion = "2.2.0";
 	jwtVersion = "0.11.2";
 	log4jVersion = "1.16";
+	googleAuthVersion = "1.5.0";
+	googleQrVersion = "3.5.3";
+	apachePoiVersion = "5.2.5";
+	flyingSaucerVersion = "9.1.22";
 }
 
 dependencies {
@@ -62,12 +66,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	// QR 코드 인증 설정
-	implementation 'com.warrenstrange:googleauth:1.5.0'
-	implementation 'com.google.zxing:core:3.5.3'
-	implementation 'com.google.zxing:javase:3.5.3'
+	implementation "com.warrenstrange:googleauth:${googleAuthVersion}"
+	implementation "com.google.zxing:core:${googleQrVersion}"
+	implementation "com.google.zxing:javase:${googleQrVersion}"
 	
 	// 엑셀 파싱 라이브러리
-	implementation 'org.apache.poi:poi-ooxml:5.2.5'
+	implementation "org.apache.poi:poi-ooxml:${apachePoiVersion}"
+
+	// html → pdf 변환 라이브러리
+	implementation 'org.thymeleaf:thymeleaf-spring6'
+	implementation "org.xhtmlrenderer:flying-saucer-pdf:${flyingSaucerVersion}"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
