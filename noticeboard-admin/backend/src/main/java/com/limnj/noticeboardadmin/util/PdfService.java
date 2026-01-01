@@ -26,6 +26,13 @@ public class PdfService {
 
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             ITextRenderer renderer = new ITextRenderer();
+
+            renderer.getFontResolver().addFont(
+                    "fonts/NotoSansKR-Black.ttf",
+                    BaseFont.IDENTITY_H,
+                    BaseFont.EMBEDDED
+            );
+
             renderer.setDocumentFromString(html);
             renderer.layout();
             renderer.createPDF(out);
