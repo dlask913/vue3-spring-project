@@ -48,6 +48,12 @@ const routes = [
         component: () =>
           import('src/pages/statistics/LogStatisticsViewPage.vue'),
       },
+      {
+        path: '/inventory',
+        name: 'InventoryViewPage',
+        component: () =>
+          import('src/pages/product/InventoryViewPage.vue'),
+      },
     ],
   },
 

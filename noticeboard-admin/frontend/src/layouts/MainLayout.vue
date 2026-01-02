@@ -104,6 +104,17 @@ const linksList = [
     ],
   },
   {
+    title: '상품',
+    icon: 'inventory_2',
+    children: [
+      {
+        title: '재고 등록',
+        icon: 'add_box',
+        to: '/inventory',
+      },
+    ],
+  },
+  {
     title: '통계',
     icon: 'bar_chart',
     children: [
