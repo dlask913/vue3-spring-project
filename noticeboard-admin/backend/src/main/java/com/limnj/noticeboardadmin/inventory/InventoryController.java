@@ -27,6 +27,12 @@ public class InventoryController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/inventories")
+    public ResponseEntity<List<InventoryResponseDto>> getAllInventories(){
+        List<InventoryResponseDto> response = inventoryService.findAllInventories();
+        return ResponseEntity.ok().body(response);
+    }
+
     @GetMapping("/inventories/pdf")
     public ResponseEntity<byte[]> downloadPdf() {
 

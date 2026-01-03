@@ -51,8 +51,7 @@ const routes = [
       {
         path: '/inventory',
         name: 'InventoryViewPage',
-        component: () =>
-          import('src/pages/product/InventoryViewPage.vue'),
+        component: () => import('src/pages/product/InventoryViewPage.vue'),
       },
     ],
   },
