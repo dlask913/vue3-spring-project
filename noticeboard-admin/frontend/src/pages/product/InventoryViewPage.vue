@@ -117,6 +117,7 @@ const columns = [
 ];
 
 const inventories = ref([]);
+const excelInventories = ref([]);
 
 const pagination = ref({
   rowsPerPage: 10,
@@ -128,33 +129,59 @@ const fetchInventories = async () => {
     inventories.value = response.data.map(inventory => ({
       ...inventory,
     }));
-    console.log(inventories.value);
   } catch (error) {
     console.error('인벤토리 목록을 불러오는 중 오류 발생:', error);
   }
 };
 
 // 엑셀 업로드 핸들러 (로직 예시)
-const handleFileUpload = file => {
-  if (!file) return;
+const handleFileUpload = async () => {
+  if (!excelFile.value) return;
 
-  // 여기서는 UI 확인을 위한 Mock 데이터
-  setTimeout(() => {
-    $q.loading.hide();
+  const formData = new FormData();
+  formData.append('inventoryFile', excelFile.value);
+
+  try {
+    const response = await api.post('/inventories/parser', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    // 백엔드에서 파싱한 리스트 결과 저장
+    excelInventories.value = [...response.data];
+    // 기존 데이터 + 임시 업로드 데이터 -> 최종 저장 버튼 클릭 후 저장
+    inventories.value = [...inventories.value, ...excelInventories.value];
+
     $q.notify({
       color: 'positive',
-      message: '엑셀 데이터가 성공적으로 로드되었습니다.',
-      icon: 'check',
+      message: '파싱 완료! 리스트를 확인하세요.',
     });
-  }, 1000);
+  } catch (error) {
+    console.error(error);
+    $q.notify({ color: 'negative', message: '업로드 중 오류가 발생했습니다.' });
+  }
 };
 
-const saveInventory = () => {
-  if (inventories.value.length === 0) {
+const saveInventory = async () => {
+  if (excelInventories.value.length === 0) {
     $q.notify({ color: 'negative', message: '저장할 데이터가 없습니다.' });
     return;
   }
-  // API 저장 로직 실행
+
+  const formData = new FormData();
+  formData.append('inventoryFile', excelFile.value);
+
+  try {
+    await api.post('/inventories/bulk', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    $q.notify({ color: 'positive', message: '저장이 완료되었습니다.' });
+  } catch (error) {
+    console.error('인벤토리 목록을 불러오는 중 오류 발생:', error);
+  }
 };
 
 onMounted(() => {

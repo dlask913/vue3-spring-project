@@ -18,11 +18,17 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public void uploadInventoryBulk(MultipartFile multipartFile) {
+        List<InventoryRequestDto> inventories = validateInventoryBulk(multipartFile);
+        inventoryMapper.saveAll(inventories);
+    }
+
+    @Override
+    public List<InventoryRequestDto> validateInventoryBulk(MultipartFile multipartFile) {
         DataFormatter formatter = new DataFormatter();
+        List<InventoryRequestDto> inventories = new ArrayList<>();
+
         try (Workbook workbook = WorkbookFactory.create(multipartFile.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
-
-            List<InventoryRequestDto> inventories = new ArrayList<>();
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) { // 헤더 제외
                 Row row = sheet.getRow(i);
@@ -44,12 +50,10 @@ public class InventoryServiceImpl implements InventoryService {
                         .orderDate(orderDate)
                         .build());
             }
-
-            inventoryMapper.saveAll(inventories);
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return inventories;
     }
 
     @Override

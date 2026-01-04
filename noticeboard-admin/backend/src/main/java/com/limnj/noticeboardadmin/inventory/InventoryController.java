@@ -20,6 +20,13 @@ public class InventoryController {
     private final InventoryService inventoryService;
     private final PdfService pdfService;
 
+    @PostMapping("/inventories/parser")
+    public ResponseEntity<List<InventoryRequestDto>> validateInventories(
+            @RequestParam("inventoryFile") MultipartFile multipartFile) {
+        List<InventoryRequestDto> response = inventoryService.validateInventoryBulk(multipartFile);
+        return ResponseEntity.ok().body(response);
+    }
+
     @PostMapping("/inventories/bulk")
     public ResponseEntity<Void> createInventories(
             @RequestParam("inventoryFile") MultipartFile multipartFile) {

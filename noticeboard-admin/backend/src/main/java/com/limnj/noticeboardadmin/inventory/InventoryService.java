@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface InventoryService {
     void uploadInventoryBulk(MultipartFile multipartFile);
+    List<InventoryRequestDto> validateInventoryBulk(MultipartFile multipartFile);
     List<InventoryResponseDto> findAllInventories();
 }
