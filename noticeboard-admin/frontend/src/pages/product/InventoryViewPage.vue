@@ -1,10 +1,10 @@
 <template>
   <q-page padding>
     <div class="row q-col-gutter-md items-center q-mb-md">
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-4">
         <div class="text-h5 text-weight-bold">재고 등록 관리</div>
       </div>
-      <div class="col-12 col-md-6 text-right">
+      <div class="col-12 col-md-8 text-right">
         <q-file
           v-model="excelFile"
           label="엑셀 파일 업로드 (.xlsx)"
@@ -26,6 +26,16 @@
           color="primary"
           icon="download"
           class="q-ml-sm"
+        />
+
+        <q-btn
+          label="PDF 다운로드"
+          flat
+          color="secondary"
+          icon="picture_as_pdf"
+          class="q-mr-sm"
+          @click="exportPDF"
+          :disable="inventories.length === 0"
         />
       </div>
     </div>
@@ -117,7 +127,6 @@ const columns = [
 ];
 
 const inventories = ref([]);
-const excelInventories = ref([]);
 
 const pagination = ref({
   rowsPerPage: 10,
@@ -149,7 +158,7 @@ const handleFileUpload = async () => {
     });
 
     // 백엔드에서 파싱한 리스트 결과 저장
-    excelInventories.value = [...response.data];
+    const excelInventories = [...response.data];
     // 기존 데이터 + 임시 업로드 데이터 -> 최종 저장 버튼 클릭 후 저장
     inventories.value = [...inventories.value, ...excelInventories.value];
 
@@ -164,7 +173,7 @@ const handleFileUpload = async () => {
 };
 
 const saveInventory = async () => {
-  if (excelInventories.value.length === 0) {
+  if (!excelFile.value) {
     $q.notify({ color: 'negative', message: '저장할 데이터가 없습니다.' });
     return;
   }
@@ -181,6 +190,37 @@ const saveInventory = async () => {
     $q.notify({ color: 'positive', message: '저장이 완료되었습니다.' });
   } catch (error) {
     console.error('인벤토리 목록을 불러오는 중 오류 발생:', error);
+  }
+};
+
+const exportPDF = async () => {
+  try {
+    // API 호출 (반드시 responseType: 'blob' 설정)
+    const response = await api.get('/inventories/pdf', {
+      responseType: 'blob',
+    });
+
+    // Blob 데이터 처리
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+
+    // 가상 링크 생성 및 클릭
+    const link = document.createElement('a');
+    link.href = url;
+
+    // 파일명 설정 (API에서 지정한 이름 혹은 고정 이름)
+    link.setAttribute('download', `inventory_${new Date().getTime()}.pdf`);
+
+    document.body.appendChild(link);
+    link.click();
+
+    link.remove();
+    window.URL.revokeObjectURL(url);
+
+    $q.notify({ color: 'positive', message: '다운로드 성공!' });
+  } catch (error) {
+    console.error('PDF Download Error:', error);
+    $q.notify({ color: 'negative', message: 'PDF 다운로드에 실패했습니다.' });
   }
 };
 
