@@ -2,6 +2,7 @@ package com.limnj.noticeboardadmin.util;
 
 import com.limnj.noticeboardadmin.inventory.InventoryResponseDto;
 import com.lowagie.text.pdf.BaseFont;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -28,7 +29,7 @@ public class PdfService {
             ITextRenderer renderer = new ITextRenderer();
 
             renderer.getFontResolver().addFont(
-                    "fonts/NotoSansKR-Black.ttf",
+                    new ClassPathResource("fonts/MaruBuri-Regular.ttf").getURL().toString(),
                     BaseFont.IDENTITY_H,
                     BaseFont.EMBEDDED
             );
