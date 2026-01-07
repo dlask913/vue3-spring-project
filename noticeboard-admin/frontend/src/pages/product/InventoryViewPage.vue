@@ -26,6 +26,7 @@
           color="primary"
           icon="download"
           class="q-ml-sm"
+          @click="downloadTemplate"
         />
 
         <q-btn
@@ -44,7 +45,7 @@
       title="등록 대기 목록"
       :rows="inventories"
       :columns="columns"
-      row-key="code"
+      row-key="productCode"
       flat
       bordered
       :pagination="pagination"
@@ -67,7 +68,7 @@
         color="grey-7"
         flat
         class="q-mr-sm"
-        @click="rows = []"
+        @click="clearInventory"
       />
       <q-btn
         label="최종 저장하기"
@@ -160,7 +161,7 @@ const handleFileUpload = async () => {
     // 백엔드에서 파싱한 리스트 결과 저장
     const excelInventories = [...response.data];
     // 기존 데이터 + 임시 업로드 데이터 -> 최종 저장 버튼 클릭 후 저장
-    inventories.value = [...inventories.value, ...excelInventories.value];
+    inventories.value = [...inventories.value, ...excelInventories];
 
     $q.notify({
       color: 'positive',
@@ -187,6 +188,7 @@ const saveInventory = async () => {
         'Content-Type': 'multipart/form-data',
       },
     });
+    clearInventory();
     $q.notify({ color: 'positive', message: '저장이 완료되었습니다.' });
   } catch (error) {
     console.error('인벤토리 목록을 불러오는 중 오류 발생:', error);
@@ -222,6 +224,22 @@ const exportPDF = async () => {
     console.error('PDF Download Error:', error);
     $q.notify({ color: 'negative', message: 'PDF 다운로드에 실패했습니다.' });
   }
+};
+
+const downloadTemplate = () => {
+  // 서버의 정적 파일 경로로 직접 연결
+  const templateUrl = `${process.env.FILE_SERVER_URL}/inventory_template.xlsx`;
+  const link = document.createElement('a');
+  link.href = templateUrl;
+  link.setAttribute('download', '재고등록_양식.xlsx');
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};
+
+const clearInventory = () => {
+  fetchInventories();
+  excelFile.value = null;
 };
 
 onMounted(() => {
