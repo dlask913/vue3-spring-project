@@ -1,29 +1,42 @@
 <template>
-  <div class="q-gutter-md q-mx-auto" style="max-width: 80%">
-    <div class="q-pa-md q-mt-xl">
-      <h2 class="text-h5 text-center q-mb-md"><b>게시글 목록</b></h2>
-      <q-table
-        :rows="notices"
-        :columns="columns"
-        row-key="id"
-        :loading="loading"
-        no-data-label="게시글이 없습니다."
-        @row-click="onRowClick"
-        separator="cell"
-        class="rounded-borders"
-      >
-        <template v-slot:body-cell-hidden="props">
-          <q-td :props="props">
-            <q-checkbox v-model="props.row.hidden" disable />
-          </q-td>
-        </template>
-
-        <template v-slot:loading>
-          <q-inner-loading showing color="teal" />
-        </template>
-      </q-table>
+  <q-page padding>
+    <div class="row q-col-gutter-md items-center q-mb-md">
+      <div class="col-12 col-md-4">
+        <div class="text-h5 text-weight-bold">게시글 목록</div>
+      </div>
+      <div class="col-12 col-md-8 text-right">
+        <q-btn
+          label="새 글 작성"
+          color="primary"
+          icon="add"
+          @click="router.push('/notice/write')"
+        />
+      </div>
     </div>
-  </div>
+
+    <q-table
+      :rows="notices"
+      :columns="columns"
+      row-key="id"
+      flat
+      bordered
+      :loading="loading"
+      no-data-label="게시글이 없습니다."
+      @row-click="onRowClick"
+      separator="horizontal"
+      class="rounded-borders"
+    >
+      <template v-slot:body-cell-hidden="props">
+        <q-td :props="props" class="text-center">
+          <q-checkbox v-model="props.row.hidden" disable />
+        </q-td>
+      </template>
+
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
+      </template>
+    </q-table>
+  </q-page>
 </template>
 
 <script setup>
