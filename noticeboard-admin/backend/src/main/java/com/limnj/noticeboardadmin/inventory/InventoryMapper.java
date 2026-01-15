@@ -8,4 +8,5 @@ import java.util.List;
 public interface InventoryMapper {
     void saveAll(List<InventoryRequestDto> inventories);
     List<InventoryResponseDto> findAllInventories();
+    List<InventoryResponseDto> findInventoryByName(String inventoryName);
 }

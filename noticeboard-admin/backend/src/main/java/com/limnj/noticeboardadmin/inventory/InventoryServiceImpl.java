@@ -60,4 +60,9 @@ public class InventoryServiceImpl implements InventoryService {
     public List<InventoryResponseDto> findAllInventories() {
         return inventoryMapper.findAllInventories();
     }
+
+    @Override
+    public List<InventoryResponseDto> searchInventoryByName(String inventoryName) {
+        return inventoryMapper.findInventoryByName(inventoryName);
+    }
 }

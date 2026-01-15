@@ -1,14 +1,12 @@
 package com.limnj.noticeboardadmin.inventory;
 
 import com.limnj.noticeboardadmin.util.PdfService;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -37,6 +35,12 @@ public class InventoryController {
     @GetMapping("/inventories")
     public ResponseEntity<List<InventoryResponseDto>> getAllInventories(){
         List<InventoryResponseDto> response = inventoryService.findAllInventories();
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/inventories/{inventory-name}")
+    public ResponseEntity<List<InventoryResponseDto>> searchInventoryByName(@PathVariable("inventory-name") String inventoryName){
+        List<InventoryResponseDto> response = inventoryService.searchInventoryByName(inventoryName);
         return ResponseEntity.ok().body(response);
     }
 

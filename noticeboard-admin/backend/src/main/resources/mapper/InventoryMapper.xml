@@ -17,4 +17,10 @@
         SELECT product_code, product_name, order_qty, unit_price, order_date
         FROM product_order
     </select>
+
+    <select id="findInventoryByName" parameterType="String">
+        SELECT product_order_id AS productId, product_code, product_name, order_qty, unit_price, order_date
+        FROM product_order
+        WHERE product_name = #{productName}
+    </select>
 </mapper>
