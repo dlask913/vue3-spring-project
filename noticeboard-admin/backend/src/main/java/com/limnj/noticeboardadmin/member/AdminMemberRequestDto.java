@@ -9,12 +9,14 @@ public class AdminMemberRequestDto {
     String username;
     String email;
     String password;
+    Role role;
 
     @Builder
-    public AdminMemberRequestDto(String username, String email, String password) {
+    public AdminMemberRequestDto(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     void saveEncodedPassword(String encodedPassword){

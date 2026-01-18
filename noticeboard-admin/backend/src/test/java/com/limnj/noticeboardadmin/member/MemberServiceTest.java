@@ -40,6 +40,7 @@ class MemberServiceTest {
         AdminMemberResponseDto findMember = memberMapper.findMemberById(requestDto.getId()).orElseThrow();
         Assertions.assertThat(findMember.getUsername()).isEqualTo(requestDto.getUsername());
         Assertions.assertThat(findMember.getPassword()).isEqualTo(requestDto.getPassword());
+        Assertions.assertThat(findMember.getRole()).isEqualTo(Role.ROLE_USER.toString()); // default
     }
 
     @Test
@@ -56,6 +57,7 @@ class MemberServiceTest {
         Assertions.assertThat(findMember.getUsername()).isEqualTo(requestDto.getUsername());
         Assertions.assertThat(findMember.getEmail()).isEqualTo(requestDto.getEmail());
         Assertions.assertThat(findMember.getPassword()).isEqualTo(requestDto.getPassword());
+        Assertions.assertThat(findMember.getRole()).isEqualTo(Role.ROLE_USER.toString()); // default
     }
 
     @Test

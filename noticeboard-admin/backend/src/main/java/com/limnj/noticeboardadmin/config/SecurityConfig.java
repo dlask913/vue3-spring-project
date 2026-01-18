@@ -30,7 +30,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(
                         request -> request
-                                .requestMatchers("/notice/**").authenticated()
+                                .requestMatchers("/notice/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER", "ROLE_USER")
+                                .requestMatchers("/**/logs/**").hasAnyAuthority("ROLE_ADMIN")
+                                .requestMatchers("/inventories/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
                                 .anyRequest().permitAll()
                 )
                 // security 6.1.0 부터 권장

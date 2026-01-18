@@ -8,14 +8,14 @@
 
     <!-- 관리자 회원 단일 조회 by PK -->
     <select id="findMemberById" parameterType="long" resultType="AdminMemberResponseDto">
-        SELECT id, username, password, email
+        SELECT id, username, password, email, user_role as role
         FROM members
         WHERE id = #{id} AND user_type = 'ADMIN'
     </select>
 
     <!-- 관리자 회원 단일 조회 by Username -->
     <select id="findMemberByUsername" parameterType="String" resultType="AdminMemberResponseDto">
-        SELECT id, username, password, email
+        SELECT id, username, password, email, user_role as role
         FROM members
         WHERE username = #{username} AND user_type = 'ADMIN'
     </select>

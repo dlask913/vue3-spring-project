@@ -106,7 +106,7 @@ public class MemberServiceImpl implements MemberService{
         return User.builder()
                 .username(username)
                 .password(findMember.get().getPassword())
-                .roles("ADMIN")
+                .authorities(findMember.get().getRole())
                 .build();
     }
 }
