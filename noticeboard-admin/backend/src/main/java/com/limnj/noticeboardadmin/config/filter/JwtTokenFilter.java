@@ -3,6 +3,9 @@ package com.limnj.noticeboardadmin.config.filter;
 import com.limnj.noticeboardadmin.member.MemberService;
 import com.limnj.noticeboardadmin.jwt.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,6 +58,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 }
             } catch (ExpiredJwtException e) {
                 log.warn("토큰이 만료되었습니다.");
+                request.setAttribute("jwt_exception", "EXPIRED");
+            } catch (MalformedJwtException | UnsupportedJwtException e) {
+                request.setAttribute("jwt_exception", "MALFORMED");
+            } catch (SecurityException | SignatureException e) {
+                request.setAttribute("jwt_exception", "INVALID_SIGNATURE");
             } catch (Exception e) {
                 log.warn("인증 실패 : {}", e.getMessage());
             }
