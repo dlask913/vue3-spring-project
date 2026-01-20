@@ -60,11 +60,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 log.warn("토큰이 만료되었습니다.");
                 request.setAttribute("jwt_exception", "EXPIRED");
             } catch (MalformedJwtException | UnsupportedJwtException e) {
+                log.warn("잘못된 토큰입니다.");
                 request.setAttribute("jwt_exception", "MALFORMED");
             } catch (SecurityException | SignatureException e) {
+                log.warn("유효하지 않은 토큰입니다.");
                 request.setAttribute("jwt_exception", "INVALID_SIGNATURE");
             } catch (Exception e) {
                 log.warn("인증 실패 : {}", e.getMessage());
+                e.printStackTrace();
             }
         } else {
             log.warn("JWT Token does not begin with Bearer String");

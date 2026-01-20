@@ -1,5 +1,6 @@
 package com.limnj.noticeboardadmin.config;
 
+import com.limnj.noticeboardadmin.config.filter.CustomAccessDeniedHandler;
 import com.limnj.noticeboardadmin.config.filter.JwtExceptionFilter;
 import com.limnj.noticeboardadmin.config.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class SecurityConfig {
 
     private final JwtTokenFilter jwtTokenFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -31,8 +33,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         request -> request
                                 .requestMatchers("/notice/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER", "ROLE_USER")
-                                .requestMatchers("/**/logs/**").hasAnyAuthority("ROLE_ADMIN")
-                                .requestMatchers("/inventories/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
+//                                .requestMatchers("/**/logs/**").hasAnyAuthority("ROLE_ADMIN")
+                                .requestMatchers("/inventories/**", "/inventory", "/inventories").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
                                 .anyRequest().permitAll()
                 )
                 // security 6.1.0 부터 권장
@@ -41,8 +43,11 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                .addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtExceptionFilter, JwtTokenFilter.class)
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler(customAccessDeniedHandler) 
+                )
         ;
 
         return http.build();
