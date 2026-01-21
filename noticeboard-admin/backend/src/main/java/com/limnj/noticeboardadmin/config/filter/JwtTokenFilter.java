@@ -58,13 +58,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 }
             } catch (ExpiredJwtException e) {
                 log.warn("토큰이 만료되었습니다.");
-                request.setAttribute("jwt_exception", "EXPIRED");
+                request.setAttribute("jwt_exception", "TOKEN_EXPIRED");
             } catch (MalformedJwtException | UnsupportedJwtException e) {
                 log.warn("잘못된 토큰입니다.");
-                request.setAttribute("jwt_exception", "MALFORMED");
+                request.setAttribute("jwt_exception", "TOKEN_MALFORMED");
             } catch (SecurityException | SignatureException e) {
                 log.warn("유효하지 않은 토큰입니다.");
-                request.setAttribute("jwt_exception", "INVALID_SIGNATURE");
+                request.setAttribute("jwt_exception", "TOKEN_INVALID_SIGNATURE");
             } catch (Exception e) {
                 log.warn("인증 실패 : {}", e.getMessage());
                 e.printStackTrace();

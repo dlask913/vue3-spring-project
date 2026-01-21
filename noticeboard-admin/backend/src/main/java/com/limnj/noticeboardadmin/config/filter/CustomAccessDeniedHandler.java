@@ -35,7 +35,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
         final ExceptionDto responseError = ExceptionDto.builder()
                 .status(HttpServletResponse.SC_FORBIDDEN)
-                .message("권한이 없습니다.")
+                .message("ACCESS_DENIED")
                 .build();
         response.getWriter().write(mapper.writeValueAsString(responseError));
     }

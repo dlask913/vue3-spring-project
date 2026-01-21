@@ -25,23 +25,15 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     }
 
     public void setErrorResponse(HttpServletResponse response, String exception) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
 
-        String body = switch (exception) {
-            case "EXPIRED" -> """
-                {"code":"TOKEN_EXPIRED","message":"Access token expired"}
-                """;
-            case "MALFORMED" -> """
-                {"code":"INVALID_TOKEN","message":"Malformed JWT"}
-                """;
-            case "INVALID_SIGNATURE" -> """
-                {"code":"INVALID_SIGNATURE","message":"Invalid JWT signature"}
-                """;
-            default -> """
-                {"code":"AUTH_ERROR","message":"Authentication failed"}
-                """;
-        };
-        response.getWriter().write(body);
+        final ExceptionDto responseError = ExceptionDto.builder()
+                .status(HttpServletResponse.SC_FORBIDDEN)
+                .message(exception) // prefix is TOKEN_*
+                .build();
+        response.getWriter().write(mapper.writeValueAsString(responseError));
     }
 }
