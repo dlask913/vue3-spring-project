@@ -53,6 +53,11 @@ const routes = [
         name: 'InventoryViewPage',
         component: () => import('src/pages/product/InventoryViewPage.vue'),
       },
+      {
+        path: '/error/denied',
+        name: 'AccessDeniedPage',
+        component: () => import('src/pages/error/AccessDeniedPage.vue'),
+      }
     ],
   },
 

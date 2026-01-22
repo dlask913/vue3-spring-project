@@ -30,6 +30,11 @@ export default defineBoot(({ router, store }) => {
       const userStore = useUserStore();
       const originalRequest = error.config;
 
+      if (error.response?.status === 403 && error.response?.data?.message === 'ACCESS_DENIED') { // 권한이 없는 경우
+        router.push('/error/denied')
+        return Promise.reject(error);
+      }
+
       // access token 만료로 403 발생한 경우
       if (error.response?.status === 403 && userStore.refreshToken) {
         try {
