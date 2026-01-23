@@ -10,9 +10,10 @@ public class GlobalExceptionController {
     @ExceptionHandler(BizException.class)
     public ResponseEntity<ExceptionDto> handleBizException(BizException e) {
         ExceptionDto responseError = ExceptionDto.builder()
-                .status(e.getStatus())
-                .message(e.getMessage())
+                .status(e.getErrorCode().getStatus())
+                .errorCode(e.getErrorCode().name())
+                .message(e.getErrorCode().getDescription())
                 .build();
-        return ResponseEntity.status(e.getStatus()).body(responseError);
+        return ResponseEntity.status(e.getErrorCode().getStatus()).body(responseError);
     }
 }

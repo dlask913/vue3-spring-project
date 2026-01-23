@@ -3,12 +3,12 @@ package com.limnj.noticeboardadmin.exception;
 import lombok.Getter;
 
 @Getter
-public abstract class BizException extends RuntimeException{
-    private final int status;
+public class BizException extends RuntimeException{
+    private final ErrorCode errorCode;
 
-    public BizException(String message, int status) {
-        super(message);
-        this.status = status;
+    public BizException(ErrorCode errorCode) {
+        super(errorCode.getDescription());
+        this.errorCode = errorCode;
     }
 }
 

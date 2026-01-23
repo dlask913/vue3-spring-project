@@ -1,7 +1,9 @@
 package com.limnj.noticeboardadmin.jwt;
 
-import com.limnj.noticeboardadmin.exception.RefreshTokenInvalidException;
+import com.limnj.noticeboardadmin.exception.BizException;
+import com.limnj.noticeboardadmin.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service @Transactional
-@RequiredArgsConstructor
+@RequiredArgsConstructor @Slf4j
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final TokenMapper tokenMapper;
@@ -30,14 +32,15 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public String generateNewAccessToken(RefreshTokenRequestDto requestDto) {
         if(!validateRefreshToken(requestDto)){
-            throw new RefreshTokenInvalidException("Refresh Token 이 일치하지 않습니다.");
+            log.error("Refresh Token 이 일치하지 않습니다.");
+            throw new BizException(ErrorCode.REFRESH_TOKEN_INVALID);
         }
         return jwtTokenUtil.generateToken(requestDto.getUsername());
     }
 
     public boolean validateRefreshToken(RefreshTokenRequestDto requestDto) {
         RefreshToken refreshToken = tokenMapper.findRefreshTokenByUsername(requestDto.getUsername()).orElseThrow(
-                () -> new RefreshTokenInvalidException("해당 User 의 Refresh Token 이 존재하지 않거나 만료되었습니다.")
+                () -> new BizException(ErrorCode.REFRESH_TOKEN_INVALID)
         );
         return refreshToken.getToken().equals(requestDto.getRefreshToken());
     }

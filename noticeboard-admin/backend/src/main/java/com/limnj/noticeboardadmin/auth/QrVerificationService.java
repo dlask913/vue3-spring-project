@@ -5,12 +5,12 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.limnj.noticeboardadmin.exception.UserEmailNotFoundException;
+import com.limnj.noticeboardadmin.exception.BizException;
+import com.limnj.noticeboardadmin.exception.ErrorCode;
 import com.limnj.noticeboardadmin.member.MemberService;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -27,7 +27,7 @@ public class QrVerificationService {
 
     public QrResponseDto generateQrCodeForUser(String userEmail) throws IOException, WriterException {
         if(!memberServiceImpl.existsByEmail(userEmail)){
-            throw new UserEmailNotFoundException();
+            throw new BizException(ErrorCode.EMAIL_NOT_FOUND);
         }
         GoogleAuthenticatorKey secretKey = createSecretKey();
         memberServiceImpl.updateSecretKeyByEmail(userEmail, secretKey.getKey()); // secretKey DB에 저장
