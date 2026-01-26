@@ -1,5 +1,7 @@
 package com.limnj.noticeboardadmin.config.filter;
 
+import com.limnj.noticeboardadmin.exception.BizException;
+import com.limnj.noticeboardadmin.exception.ErrorCode;
 import com.limnj.noticeboardadmin.member.MemberService;
 import com.limnj.noticeboardadmin.jwt.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -35,7 +37,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         final String requestTokenHeader = request.getHeader("Authorization");
         if (StringUtils.startsWith(requestTokenHeader, "Bearer ")) {
             String jwtToken = requestTokenHeader.substring(7);
@@ -57,14 +58,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     }
                 }
             } catch (ExpiredJwtException e) {
-                log.warn("토큰이 만료되었습니다.");
-                request.setAttribute("jwt_exception", "TOKEN_EXPIRED");
+                throw new BizException(ErrorCode.TOKEN_EXPIRED);
             } catch (MalformedJwtException | UnsupportedJwtException e) {
-                log.warn("잘못된 토큰입니다.");
-                request.setAttribute("jwt_exception", "TOKEN_MALFORMED");
+                throw new BizException(ErrorCode.TOKEN_MALFORMED);
             } catch (SecurityException | SignatureException e) {
-                log.warn("유효하지 않은 토큰입니다.");
-                request.setAttribute("jwt_exception", "TOKEN_INVALID_SIGNATURE");
+                throw new BizException(ErrorCode.TOKEN_INVALID_SIGNATURE);
             } catch (Exception e) {
                 log.warn("인증 실패 : {}", e.getMessage());
                 e.printStackTrace();
