@@ -6,6 +6,8 @@ import {
   createWebHashHistory,
 } from 'vue-router';
 import routes from './routes';
+import { useUserStore } from 'stores/user';
+import { Notify } from 'quasar';
 
 /*
  * If not building with SSR mode, you can
@@ -31,6 +33,32 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
+  });
+
+  // 네비게이션 가드 시작
+  Router.beforeEach((to, from, next) => {
+    const userStore = useUserStore();
+
+    const isLoggedIn = userStore.isLoggedIn;
+    const userRole = userStore.userRole;
+
+    // 로그인 이후, 권한이 없는 경우 - 403
+    if (to.meta.roles && !to.meta.roles.includes(userRole)) {
+      Notify.create({
+        type: 'negative',
+        message: '접근 권한이 없습니다.',
+        position: 'top',
+        timeout: 2000,
+      });
+      return next({ name: 'AccessDeniedPage' });
+    }
+
+    // 이미 로그인 한 경우
+    if (isLoggedIn && (to.path === '/login' || to.path === '/signup')) {
+      return next({ path: '/' });
+    }
+
+    next(); // 모든 조건 통과 시 목적지로 이동
   });
 
   return Router;

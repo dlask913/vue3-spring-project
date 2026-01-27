@@ -7,14 +7,26 @@ const routes = [
       {
         path: '/notice/write',
         component: () => import('src/pages/notice/NoticeWritePage.vue'),
+        meta: {
+          requiresAuth: true,
+          roles: ['ROLE_USER', 'ROLE_MANAGER', 'ROLE_ADMIN'],
+        },
       },
       {
         path: '/notice/list',
         component: () => import('src/pages/notice/NoticeListPage.vue'),
+        meta: {
+          requiresAuth: true,
+          roles: ['ROLE_USER', 'ROLE_MANAGER', 'ROLE_ADMIN'],
+        },
       },
       {
         path: '/notice/:id',
         component: () => import('src/pages/notice/NoticeViewPage.vue'),
+        meta: {
+          requiresAuth: true,
+          roles: ['ROLE_USER', 'ROLE_MANAGER', 'ROLE_ADMIN'],
+        },
       },
       {
         path: 'signup',
@@ -52,12 +64,13 @@ const routes = [
         path: '/inventory',
         name: 'InventoryViewPage',
         component: () => import('src/pages/product/InventoryViewPage.vue'),
+        meta: { requiresAuth: true, roles: ['ROLE_MANAGER', 'ROLE_ADMIN'] }, // 권한 정보 추가
       },
       {
         path: '/error/denied',
         name: 'AccessDeniedPage',
         component: () => import('src/pages/error/AccessDeniedPage.vue'),
-      }
+      },
     ],
   },
 
