@@ -81,8 +81,8 @@ const onLogin = async () => {
     const loginDto = { ...login.value }
     const { data } = await loginMember(loginDto) // POST /login
     cookies.set('userId', data.memberId) // 쿠키에 userId 저장
-    cookies.set('token', data.token) // 쿠키에 토큰 저장
-    storage.login(data.memberId, data.token) // store 에 userId / 토큰 저장
+    cookies.set('token', data.accessToken) // 쿠키에 토큰 저장
+    storage.login(data.memberId, data.accessToken) // store 에 userId / 토큰 저장
 
     toast.setToast('로그인 완료')
     router.push('/')

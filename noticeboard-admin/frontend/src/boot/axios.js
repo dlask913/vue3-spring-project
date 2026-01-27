@@ -1,7 +1,6 @@
 import { defineBoot } from '#q-app/wrappers';
 import axios from 'axios';
 import { useUserStore } from 'stores/user';
-import { Notify } from 'quasar';
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -31,20 +30,21 @@ export default defineBoot(({ router, store }) => {
       const userStore = useUserStore();
       const originalRequest = error.config;
 
-      if (error.response?.status === 403 && error.response?.data?.message === 'ACCESS_DENIED') { // 권한이 없는 경우
-        Notify.create({
-          type: 'negative',
-          message: '접근 권한이 없습니다.',
-          position: 'top',
-          timeout: 2000,
-        });
-
-        router.push('/error/denied')
+      if (
+        error.response?.status === 403 &&
+        error.response?.data?.message === 'ACCESS_DENIED'
+      ) {
+        // 권한이 없는 경우
+        router.push('/error/denied');
         return Promise.reject(error);
       }
 
       // access token 관련 403 발생한 경우
-      if (error.response?.status === 403 && error.response?.data?.message?.startsWith('TOKEN_') && userStore.refreshToken) {
+      if (
+        error.response?.status === 403 &&
+        error.response?.data?.message?.startsWith('TOKEN_') &&
+        userStore.refreshToken
+      ) {
         try {
           // refresh token 발급 API 호출
           const newAccessToken = await axios.post(
@@ -55,7 +55,8 @@ export default defineBoot(({ router, store }) => {
             },
           );
 
-          if (!newAccessToken.data) { // refresh token이 유효하지 않은 경우
+          if (!newAccessToken.data) {
+            // refresh token이 유효하지 않은 경우
             userStore.clearAuthInfo();
             router.push('/login');
             return Promise.reject(error);
@@ -68,6 +69,7 @@ export default defineBoot(({ router, store }) => {
             newAccessToken.data,
             userStore.refreshToken,
             userStore.email,
+            userStore.userRole,
           );
 
           // 실패했던 요청에 새 토큰 넣어서 재시도

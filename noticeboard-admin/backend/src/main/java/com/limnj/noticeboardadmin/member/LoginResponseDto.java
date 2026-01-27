@@ -11,13 +11,15 @@ public class LoginResponseDto {
     String email;
     String accessToken;
     String refreshToken;
+    String role;
 
     @Builder
-    public LoginResponseDto(Long memberId, String username, String email, String accessToken, String refreshToken) {
+    public LoginResponseDto(Long memberId, String username, String email, String accessToken, String refreshToken, String role) {
         this.memberId = memberId;
         this.username = username;
         this.email = email;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.role = role;
     }
 }
