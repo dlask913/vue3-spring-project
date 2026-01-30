@@ -3,9 +3,14 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('src/pages/common/IndexPage.vue') },
+      {
+        path: '/',
+        name: 'IndexPage',
+        component: () => import('src/pages/common/IndexPage.vue'),
+      },
       {
         path: '/notice/write',
+        name: 'NoticeWritePage',
         component: () => import('src/pages/notice/NoticeWritePage.vue'),
         meta: {
           requiresAuth: true,
@@ -14,6 +19,7 @@ const routes = [
       },
       {
         path: '/notice/list',
+        name: 'NoticeListPage',
         component: () => import('src/pages/notice/NoticeListPage.vue'),
         meta: {
           requiresAuth: true,
@@ -22,6 +28,7 @@ const routes = [
       },
       {
         path: '/notice/:id',
+        name: 'NoticeViewPage',
         component: () => import('src/pages/notice/NoticeViewPage.vue'),
         meta: {
           requiresAuth: true,
@@ -29,25 +36,32 @@ const routes = [
         },
       },
       {
-        path: 'signup',
+        path: '/signup',
+        name: 'SignUpPage',
         component: () => import('src/pages/member/SignUpPage.vue'),
       },
       {
-        path: 'login',
+        path: '/login',
+        name: 'LoginPage',
         component: () => import('src/pages/member/LoginPage.vue'),
       },
       {
         path: '/auth/email-verify',
+        name: 'EmailCodeVerifyPage',
         component: () => import('src/pages/auth/EmailCodeVerifyPage.vue'),
       },
       {
         path: '/auth/qr-verify',
+        name: 'QrCodeVerifyPage',
         component: () => import('src/pages/auth/QrCodeVerifyPage.vue'),
       },
       {
         path: '/security/2fa',
         name: 'TwoFactorSetupPage',
         component: () => import('src/pages/auth/TwoFactorSetupPage.vue'),
+        meta: {
+          requiresAuth: true,
+        },
       },
       {
         path: '/2fa/select',
@@ -59,6 +73,9 @@ const routes = [
         name: 'LogStatisticsViewPage',
         component: () =>
           import('src/pages/statistics/LogStatisticsViewPage.vue'),
+        meta: {
+          requiresAuth: true,
+        },
       },
       {
         path: '/inventory',
@@ -78,6 +95,7 @@ const routes = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
+    name: 'ErrorNotFound',
     component: () => import('src/pages/common/ErrorNotFound.vue'),
   },
 ];

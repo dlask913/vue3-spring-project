@@ -41,6 +41,12 @@ export default defineRouter(function (/* { store, ssrContext } */) {
 
     const isLoggedIn = userStore.isLoggedIn;
     const userRole = userStore.userRole;
+    console.log(to.fullPath);
+
+    // 로그인이 필요한 경우 -> 인증 실패
+    if (to.meta.requiresAuth && !isLoggedIn) {
+      return next({ path: '/login', query: { redirect: to.fullPath } });
+    }
 
     // 로그인 이후, 권한이 없는 경우 - 403
     if (to.meta.roles && !to.meta.roles.includes(userRole)) {
