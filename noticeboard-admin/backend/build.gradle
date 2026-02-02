@@ -77,6 +77,9 @@ dependencies {
 	implementation 'org.thymeleaf:thymeleaf-spring6'
 	implementation "org.xhtmlrenderer:flying-saucer-pdf:${flyingSaucerVersion}"
 
+	// AOP
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
