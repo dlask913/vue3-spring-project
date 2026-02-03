@@ -43,6 +43,7 @@ CREATE TABLE comments (
     content VARCHAR(255) NOT NULL,
     post_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    hide_yn VARCHAR(1) NOT NULL DEFAULT 'N',
     member_id BIGINT NOT NULL,
     notice_id BIGINT NOT NULL,
     FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
@@ -165,4 +166,36 @@ CREATE TABLE access_log (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE product_order (
+    product_order_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    product_code VARCHAR(50) NOT NULL COMMENT '상품 코드',
+    product_name VARCHAR(100) NOT NULL COMMENT '상품명',
+    order_qty BIGINT NOT NULL,
+    unit_price INT NOT NULL,
+    order_date VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+)
+
+CREATE TABLE page_metadata (
+    page_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
+    domain      VARCHAR(50)  NOT NULL COMMENT '기능 도메인 (예: 공지, 인증, 보안, 통계, 재고)',
+    menu_name   VARCHAR(100) NOT NULL COMMENT '화면/메뉴 이름',
+    page_url    VARCHAR(255) NOT NULL COMMENT '프론트엔드 라우팅 경로',
+    description TEXT NOT NULL COMMENT '페이지 의도 설명 (Embedding 대상)',
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_page_url (page_url)
+)
+
+CREATE TABLE audit_log (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    event_type VARCHAR(50) NOT NULL COMMENT 'LOGIN, REGISTER_MEMBER, AUTH, ERROR',
+    user_id BIGINT NULL COMMENT '회원 ID (비로그인 가능)',
+    username VARCHAR(100) NULL COMMENT '회원 닉네임',
+    ip_address VARCHAR(45) NULL COMMENT 'IP주소',
+    action_type VARCHAR(20) NULL COMMENT 'CREATE, UPDATE, DELETE',
+    is_success BOOLEAN NOT NULL DEFAULT TRUE COMMENT '성공 여부',
+    message VARCHAR(500) NULL COMMENT '내용',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) COMMENT='감사 및 보안 로그 테이블';
 ```

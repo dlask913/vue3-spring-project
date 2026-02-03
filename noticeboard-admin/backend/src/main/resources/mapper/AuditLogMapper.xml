@@ -1,0 +1,7 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.limnj.noticeboardadmin.audit.AuditLogMapper">
+    <insert id="insertAuditLog" parameterType="AuditLogDto">
+        INSERT INTO audit_log(event_type, user_id, username, ip_address, is_success, message)
+        VALUES (#{eventType}, #{userId}, #{username}, #{ipAddress}, #{isSuccess}, #{message})
+    </insert>
+</mapper>

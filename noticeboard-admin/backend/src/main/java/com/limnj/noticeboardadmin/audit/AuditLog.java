@@ -6,5 +6,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface AuditLog {
-    String action() default "";
+    String eventType() default "";
+    String actionType() default "";
 }
