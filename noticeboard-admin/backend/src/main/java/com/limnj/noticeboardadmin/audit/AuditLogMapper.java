@@ -4,5 +4,5 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface AuditLogMapper {
-    void insertAuditLog(AuditLogDto auditLogDto);
+    void insertAuditLog(AuditLogEvent auditLogDto);
 }
