@@ -21,12 +21,23 @@ public class AccessLogInterceptor implements HandlerInterceptor {
             AccessLogDto accessLog = AccessLogDto.builder()
                     .method(request.getMethod())
                     .uri(request.getRequestURI())
-                    .clientIp(request.getRemoteAddr())
+                    .clientIp(getClientIP(request))
                     .createdAt(LocalDateTime.now())
                     .build();
             accessLogMapper.insertAccessLog(accessLog);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String getClientIP(HttpServletRequest request) {
+        String clientIp = request.getHeader("X-Forwarded-For");
+        if (clientIp == null || clientIp.isEmpty() || "unknown".equalsIgnoreCase(clientIp)) {
+            clientIp = request.getHeader("X-Real-IP");
+        }
+        if (clientIp == null || clientIp.isEmpty() || "unknown".equalsIgnoreCase(clientIp)) {
+            clientIp = request.getRemoteAddr();
+        }
+        return clientIp;
     }
 }
