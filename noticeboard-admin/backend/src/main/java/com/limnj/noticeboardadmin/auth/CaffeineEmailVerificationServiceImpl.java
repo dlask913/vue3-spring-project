@@ -2,6 +2,7 @@ package com.limnj.noticeboardadmin.auth;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.limnj.noticeboardadmin.audit.AuditLog;
 import com.limnj.noticeboardadmin.member.MemberMapper;
 import com.limnj.noticeboardadmin.util.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class CaffeineEmailVerificationServiceImpl implements EmailVerificationSe
 
     /** 1. 이메일로 인증 코드 발송 **/
     @Override
+    @AuditLog(eventType = AuditLog.EventType.SEND_VERIFICATION_CODE, actionType = AuditLog.ActionType.EMAIL)
     public boolean sendVerificationCode(String email) {
         if (!memberMapper.existsByEmail(email)) {
             return false;

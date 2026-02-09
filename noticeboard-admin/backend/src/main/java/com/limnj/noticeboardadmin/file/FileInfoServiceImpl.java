@@ -1,5 +1,6 @@
 package com.limnj.noticeboardadmin.file;
 
+import com.limnj.noticeboardadmin.audit.AuditLog;
 import com.limnj.noticeboardadmin.util.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     private final FileService fileService;
 
     @Override
+    @AuditLog(eventType = AuditLog.EventType.SAVE_FILE, actionType = AuditLog.ActionType.CREATE)
     public int saveFile(FileInfoRequestDto requestDto, MultipartFile multipartFile, String location) {
         String oriFileName = multipartFile.getOriginalFilename();
         String fileName = fileService.uploadFile(location, multipartFile);
@@ -27,6 +29,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     }
 
     @Override
+    @AuditLog(eventType = AuditLog.EventType.DELETE_FILE, actionType = AuditLog.ActionType.DELETE)
     public int deleteFile(Long fileId, String location, String fileName) {
         fileService.deleteFile(location, fileName); // 파일 삭제
         return fileInfoMapper.deleteFile(fileId);

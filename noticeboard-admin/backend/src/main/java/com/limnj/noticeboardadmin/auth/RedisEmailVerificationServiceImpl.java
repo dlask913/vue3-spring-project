@@ -1,5 +1,6 @@
 package com.limnj.noticeboardadmin.auth;
 
+import com.limnj.noticeboardadmin.audit.AuditLog;
 import com.limnj.noticeboardadmin.member.MemberMapper;
 import com.limnj.noticeboardadmin.util.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class RedisEmailVerificationServiceImpl implements EmailVerificationServi
     private static final long EXPIRE_TIME = 3 * 60; // 3분
 
     @Override
+    @AuditLog(eventType = AuditLog.EventType.SEND_VERIFICATION_CODE, actionType = AuditLog.ActionType.EMAIL)
     public boolean sendVerificationCode(String email) {
         // 사용자 존재 확인
         if (!memberMapper.existsByEmail(email)) {

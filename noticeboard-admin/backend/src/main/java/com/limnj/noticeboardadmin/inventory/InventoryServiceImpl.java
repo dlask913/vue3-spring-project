@@ -1,5 +1,6 @@
 package com.limnj.noticeboardadmin.inventory;
 
+import com.limnj.noticeboardadmin.audit.AuditLog;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ public class InventoryServiceImpl implements InventoryService {
     private final InventoryMapper inventoryMapper;
 
     @Override
+    @AuditLog(eventType = AuditLog.EventType.UPLOAD_INVENTORIES, actionType = AuditLog.ActionType.CREATE)
     public void uploadInventoryBulk(MultipartFile multipartFile) {
         List<InventoryRequestDto> inventories = validateInventoryBulk(multipartFile);
         inventoryMapper.saveAll(inventories);

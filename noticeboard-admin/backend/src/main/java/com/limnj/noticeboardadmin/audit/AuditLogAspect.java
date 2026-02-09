@@ -16,8 +16,8 @@ public class AuditLogAspect {
 
     @Around("@annotation(auditLog)") // 메서드 전후 실행
     public Object logExecution(ProceedingJoinPoint joinPoint, AuditLog auditLog) throws Throwable {
-        String eventType = auditLog.eventType();
-        String actionType = auditLog.actionType();
+        String eventType = auditLog.eventType().toString();
+        String actionType = auditLog.actionType().toString();
         Object[] args = joinPoint.getArgs(); // 메서드 파라미터들
 
         long start = System.currentTimeMillis();

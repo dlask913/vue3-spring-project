@@ -1,5 +1,6 @@
 package com.limnj.noticeboardadmin.member;
 
+import com.limnj.noticeboardadmin.audit.AuditLog;
 import com.limnj.noticeboardadmin.exception.BizException;
 import com.limnj.noticeboardadmin.exception.ErrorCode;
 import com.limnj.noticeboardadmin.jwt.JwtTokenUtil;
@@ -24,6 +25,7 @@ public class MemberServiceImpl implements MemberService{
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @AuditLog(eventType = AuditLog.EventType.REGISTER_MEMBER, actionType = AuditLog.ActionType.CREATE)
     public int saveAdminMember(AdminMemberRequestDto requestDto) {
         // password 단방향 암호화 적용
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
@@ -42,6 +44,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
+    @AuditLog(eventType = AuditLog.EventType.FIRST_LOGIN, actionType = AuditLog.ActionType.LOGIN)
     public LoginResponseDto loginWithCredentials(LoginRequestDto requestDto) {
         AdminMemberResponseDto findMember = memberMapper.findMemberByUsername(requestDto.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
@@ -55,6 +58,7 @@ public class MemberServiceImpl implements MemberService{
                 .memberId(findMember.getId())
                 .username(findMember.getUsername())
                 .email(findMember.getEmail())
+                .role(findMember.getRole())
                 .build();
     }
 
@@ -72,10 +76,12 @@ public class MemberServiceImpl implements MemberService{
                 .email(findMember.getEmail())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .role(findMember.getRole())
                 .build();
     }
 
     @Override
+    @AuditLog(eventType = AuditLog.EventType.QR_SECRET_KEY, actionType = AuditLog.ActionType.UPDATE)
     public void updateSecretKeyByEmail(String email, String secretKey) {
         // 사용자 존재 확인
         if (!memberMapper.existsByEmail(email)) {

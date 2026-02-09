@@ -1,5 +1,6 @@
 package com.limnj.noticeboardadmin.category;
 
+import com.limnj.noticeboardadmin.audit.AuditLog;
 import com.limnj.noticeboardadmin.file.FileInfoRequestDto;
 import com.limnj.noticeboardadmin.file.FileInfoService;
 import com.limnj.noticeboardadmin.file.FileType;
@@ -20,6 +21,7 @@ public class CategoryServiceImpl implements CategoryService{
     private String categoryImgLocation;
 
     @Override
+    @AuditLog(eventType = AuditLog.EventType.SAVE_CATEGORY, actionType = AuditLog.ActionType.CREATE)
     public int insertCategory(CategoryDto categoryDto, MultipartFile categoryImg) {
         int result = categoryMapper.insertCategory(categoryDto);
 
@@ -33,6 +35,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
+    @AuditLog(eventType = AuditLog.EventType.DELETE_CATEGORY, actionType = AuditLog.ActionType.DELETE)
     public int deleteCategory(Long categoryId) {
         fileInfoService.findByTypeId(categoryId, FileType.CATEGORY)
                 .ifPresent(fileDto -> fileInfoService.deleteFile(

@@ -1,7 +1,7 @@
 package com.limnj.noticeboardadmin.notice;
 
+import com.limnj.noticeboardadmin.audit.AuditLog;
 import com.limnj.noticeboardadmin.file.FileInfoRequestDto;
-import com.limnj.noticeboardadmin.file.FileInfoResponseDto;
 import com.limnj.noticeboardadmin.file.FileInfoService;
 import com.limnj.noticeboardadmin.file.FileType;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -24,6 +23,7 @@ public class NoticeServiceImpl implements NoticeService{
     private String fileLocation;
 
     @Override
+    @AuditLog(eventType = AuditLog.EventType.SAVE_NOTICE, actionType = AuditLog.ActionType.CREATE)
     public int saveNotice(NoticeRequestDto noticeRequestDto, MultipartFile noticeFile) {
         noticeRequestDto.savePostType();
         int result = noticeMapper.insertNotice(noticeRequestDto);
@@ -39,6 +39,7 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
+    @AuditLog(eventType = AuditLog.EventType.UPDATE_NOTICE, actionType = AuditLog.ActionType.UPDATE)
     public int updateNotice(NoticeRequestDto noticeRequestDto, MultipartFile noticeFile) {
         fileInfoServiceImpl.deleteFileIfPresent(noticeRequestDto.getId(), fileLocation, FileType.NOTICE);
 
@@ -53,6 +54,7 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
+    @AuditLog(eventType = AuditLog.EventType.DELETE_NOTICE, actionType = AuditLog.ActionType.DELETE)
     public int deleteNotice(Long noticeId) {
         return noticeMapper.deleteNotice(noticeId);
     }
