@@ -1,4 +1,4 @@
-package com.limnj.noticeboardadmin.config.filter;
+package com.limnj.noticeboardadmin.config.handler;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;

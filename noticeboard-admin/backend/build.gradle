@@ -80,6 +80,9 @@ dependencies {
 	// AOP
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 
+	// AES 암호화
+	implementation 'org.springframework.security:spring-security-crypto'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
