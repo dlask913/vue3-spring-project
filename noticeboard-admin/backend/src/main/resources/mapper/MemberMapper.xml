@@ -3,7 +3,7 @@
     <!-- 관리자 회원 가입 -->
     <insert id="saveAdminMember" parameterType="AdminMemberRequestDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO members (username, password, email, user_type)
-        VALUES (#{username}, #{password}, #{email}, 'ADMIN')
+        VALUES (#{username}, #{password}, #{email, typeHandler=com.limnj.noticeboardadmin.config.handler.EncryptedStringTypeHandler}, 'ADMIN')
     </insert>
 
     <!-- 관리자 회원 단일 조회 by PK -->
@@ -25,7 +25,7 @@
         SELECT EXISTS (
             SELECT 1
             FROM members
-            WHERE email = #{email} AND user_type = 'ADMIN'
+            WHERE email = #{email, typeHandler=com.limnj.noticeboardadmin.config.handler.EncryptedStringTypeHandler} AND user_type = 'ADMIN'
         )
     </select>
 
@@ -33,13 +33,13 @@
     <update id ="updateSecretKeyByEmail">
         UPDATE members
         SET secret_key = #{secretKey}, updated_at = NOW()
-        WHERE email = #{email} AND user_type = 'ADMIN'
+        WHERE email = #{email, typeHandler=com.limnj.noticeboardadmin.config.handler.EncryptedStringTypeHandler} AND user_type = 'ADMIN'
     </update>
 
     <!-- 회원 2FA QR secretKey 조회 -->
     <select id="findSecretKeyByEmail" parameterType="String" resultType="String">
         SELECT secret_key
         FROM members
-        WHERE email = #{email} AND user_type = 'ADMIN'
+        WHERE email = #{email, typeHandler=com.limnj.noticeboardadmin.config.handler.EncryptedStringTypeHandler} AND user_type = 'ADMIN'
     </select>
 </mapper>
