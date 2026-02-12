@@ -1,5 +1,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.limnj.noticeboardadmin.member.MemberMapper">
+    <resultMap id="AdminMemberResultMap" type="AdminMemberResponseDto">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="email"
+                column="email"
+                typeHandler="com.limnj.noticeboardadmin.config.handler.EncryptedStringTypeHandler"/>
+        <result property="role" column="user_role"/>
+    </resultMap>
+
     <!-- 관리자 회원 가입 -->
     <insert id="saveAdminMember" parameterType="AdminMemberRequestDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO members (username, password, email, user_type)
@@ -7,15 +17,15 @@
     </insert>
 
     <!-- 관리자 회원 단일 조회 by PK -->
-    <select id="findMemberById" parameterType="long" resultType="AdminMemberResponseDto">
-        SELECT id, username, password, email, user_role as role
+    <select id="findMemberById" parameterType="long" resultMap="AdminMemberResultMap">
+        SELECT id, username, password, email, user_role
         FROM members
         WHERE id = #{id} AND user_type = 'ADMIN'
     </select>
 
     <!-- 관리자 회원 단일 조회 by Username -->
-    <select id="findMemberByUsername" parameterType="String" resultType="AdminMemberResponseDto">
-        SELECT id, username, password, email, user_role as role
+    <select id="findMemberByUsername" parameterType="String" resultMap="AdminMemberResultMap">
+        SELECT id, username, password, email, user_role
         FROM members
         WHERE username = #{username} AND user_type = 'ADMIN'
     </select>

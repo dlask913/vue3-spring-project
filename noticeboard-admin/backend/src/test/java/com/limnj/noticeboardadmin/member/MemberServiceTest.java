@@ -1,8 +1,7 @@
 package com.limnj.noticeboardadmin.member;
 
-import com.limnj.noticeboardadmin.exception.PasswordMismatchException;
-import com.limnj.noticeboardadmin.exception.QrNotGenerateException;
-import com.limnj.noticeboardadmin.exception.UserEmailNotFoundException;
+import com.limnj.noticeboardadmin.exception.BizException;
+import com.limnj.noticeboardadmin.exception.ErrorCode;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.limnj.noticeboardadmin.exception.ErrorCode.*;
+import static com.limnj.noticeboardadmin.exception.ErrorCode.QR_NOT_GENERATE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
@@ -39,6 +40,7 @@ class MemberServiceTest {
         // then
         AdminMemberResponseDto findMember = memberMapper.findMemberById(requestDto.getId()).orElseThrow();
         Assertions.assertThat(findMember.getUsername()).isEqualTo(requestDto.getUsername());
+        Assertions.assertThat(findMember.getEmail()).isEqualTo(requestDto.getEmail());
         Assertions.assertThat(findMember.getPassword()).isEqualTo(requestDto.getPassword());
         Assertions.assertThat(findMember.getRole()).isEqualTo(Role.ROLE_USER.toString()); // default
     }
@@ -108,8 +110,8 @@ class MemberServiceTest {
 
         // when // then
         assertThatThrownBy(() -> memberServiceImpl.loginWithCredentials(loginDto))
-                .isInstanceOf(PasswordMismatchException.class)
-                .hasMessage("비밀번호가 맞지 않습니다");
+                .isInstanceOf(BizException.class)
+                .hasMessage(PASSWORD_MISMATCH.getDescription());
     }
 
     @Test
@@ -140,8 +142,8 @@ class MemberServiceTest {
 
         // when // then
         assertThatThrownBy(() -> memberServiceImpl.updateSecretKeyByEmail(email, secretKey))
-                .isInstanceOf(UserEmailNotFoundException.class)
-                .hasMessage("존재하지 않는 회원 이메일입니다.");
+                .isInstanceOf(BizException.class)
+                .hasMessage(EMAIL_NOT_FOUND.getDescription());
     }
 
     @Test
@@ -170,8 +172,8 @@ class MemberServiceTest {
 
         // when // then
         assertThatThrownBy(() -> memberServiceImpl.findSecretKeyByEmail(requestDto.getEmail()))
-                .isInstanceOf(QrNotGenerateException.class)
-                .hasMessage("QR 생성을 하지 않은 회원입니다.");
+                .isInstanceOf(BizException.class)
+                .hasMessage(QR_NOT_GENERATE.getDescription());
     }
 
     private AdminMemberRequestDto getMember(String username, String email, String password) {

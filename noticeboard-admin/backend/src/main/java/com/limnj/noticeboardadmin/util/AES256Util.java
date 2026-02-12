@@ -7,7 +7,7 @@ import java.util.Base64;
 
 public class AES256Util {
 
-    private static final String KEY = "1234567-32-byte-secret-key-1234567";
+    private static final String KEY = "12345-32-byte-secret-key-1234567";
     private static final String ALGORITHM = "AES/ECB/PKCS5Padding";
 
     public static String encrypt(String plainText) throws Exception {
