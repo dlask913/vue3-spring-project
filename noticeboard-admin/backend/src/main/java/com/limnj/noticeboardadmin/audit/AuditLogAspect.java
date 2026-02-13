@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -30,7 +33,7 @@ public class AuditLogAspect {
                     .eventType(eventType)
                     .actionType(actionType)
                     .userId(0L)
-                    .username("username")
+                    .username(getUsername())
                     .ipAddress("0.0.0.0")
                     .isSuccess(true)
                     .build();
@@ -40,11 +43,39 @@ public class AuditLogAspect {
             log.info("SUCCESS - Action: [{}], eventType: [{}], Args: [{}]", actionType, eventType, args);
             return result;
         } catch (Exception e) {
+            AuditLogEvent event = AuditLogEvent.builder()
+                    .eventType(eventType)
+                    .actionType(actionType)
+                    .userId(0L)
+                    .username(getUsername())
+                    .ipAddress("0.0.0.0")
+                    .isSuccess(false)
+                    .message(e.getMessage())
+                    .build();
+
+            auditLogEventListener.handleAuditLogEvent(event);
+
             log.error("FAIL - Action: [{}], eventType: [{}], Reason: [{}]", actionType, eventType, e.getMessage());
             throw e;
         } finally {
             long executionTime = System.currentTimeMillis() - start;
             log.info("Execution Time: {}ms", executionTime);
         }
+    }
+
+    private static String getUsername() {
+        String username = "anonymous"; // 기본값
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+
+            if (principal instanceof UserDetails) {
+                username = ((UserDetails) principal).getUsername();
+            } else {
+                username = principal.toString();
+            }
+        }
+        return username;
     }
 }
