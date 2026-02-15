@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component @Slf4j
 @RequiredArgsConstructor
@@ -13,6 +15,7 @@ public class AuditLogEventListener {
 
     @Async // 비즈니스 로직과 별개의 쓰레드에서 동작
     @EventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handleAuditLogEvent(AuditLogEvent auditLogEvent) {
         try {
             auditLogMapper.insertAuditLog(auditLogEvent);
