@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -40,17 +41,22 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public AdminMemberResponseDto findMemberById(Long memberId) {
         return memberMapper.findMemberById(memberId)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BizException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
     @Override
     @AuditLog(eventType = AuditLog.EventType.FIRST_LOGIN, actionType = AuditLog.ActionType.LOGIN)
     public LoginResponseDto loginWithCredentials(LoginRequestDto requestDto) {
         AdminMemberResponseDto findMember = memberMapper.findMemberByUsername(requestDto.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BizException(ErrorCode.MEMBER_NOT_FOUND));
+
+        if (findMember.getLockUntil() != null && findMember.getLockUntil().isAfter(LocalDateTime.now())) {
+            throw new BizException(ErrorCode.ACCOUNT_LOCKED); // 5분 잠금 상태
+        }
 
         boolean authResult = passwordEncoder.matches(requestDto.getPassword(), findMember.getPassword());
         if(!authResult){
+            memberMapper.incrementFailCount(requestDto.getUsername()); // 로그인 실패 횟수 증가
             throw new BizException(ErrorCode.PASSWORD_MISMATCH);
         }
 

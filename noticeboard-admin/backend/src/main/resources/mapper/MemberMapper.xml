@@ -8,6 +8,8 @@
                 column="email"
                 typeHandler="com.limnj.noticeboardadmin.config.handler.EncryptedStringTypeHandler"/>
         <result property="role" column="user_role"/>
+        <result property="loginFailCount" column="login_fail_count"/>
+        <result property="lockUntil" column="lock_until"/>
     </resultMap>
 
     <!-- 관리자 회원 가입 -->
@@ -25,7 +27,7 @@
 
     <!-- 관리자 회원 단일 조회 by Username -->
     <select id="findMemberByUsername" parameterType="String" resultMap="AdminMemberResultMap">
-        SELECT id, username, password, email, user_role
+        SELECT id, username, password, email, user_role, login_fail_count, lock_until
         FROM members
         WHERE username = #{username} AND user_type = 'ADMIN'
     </select>
@@ -52,4 +54,16 @@
         FROM members
         WHERE email = #{email, typeHandler=com.limnj.noticeboardadmin.config.handler.EncryptedStringTypeHandler} AND user_type = 'ADMIN'
     </select>
+
+    <!-- 로그인 실패 횟수 증가 -->
+    <update id="incrementFailCount" parameterType="String">
+        UPDATE members
+        SET login_fail_count = login_fail_count + 1,
+            lock_until = CASE
+                WHEN login_fail_count + 1 >= 5
+                THEN DATE_ADD(NOW(), INTERVAL 5 MINUTE)
+                ELSE lock_until
+            END
+        WHERE username = #{username}
+    </update>
 </mapper>

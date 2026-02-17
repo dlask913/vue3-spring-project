@@ -2,6 +2,8 @@ package com.limnj.noticeboardadmin.member;
 
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class AdminMemberResponseDto {
     private Long id;
@@ -9,4 +11,6 @@ public class AdminMemberResponseDto {
     private String username;
     private String password;
     private String role;
+    private int loginFailCount;
+    private LocalDateTime lockUntil;
 }
