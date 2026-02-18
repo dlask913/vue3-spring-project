@@ -1,7 +1,6 @@
 package com.limnj.noticeboardadmin.member;
 
 import com.limnj.noticeboardadmin.exception.BizException;
-import com.limnj.noticeboardadmin.exception.ErrorCode;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.limnj.noticeboardadmin.exception.ErrorCode.*;
 import static com.limnj.noticeboardadmin.exception.ErrorCode.QR_NOT_GENERATE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
@@ -175,6 +175,44 @@ class MemberServiceTest {
                 .isInstanceOf(BizException.class)
                 .hasMessage(QR_NOT_GENERATE.getDescription());
     }
+
+    @Test
+    @DisplayName("로그인 실패 시 해당 계정의 로그인 실패 횟수가 증가한다")
+    public void increaseLoginFailureCount_success(){
+        // given
+        AdminMemberRequestDto requestDto = getMember("limnj", "limnj@test.com", "1234");
+        memberServiceImpl.saveAdminMember(requestDto);
+        LoginRequestDto loginRequestDto = new LoginRequestDto(requestDto.getUsername(), requestDto.getEmail(), requestDto.getPassword(), "");
+
+        for (int i = 0; i < 4; i++) {
+            assertThatThrownBy(() -> memberServiceImpl.loginWithCredentials(loginRequestDto))
+                    .isInstanceOf(BizException.class);
+        }
+
+        // when // then
+        AdminMemberResponseDto member = memberMapper.findMemberByUsername(requestDto.getUsername()).orElseThrow();
+        assertThat( member.getLoginFailCount()).isEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("로그인 5회 실패 시 해당 계정이 5분간 잠긴다")
+    public void accountLockWhenLoginWithCredentials(){
+        // given
+        AdminMemberRequestDto requestDto = getMember("limnj", "limnj@test.com", "1234");
+        memberServiceImpl.saveAdminMember(requestDto);
+        LoginRequestDto loginRequestDto = new LoginRequestDto(requestDto.getUsername(), requestDto.getEmail(), requestDto.getPassword(), "");
+
+        for (int i = 0; i < 4; i++) {
+            assertThatThrownBy(() -> memberServiceImpl.loginWithCredentials(loginRequestDto))
+                    .isInstanceOf(BizException.class);
+        }
+
+        // when // then
+        assertThatThrownBy(() -> memberServiceImpl.loginWithCredentials(loginRequestDto))
+                .isInstanceOf(BizException.class)
+                .hasMessage(ACCOUNT_LOCKED.getDescription());
+    }
+
 
     private AdminMemberRequestDto getMember(String username, String email, String password) {
         return AdminMemberRequestDto.builder()
