@@ -12,7 +12,13 @@ public class EncryptedStringTypeHandler extends BaseTypeHandler<String> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType) throws SQLException {
         try {
-            ps.setString(i, AES256Util.encrypt(parameter)); // DB 에 저장할 때 암호화
+            if (parameter.startsWith("ENC:")) {
+                ps.setString(i, parameter);
+                return;
+            }
+
+            String encrypted = AES256Util.encrypt(parameter); // DB 에 저장할 때 암호화
+            ps.setString(i, "ENC:" + encrypted);
         } catch (Exception e) {
             throw new SQLException("Encryption failed", e);
         }
@@ -35,8 +41,12 @@ public class EncryptedStringTypeHandler extends BaseTypeHandler<String> {
 
     private String decrypt(String dbData) throws SQLException {
         if (dbData == null) return null;
+        if (!dbData.startsWith("ENC:")) {
+            return dbData; // 평문이면 그대로
+        }
         try {
-            return AES256Util.decrypt(dbData); // DB 에서 읽어올 때 복호화
+            String encrypted = dbData.substring(4);
+            return AES256Util.decrypt(encrypted); // DB 에서 읽어올 때 복호화
         } catch (Exception e) {
             throw new SQLException("Decryption failed", e);
         }
