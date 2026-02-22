@@ -24,6 +24,7 @@ public class MemberServiceImpl implements MemberService{
     private final JwtTokenUtil jwtTokenUtil;
     private final RefreshTokenService refreshTokenServiceImpl;
     private final PasswordEncoder passwordEncoder;
+    private final LoginPolicyService loginPolicyService;
 
     @Override
     @AuditLog(eventType = AuditLog.EventType.REGISTER_MEMBER, actionType = AuditLog.ActionType.CREATE)
@@ -54,11 +55,7 @@ public class MemberServiceImpl implements MemberService{
             throw new BizException(ErrorCode.ACCOUNT_LOCKED); // 5분 잠금 상태
         }
 
-        boolean authResult = passwordEncoder.matches(requestDto.getPassword(), findMember.getPassword());
-        if(!authResult){
-            memberMapper.incrementFailCount(requestDto.getUsername()); // 로그인 실패 횟수 증가
-            throw new BizException(ErrorCode.PASSWORD_MISMATCH);
-        }
+        loginPolicyService.checkPasswordMismatch(requestDto.getPassword(), findMember.getPassword(), requestDto.getUsername());
 
         return LoginResponseDto.builder()
                 .memberId(findMember.getId())
