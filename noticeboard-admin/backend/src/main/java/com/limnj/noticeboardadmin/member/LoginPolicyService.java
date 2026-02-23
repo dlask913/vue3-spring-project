@@ -14,7 +14,7 @@ public class LoginPolicyService {
     private final MemberMapper memberMapper;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = BizException.class)
     public void checkPasswordMismatch(String rawPassword, String encodedPassword, String username) {
         if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
             memberMapper.incrementFailCount(username);
