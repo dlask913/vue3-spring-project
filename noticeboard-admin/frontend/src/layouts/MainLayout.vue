@@ -78,10 +78,12 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
 import { useUserStore } from 'stores/user';
 import { useRouter } from 'vue-router';
+import { messaging } from 'boot/firebase';
+import { getToken, onMessage } from 'firebase/messaging';
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -152,4 +154,24 @@ const leftDrawerOpen = ref(false);
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
+
+// Firebase Cloud Messaging 토큰 요청 및 메시지 수신 설정
+const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
+onMounted(async () => {
+  const permission = await Notification.requestPermission();
+  if (permission === 'granted' && messaging) {
+    const token = await getToken(messaging, {
+      vapidKey: VAPID_KEY,
+    });
+    console.log('FCM TOKEN:', token); // todo: Spring 서버로 토큰 저장 API 호출
+  }
+
+  if (messaging) {
+    onMessage(messaging, payload => {
+      new Notification(payload.notification.title, {
+        body: payload.notification.body,
+      });
+    });
+  }
+});
 </script>
