@@ -156,14 +156,31 @@ function toggleLeftDrawer() {
 }
 
 // Firebase Cloud Messaging 토큰 요청 및 메시지 수신 설정
-const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 onMounted(async () => {
-  const permission = await Notification.requestPermission();
-  if (permission === 'granted' && messaging) {
-    const token = await getToken(messaging, {
-      vapidKey: VAPID_KEY,
-    });
-    console.log('FCM TOKEN:', token); // todo: Spring 서버로 토큰 저장 API 호출
+  if (!messaging) return
+
+  try {
+    if (Notification.permission === 'denied') { // 알림 권한 거부
+      console.warn('알림 권한이 차단되어 있습니다.')
+      return
+    }
+
+    if (Notification.permission !== 'granted') { // 알림 허용 요청
+      await Notification.requestPermission()
+    }
+
+    if (Notification.permission === 'granted') { // 알림 허용된 경우 토큰 요청
+      const token = await getToken(messaging, {
+        vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+      })
+
+      console.log('FCM TOKEN:', token)
+
+      //  TODO: Spring 서버로 토큰 저장 API 호출
+    }
+
+  } catch (e) {
+    console.error('FCM 초기화 실패:', e)
   }
 
   if (messaging) {
