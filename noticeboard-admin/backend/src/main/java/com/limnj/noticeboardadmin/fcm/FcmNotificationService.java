@@ -16,7 +16,16 @@ public class FcmNotificationService {
         fcmNotificationMapper.saveFcmToken(requestDto);
     }
 
-    public void sendNotification(String token, String title, String body) throws FirebaseMessagingException {
+    public void sendPush(PushSendRequest request){
+        FcmTokenResponseDto findFcmToken = fcmNotificationMapper.findFcmTokenByUserId(request.getUserId());
+        try {
+            sendNotification(findFcmToken.getToken(), request.getTitle(), request.getBody());
+        } catch (FirebaseMessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void sendNotification(String token, String title, String body) throws FirebaseMessagingException {
         Message message = Message.builder()
                 .setToken(token)
                 .setNotification(Notification.builder()
