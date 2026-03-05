@@ -84,6 +84,7 @@ import { useUserStore } from 'stores/user';
 import { useRouter } from 'vue-router';
 import { messaging } from 'boot/firebase';
 import { getToken, onMessage } from 'firebase/messaging';
+import { api } from 'boot/axios';
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -157,30 +158,30 @@ function toggleLeftDrawer() {
 
 // Firebase Cloud Messaging 토큰 요청 및 메시지 수신 설정
 onMounted(async () => {
-  if (!messaging) return
+  if (!messaging) return;
 
   try {
-    if (Notification.permission === 'denied') { // 알림 권한 거부
-      console.warn('알림 권한이 차단되어 있습니다.')
-      return
+    if (Notification.permission === 'denied') {
+      // 알림 권한 거부
+      console.warn('알림 권한이 차단되어 있습니다.');
+      return;
     }
 
-    if (Notification.permission !== 'granted') { // 알림 허용 요청
-      await Notification.requestPermission()
+    if (Notification.permission !== 'granted') {
+      // 알림 허용 요청
+      await Notification.requestPermission();
     }
 
-    if (Notification.permission === 'granted') { // 알림 허용된 경우 토큰 요청
+    if (Notification.permission === 'granted') {
+      // 알림 허용된 경우 토큰 요청
       const token = await getToken(messaging, {
         vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
-      })
+      });
 
-      console.log('FCM TOKEN:', token)
-
-      //  TODO: Spring 서버로 토큰 저장 API 호출
+      await api.post('/fcm/token', { token });
     }
-
   } catch (e) {
-    console.error('FCM 초기화 실패:', e)
+    console.error('FCM 초기화 실패:', e);
   }
 
   if (messaging) {

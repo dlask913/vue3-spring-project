@@ -15,4 +15,8 @@ public class FcmNotificationController {
         fcmNotificationService.saveFcmToken(requestDto);
     }
 
+    @PostMapping("/push/all")
+    public void sendPushMessage(@RequestBody PushSendRequestDto requestDto){
+        fcmNotificationService.sendNoticePush(requestDto);
+    }
 }

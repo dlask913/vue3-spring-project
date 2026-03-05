@@ -10,4 +10,9 @@
         FROM fcm_tokens
         WHERE user_id = #{userId}
     </select>
+
+    <select id="findAllTokens" resultType="FcmTokenResponseDto">
+        SELECT user_id, token
+        FROM fcm_tokens
+    </select>
 </mapper>
