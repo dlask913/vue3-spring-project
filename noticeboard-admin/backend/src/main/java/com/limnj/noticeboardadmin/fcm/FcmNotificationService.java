@@ -20,33 +20,30 @@ public class FcmNotificationService {
      * 개인 알림
      * @param request
      */
-    public void sendPushToUser(PushSendRequestDto request){
-        FcmTokenResponseDto findFcmToken = fcmNotificationMapper.findFcmTokenByUserId(request.getUserId());
+    public void sendNotificationToUser(SendPushRequestDto request){
+        List<String> tokens = fcmNotificationMapper.findFcmTokenByUserId(request.getUserId())
+                .stream()
+                .map(FcmTokenResponseDto::getToken)
+                .toList();
 
-        Message message = Message.builder()
-                .setToken(findFcmToken.getToken())
-                .setNotification(Notification.builder()
-                        .setTitle(request.getTitle())
-                        .setBody(request.getBody())
-                        .build())
-                .build();
-
-        try {
-            FirebaseMessaging.getInstance().send(message);
-        } catch (FirebaseMessagingException e) {
-            throw new RuntimeException(e);
-        }
+        sendMultiCashPushMessage(request, tokens);
     }
 
     /**
      * 전체 알림
      * @param request
      */
-    public void sendNoticePush(PushSendRequestDto request){
+    public void sendNotificationToAll(SendPushRequestDto request){
         List<String> tokens = fcmNotificationMapper.findAllTokens()
                 .stream()
                 .map(FcmTokenResponseDto::getToken)
                 .toList();
+
+        sendMultiCashPushMessage(request, tokens);
+    }
+
+    private static void sendMultiCashPushMessage(SendPushRequestDto request, List<String> tokens) {
+        if(tokens.isEmpty()) return;
 
         MulticastMessage message = MulticastMessage.builder()
                 .addAllTokens(tokens)
@@ -55,6 +52,7 @@ public class FcmNotificationService {
                         .setBody(request.getBody())
                         .build())
                 .build();
+
         try {
             BatchResponse response =
                     FirebaseMessaging.getInstance().sendEachForMulticast(message);
@@ -65,4 +63,11 @@ public class FcmNotificationService {
         }
     }
 
+    public void updateFcmTokenForUser(FcmTokenRequestDto fcmTokenRequestDto) {
+        if(fcmNotificationMapper
+                .existFcmTokenByUserIdAndToken(fcmTokenRequestDto.getUserId(), fcmTokenRequestDto.getToken())){
+            return;
+        }
+        fcmNotificationMapper.saveFcmToken(fcmTokenRequestDto);
+    }
 }

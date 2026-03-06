@@ -16,7 +16,12 @@ public class FcmNotificationController {
     }
 
     @PostMapping("/push/all")
-    public void sendPushMessage(@RequestBody PushSendRequestDto requestDto){
-        fcmNotificationService.sendNoticePush(requestDto);
+    public void sendPushToAll(@RequestBody SendPushRequestDto requestDto){
+        fcmNotificationService.sendNotificationToAll(requestDto);
+    }
+
+    @PostMapping("/push/user")
+    public void sendPushToUser(@RequestBody SendPushRequestDto requestDto) {
+        fcmNotificationService.sendNotificationToUser(requestDto);
     }
 }

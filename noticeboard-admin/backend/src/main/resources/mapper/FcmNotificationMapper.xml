@@ -15,4 +15,12 @@
         SELECT user_id, token
         FROM fcm_tokens
     </select>
+
+    <select id="existFcmTokenByUserIdAndToken" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM fcm_tokens
+            WHERE user_id = #{userId} AND token = #{fcmToken}
+        )
+    </select>
 </mapper>
