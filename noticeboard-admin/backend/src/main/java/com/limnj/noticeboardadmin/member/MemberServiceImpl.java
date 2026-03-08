@@ -3,6 +3,8 @@ package com.limnj.noticeboardadmin.member;
 import com.limnj.noticeboardadmin.audit.AuditLog;
 import com.limnj.noticeboardadmin.exception.BizException;
 import com.limnj.noticeboardadmin.exception.ErrorCode;
+import com.limnj.noticeboardadmin.fcm.FcmNotificationService;
+import com.limnj.noticeboardadmin.fcm.FcmTokenRequestDto;
 import com.limnj.noticeboardadmin.jwt.JwtTokenUtil;
 import com.limnj.noticeboardadmin.jwt.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class MemberServiceImpl implements MemberService{
     private final RefreshTokenService refreshTokenServiceImpl;
     private final PasswordEncoder passwordEncoder;
     private final LoginPolicyService loginPolicyService;
+    private final FcmNotificationService fcmNotificationService;
 
     @Override
     @AuditLog(eventType = AuditLog.EventType.REGISTER_MEMBER, actionType = AuditLog.ActionType.CREATE)
@@ -70,6 +73,14 @@ public class MemberServiceImpl implements MemberService{
         AdminMemberResponseDto findMember = memberMapper.findMemberByUsername(requestDto.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
 
+        // FCM 토큰 저장
+        FcmTokenRequestDto fcmTokenRequestDto = FcmTokenRequestDto.builder()
+                .userId(findMember.getId())
+                .token(requestDto.getFcmToken())
+                .build();
+        fcmNotificationService.updateFcmTokenForUser(fcmTokenRequestDto);
+
+        // accessToken 및 refreshToken 생성
         String accessToken = jwtTokenUtil.generateToken(findMember.getUsername());
         String refreshToken = refreshTokenServiceImpl.generateRefreshToken(findMember.getUsername());
 
