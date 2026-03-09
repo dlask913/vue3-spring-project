@@ -62,6 +62,7 @@ import { ref } from 'vue';
 import { api } from 'boot/axios';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from 'stores/user';
+import { useFcmStore } from 'stores/fcm';
 import { Notify } from 'quasar';
 
 const route = useRoute();
@@ -69,6 +70,7 @@ const router = useRouter();
 const email = route.query.email;
 const username = route.query.username;
 const userStore = useUserStore();
+const fcmStore = useFcmStore();
 const code = ref('');
 const loading = ref(false);
 const resending = ref(false);
@@ -77,10 +79,12 @@ const onSubmit = async () => {
   if (!code.value) return;
   loading.value = true;
   try {
+    const fcmToken = fcmStore.getToken;
     const { data } = await api.post('/email-verify', {
       email: email,
       username: username,
       authenticationCode: code.value,
+      fcmToken: fcmToken || null,
     });
 
     Notify.create({

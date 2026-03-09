@@ -81,6 +81,7 @@
 import { computed, ref, onMounted } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
 import { useUserStore } from 'stores/user';
+import { useFcmStore } from 'stores/fcm';
 import { useRouter } from 'vue-router';
 import { messaging } from 'boot/firebase';
 import { getToken, onMessage } from 'firebase/messaging';
@@ -174,11 +175,13 @@ onMounted(async () => {
 
     if (Notification.permission === 'granted') {
       // 알림 허용된 경우 토큰 요청
+      const fcmStore = useFcmStore();
       const token = await getToken(messaging, {
         vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
       });
 
       await api.post('/fcm/token', { token });
+      fcmStore.setToken(token);
     }
   } catch (e) {
     console.error('FCM 초기화 실패:', e);
