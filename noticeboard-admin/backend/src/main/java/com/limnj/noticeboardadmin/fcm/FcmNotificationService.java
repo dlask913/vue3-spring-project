@@ -12,9 +12,6 @@ import java.util.List;
 @RequiredArgsConstructor @Slf4j
 public class FcmNotificationService {
     private final FcmNotificationMapper fcmNotificationMapper;
-    public void saveFcmToken(FcmTokenRequestDto requestDto) {
-        fcmNotificationMapper.saveFcmToken(requestDto);
-    }
 
     /**
      * 개인 알림
@@ -65,7 +62,7 @@ public class FcmNotificationService {
 
     public void updateFcmTokenForUser(FcmTokenRequestDto fcmTokenRequestDto) {
         if(fcmNotificationMapper
-                .existFcmTokenByUserIdAndToken(fcmTokenRequestDto.getUserId(), fcmTokenRequestDto.getToken())){
+                .existFcmTokenByUserIdAndToken(fcmTokenRequestDto.getToken(), fcmTokenRequestDto.getUserId())){
             return;
         }
         fcmNotificationMapper.saveFcmToken(fcmTokenRequestDto);

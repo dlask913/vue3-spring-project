@@ -12,7 +12,7 @@ public class FcmNotificationController {
 
     @PostMapping("/fcm/token")
     public void saveFcmToken(@RequestBody FcmTokenRequestDto requestDto) {
-        fcmNotificationService.saveFcmToken(requestDto);
+        fcmNotificationService.updateFcmTokenForUser(requestDto);
     }
 
     @PostMapping("/push/all")

@@ -9,6 +9,6 @@ import java.util.List;
 public interface FcmNotificationMapper {
     void saveFcmToken(FcmTokenRequestDto requestDto);
     List<FcmTokenResponseDto> findFcmTokenByUserId(Long userId);
-    boolean existFcmTokenByUserIdAndToken(@Param("userId") Long userId, @Param("fcmToken") String token);
+    boolean existFcmTokenByUserIdAndToken(@Param("fcmToken") String fcmToken, @Param("userId") Long userId);
     List<FcmTokenResponseDto> findAllTokens();
 }

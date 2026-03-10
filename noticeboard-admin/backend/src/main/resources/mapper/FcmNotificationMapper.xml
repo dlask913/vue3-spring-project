@@ -3,6 +3,9 @@
     <insert id="saveFcmToken" parameterType="FcmTokenRequestDto">
         INSERT INTO fcm_tokens(user_id, token, device_type)
         VALUES (#{userId}, #{token}, #{deviceType})
+        ON DUPLICATE KEY UPDATE
+            user_id = COALESCE(VALUES(user_id), user_id),
+            updated_at = NOW();
     </insert>
 
     <select id="findFcmTokenByUserId" parameterType="long" resultType="FcmTokenResponseDto">
@@ -20,7 +23,7 @@
         SELECT EXISTS (
             SELECT 1
             FROM fcm_tokens
-            WHERE user_id = #{userId} AND token = #{fcmToken}
+            WHERE token = #{fcmToken} AND user_id = #{userId}
         )
     </select>
 </mapper>
