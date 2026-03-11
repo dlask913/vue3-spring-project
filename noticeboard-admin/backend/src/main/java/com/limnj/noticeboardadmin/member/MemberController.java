@@ -41,4 +41,12 @@ public class MemberController {
         }
         return ResponseEntity.ok().body(loginResponseDto);
     }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃")
+    public ResponseEntity<?> logoutMember(@RequestBody LogoutRequestDto requestDto) {
+        memberServiceImpl.logoutMember(requestDto);
+
+        return ResponseEntity.noContent().build();
+    }
 }

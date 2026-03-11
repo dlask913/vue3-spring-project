@@ -62,9 +62,13 @@ public class FcmNotificationService {
 
     public void updateFcmTokenForUser(FcmTokenRequestDto fcmTokenRequestDto) {
         if(fcmNotificationMapper
-                .existFcmTokenByUserIdAndToken(fcmTokenRequestDto.getToken(), fcmTokenRequestDto.getUserId())){
+                .existFcmTokenByUserIdAndToken(fcmTokenRequestDto.getUserId(), fcmTokenRequestDto.getToken())){
             return;
         }
         fcmNotificationMapper.saveFcmToken(fcmTokenRequestDto);
+    }
+
+    public void unbindFcmToken(String fcmToken){
+        fcmNotificationMapper.unbindFcmToken(fcmToken);
     }
 }

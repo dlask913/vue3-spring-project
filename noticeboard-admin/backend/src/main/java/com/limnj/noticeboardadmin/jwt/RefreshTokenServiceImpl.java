@@ -38,6 +38,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return jwtTokenUtil.generateToken(requestDto.getUsername());
     }
 
+    @Override
+    public void expireRefreshToken(String username) {
+        tokenMapper.expireRefreshToken(username);
+    }
+
     public boolean validateRefreshToken(RefreshTokenRequestDto requestDto) {
         RefreshToken refreshToken = tokenMapper.findRefreshTokenByUsername(requestDto.getUsername()).orElseThrow(
                 () -> new BizException(ErrorCode.REFRESH_TOKEN_INVALID)

@@ -2,7 +2,7 @@
 <mapper namespace="com.limnj.noticeboardadmin.jwt.TokenMapper">
     <!-- username 별 refresh token 저장 및 갱신 -->
     <insert id="saveRefreshToken" parameterType="RefreshToken" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Refresh_Token (username, token, expiry_date)
+        INSERT INTO refresh_token (username, token, expiry_date)
         VALUES (#{username}, #{token}, #{expiryDate})
         ON DUPLICATE KEY UPDATE
         token = #{token}, expiry_date = #{expiryDate}
@@ -11,7 +11,13 @@
     <!-- 만료되지 않은 token 정보 조회 -->
     <select id="findRefreshTokenByUsername" parameterType="string" resultType="RefreshToken">
         SELECT username, token, expiry_date
-        FROM Refresh_Token
+        FROM refresh_token
         WHERE username = #{username} AND expiry_date > NOW();
     </select>
+
+    <!-- 회원 로그아웃 -->
+    <delete id="expireRefreshToken" parameterType="string">
+        DELETE FROM refresh_token
+        WHERE username = #{username}
+    </delete>
 </mapper>

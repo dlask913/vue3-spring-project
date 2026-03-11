@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface TokenMapper {
     void saveRefreshToken(RefreshToken refreshToken);
     Optional<RefreshToken> findRefreshTokenByUsername(String username);
+    void expireRefreshToken(String username);
 }

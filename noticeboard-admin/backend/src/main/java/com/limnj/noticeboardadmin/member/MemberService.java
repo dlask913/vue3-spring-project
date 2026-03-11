@@ -18,4 +18,5 @@ public interface MemberService extends UserDetailsService {
     /* QR 시크릿 키 조회 */
     String findSecretKeyByEmail(String email);
     boolean existsByEmail(String email);
+    void logoutMember(LogoutRequestDto requestDto);
 }

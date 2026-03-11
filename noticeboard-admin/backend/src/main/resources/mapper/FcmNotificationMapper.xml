@@ -23,7 +23,13 @@
         SELECT EXISTS (
             SELECT 1
             FROM fcm_tokens
-            WHERE token = #{fcmToken} AND user_id = #{userId}
+            WHERE user_id = #{userId} AND token = #{fcmToken}
         )
     </select>
+
+    <update id="unbindFcmToken">
+        UPDATE fcm_tokens
+        SET user_id = NULL
+        WHERE token = #{fcmToken}
+    </update>
 </mapper>

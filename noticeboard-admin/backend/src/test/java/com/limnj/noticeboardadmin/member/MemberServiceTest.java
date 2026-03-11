@@ -182,7 +182,7 @@ class MemberServiceTest {
         // given
         AdminMemberRequestDto requestDto = getMember("limnj", "limnj@test.com", "1234");
         memberServiceImpl.saveAdminMember(requestDto);
-        LoginRequestDto loginRequestDto = new LoginRequestDto(requestDto.getUsername(), requestDto.getEmail(), requestDto.getPassword(), "");
+        LoginRequestDto loginRequestDto = new LoginRequestDto(requestDto.getUsername(), requestDto.getEmail(), requestDto.getPassword(), "", "");
 
         for (int i = 0; i < 4; i++) {
             assertThatThrownBy(() -> memberServiceImpl.loginWithCredentials(loginRequestDto))
@@ -200,7 +200,7 @@ class MemberServiceTest {
         // given
         AdminMemberRequestDto requestDto = getMember("limnj", "limnj@test.com", "1234");
         memberServiceImpl.saveAdminMember(requestDto);
-        LoginRequestDto loginRequestDto = new LoginRequestDto(requestDto.getUsername(), requestDto.getEmail(), requestDto.getPassword(), "");
+        LoginRequestDto loginRequestDto = new LoginRequestDto(requestDto.getUsername(), requestDto.getEmail(), requestDto.getPassword(), "", "");
 
         for (int i = 0; i < 4; i++) {
             assertThatThrownBy(() -> memberServiceImpl.loginWithCredentials(loginRequestDto))

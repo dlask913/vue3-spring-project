@@ -127,4 +127,14 @@ public class MemberServiceImpl implements MemberService{
                 .authorities(findMember.get().getRole())
                 .build();
     }
+
+    @Override
+    public void logoutMember(LogoutRequestDto requestDto) {
+        /**
+         * - fcmToken 의 userId NULL 로 UPDATE (UNBIND)
+         * - userId 의 refreshToken 데이터 DELETE
+         */
+        fcmNotificationService.unbindFcmToken(requestDto.getFcmToken());
+        refreshTokenServiceImpl.expireRefreshToken(requestDto.getUsername());
+    }
 }
