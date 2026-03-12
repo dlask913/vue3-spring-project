@@ -39,10 +39,10 @@ export default defineBoot(({ router, store }) => {
         return Promise.reject(error);
       }
 
-      // access token 관련 403 발생한 경우
+      // token 관련 인증 실패
       if (
-        error.response?.status === 403 &&
-        error.response?.data?.message?.startsWith('TOKEN_') &&
+        error.response?.status === 401 &&
+        error.response?.data?.errorCode?.startsWith('TOKEN_') &&
         userStore.refreshToken
       ) {
         try {
@@ -80,8 +80,9 @@ export default defineBoot(({ router, store }) => {
           userStore.clearAuthInfo();
           router.push('/login');
         }
-      } else if (error.response?.status === 403) {
-        // 토큰이 없거나 다른 이유로 403 발생 → 로그아웃 처리
+      } else if (!userStore.refreshToken || error.response?.status === 403) {
+        // refresh token이 없거나 다른 이유로 403 발생한 경우
+        // → 로그아웃 처리
         userStore.clearAuthInfo();
         router.push('/login');
       }
