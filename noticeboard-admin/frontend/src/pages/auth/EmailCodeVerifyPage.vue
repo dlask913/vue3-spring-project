@@ -80,6 +80,7 @@ const onSubmit = async () => {
   loading.value = true;
   try {
     const fcmToken = fcmStore.getToken;
+    // console.log('FCM Token:', fcmToken); // FCM 토큰 확인용 로그
     const { data } = await api.post('/email-verify', {
       email: email,
       username: username,
@@ -104,7 +105,7 @@ const onSubmit = async () => {
 
     router.push({ path: '/' }); // 메인 페이지로 이동
   } catch (err) {
-    console.log(err);
+    console.error(err);
     Notify.create({
       type: 'negative',
       message: '인증에 실패했습니다. 다시 시도하세요.',
@@ -126,7 +127,7 @@ const resendCode = async () => {
       message: '인증 코드가 이메일로 전송되었습니다.',
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     Notify.create({
       type: 'negative',
       message: '코드 전송 중 오류가 발생했습니다.',

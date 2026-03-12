@@ -74,7 +74,6 @@ const qrCode = ref('');
 const loading = ref(false); // 로딩 상태 추가
 const userStore = useUserStore();
 const email = computed(() => userStore.email);
-console.log(email.value);
 
 const generateQr = async () => {
   try {

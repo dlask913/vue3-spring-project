@@ -101,8 +101,8 @@ const onQuit = async isConfirmed => {
       await deleteMember(storage.getUserId)
       storage.logout()
       toast.setToast('회원 탈퇴 완료')
-    } catch (error) {
-      console.log(error)
+    } catch (err) {
+      console.error(err);
       toast.setToast('재시도 부탁드립니다.', 'danger')
     }
   }

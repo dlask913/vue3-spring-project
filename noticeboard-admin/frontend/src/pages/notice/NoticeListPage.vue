@@ -97,7 +97,6 @@ const fetchNotices = async () => {
       hidden: notice.hide_yn === 'N' || false,
       createdAt: notice.postDate || new Date().toISOString(),
     }));
-    console.log(notices.value);
   } catch (error) {
     console.error('게시글 목록을 불러오는 중 오류 발생:', error);
   } finally {

@@ -91,7 +91,7 @@ const onSubmit = async () => {
 
     router.push({ path: '/' }); // 메인 페이지로 이동
   } catch (err) {
-    console.log(err);
+    console.error(err);
     Notify.create({
       type: 'negative',
       message: '인증에 실패했습니다. 다시 시도하세요.',
