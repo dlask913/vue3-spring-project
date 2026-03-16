@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service @Transactional
@@ -39,7 +40,7 @@ public class FcmNotificationService {
         sendMultiCashPushMessage(request, tokens);
     }
 
-    private static void sendMultiCashPushMessage(SendPushRequestDto request, List<String> tokens) {
+    private void sendMultiCashPushMessage(SendPushRequestDto request, List<String> tokens) {
         if(tokens.isEmpty()) return;
 
         MulticastMessage message = MulticastMessage.builder()
@@ -53,10 +54,32 @@ public class FcmNotificationService {
         try {
             BatchResponse response =
                     FirebaseMessaging.getInstance().sendEachForMulticast(message);
-            log.info("response.getSuccessCount(): {} ", response.getSuccessCount());
-            log.warn("response.getFailureCount(): {}", response.getFailureCount());
+
+            List<SendResponse> responses = response.getResponses();
+            List<String> invalidTokens = new ArrayList<>();
+
+            for (int i = 0; i < responses.size(); i++) {
+                SendResponse sendResponse = responses.get(i);
+                if (!sendResponse.isSuccessful()) {
+                    FirebaseMessagingException exception = sendResponse.getException();
+                    MessagingErrorCode errorCode = exception.getMessagingErrorCode();
+
+                    if (errorCode == MessagingErrorCode.UNREGISTERED
+                            || errorCode == MessagingErrorCode.INVALID_ARGUMENT
+                            || errorCode == MessagingErrorCode.SENDER_ID_MISMATCH) {
+                        // 등록되지 않은 토큰 → DB 삭제
+                        String invalidToken = tokens.get(i);
+                        invalidTokens.add(invalidToken);
+                        log.warn("Invalid FCM token detected: {}", invalidToken);
+                    }
+                }
+            }
+
+            if (!invalidTokens.isEmpty()){
+                fcmNotificationMapper.deleteFcmTokens(invalidTokens);
+            }
         } catch (FirebaseMessagingException e) {
-            throw new RuntimeException(e);
+            log.warn("FCM push failed: {}", e.getMessage());
         }
     }
 

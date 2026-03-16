@@ -12,4 +12,5 @@ public interface FcmNotificationMapper {
     boolean existFcmTokenByUserIdAndToken(@Param("userId") Long userId, @Param("fcmToken") String fcmToken);
     List<FcmTokenResponseDto> findAllTokens();
     void unbindFcmToken(String fcmToken);
+    void deleteFcmTokens(List<String> fcmTokens);
 }

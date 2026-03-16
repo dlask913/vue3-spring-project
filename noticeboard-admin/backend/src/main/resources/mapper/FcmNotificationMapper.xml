@@ -27,9 +27,17 @@
         )
     </select>
 
-    <update id="unbindFcmToken">
+    <update id="unbindFcmToken" parameterType="String">
         UPDATE fcm_tokens
         SET user_id = NULL
         WHERE token = #{fcmToken}
     </update>
+
+    <delete id="deleteFcmTokens" parameterType="String">
+        DELETE FROM fcm_tokens
+        WHERE token IN
+        <foreach collection="fcmTokens" item="fcmToken" open="(" separator="," close=")">
+            #{fcmToken}
+        </foreach>
+    </delete>
 </mapper>
