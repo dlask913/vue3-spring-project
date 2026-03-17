@@ -84,6 +84,12 @@ const routes = [
         meta: { requiresAuth: true, roles: ['ROLE_MANAGER', 'ROLE_ADMIN'] }, // 권한 정보 추가
       },
       {
+        path: '/inventory/status',
+        name: 'InventoryStatusPage',
+        component: () => import('src/pages/product/ItemStatusViewPage.vue'),
+        meta: { requiresAuth: true, roles: ['ROLE_MANAGER', 'ROLE_ADMIN'] },
+      },
+      {
         path: '/error/denied',
         name: 'AccessDeniedPage',
         component: () => import('src/pages/error/AccessDeniedPage.vue'),

@@ -117,6 +117,11 @@ const linksList = [
         icon: 'add_box',
         to: '/inventory',
       },
+      {
+        title: '거래 현황',
+        icon: 'shopping_bag',
+        to: '/inventory/status',
+      },
     ],
   },
   {
@@ -148,7 +153,7 @@ const onLogout = async () => {
   const request = {
     username: userStore.username,
     fcmToken: fcmStore.getToken,
-  }
+  };
   await api.post('/logout', request);
   userStore.clearAuthInfo();
   router.push('/login');
