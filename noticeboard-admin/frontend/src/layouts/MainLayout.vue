@@ -88,6 +88,7 @@ import { getToken, onMessage } from 'firebase/messaging';
 import { api } from 'boot/axios';
 
 const userStore = useUserStore();
+const fcmStore = useFcmStore();
 const router = useRouter();
 
 const linksList = [
@@ -143,7 +144,12 @@ const linksList = [
 ];
 
 // 로그아웃 수행
-const onLogout = () => {
+const onLogout = async () => {
+  const request = {
+    username: userStore.username,
+    fcmToken: fcmStore.getToken,
+  }
+  await api.post('/logout', request);
   userStore.clearAuthInfo();
   router.push('/login');
 };
