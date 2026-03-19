@@ -130,8 +130,15 @@ const onSaveNotice = async () => {
       formData.append('noticeFile', form.value.file);
     }
 
+    // 1. 게시글 저장 API 호출
     await api.post('/notice', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
+    // 2. 푸시 알림 API 호출
+    await api.post('/push/all', {
+      title: '새로운 공지사항이 등록되었습니다!',
+      body: form.value.title,
     });
 
     Notify.create({
