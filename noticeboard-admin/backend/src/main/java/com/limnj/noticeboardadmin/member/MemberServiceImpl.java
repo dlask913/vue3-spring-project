@@ -76,6 +76,8 @@ public class MemberServiceImpl implements MemberService{
                 .build();
         fcmNotificationService.updateFcmTokenForUser(fcmTokenRequestDto);
 
+        memberMapper.resetFailCount(findMember.getId());
+
         // accessToken 및 refreshToken 생성
         String accessToken = jwtTokenUtil.generateToken(findMember.getUsername());
         String refreshToken = refreshTokenServiceImpl.generateRefreshToken(findMember.getUsername());

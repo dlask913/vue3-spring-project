@@ -56,7 +56,7 @@
     </select>
 
     <!-- 로그인 실패 횟수 증가 -->
-    <update id="incrementFailCount" parameterType="String">
+    <update id="incrementFailCount" parameterType="Long">
         UPDATE members
         SET login_fail_count = login_fail_count + 1,
             lock_until = CASE
@@ -64,6 +64,13 @@
                 THEN DATE_ADD(NOW(), INTERVAL 5 MINUTE)
                 ELSE lock_until
             END
-        WHERE username = #{username}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 로그인 실패 횟수 초기화 -->
+    <update id="resetFailCount" parameterType="Long">
+        UPDATE members
+        SET login_fail_count = 0, lock_until = NULL
+        WHERE id = #{id}
     </update>
 </mapper>

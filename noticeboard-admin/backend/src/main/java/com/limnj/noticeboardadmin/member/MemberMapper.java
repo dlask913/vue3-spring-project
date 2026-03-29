@@ -13,5 +13,6 @@ public interface MemberMapper {
     boolean existsByEmail(String email);
     void updateSecretKeyByEmail(@Param("email") String email, @Param("secretKey") String secretKey);
     Optional<String> findSecretKeyByEmail(String email);
-    void incrementFailCount(String username);
+    void incrementFailCount(Long memberId);
+    void resetFailCount(Long memberId);
 }
