@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -54,11 +53,8 @@ public class MemberServiceImpl implements MemberService{
         AdminMemberResponseDto findMember = memberMapper.findMemberByUsername(requestDto.getUsername())
                 .orElseThrow(() -> new BizException(ErrorCode.MEMBER_NOT_FOUND));
 
-        if (findMember.getLockUntil() != null && findMember.getLockUntil().isAfter(LocalDateTime.now())) {
-            throw new BizException(ErrorCode.ACCOUNT_LOCKED); // 5분 잠금 상태
-        }
-
-        loginPolicyService.checkPasswordMismatch(requestDto.getPassword(), findMember.getPassword(), requestDto.getUsername());
+        loginPolicyService.validateAccountStatus(findMember.getLockUntil());
+        loginPolicyService.validatePassword(requestDto.getPassword(), findMember.getPassword(), findMember.getId());
 
         return LoginResponseDto.builder()
                 .memberId(findMember.getId())
