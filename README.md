@@ -47,6 +47,7 @@ Web Application using Vue3 and Spring Boot
 - @Transaction 으로 인한 데이터 오류 ([#79](https://github.com/dlask913/vue3-spring-project/issues/79)) opened on Feb 20, 2026
 - Spring Security /logout redirect 문제 ([#84](https://github.com/dlask913/vue3-spring-project/issues/84)) opened on Mar 12, 2026
 - 평문 데이터 복호화 예외 발생 ([#78](https://github.com/dlask913/vue3-spring-project/issues/78)) opened on Feb 19, 2026
+- 정적 리소스 로딩 실패 문제 - MIME 타입 설정 ([#89](https://github.com/dlask913/vue3-spring-project/issues/89)) opened on Apr 1, 2026
 
 <br>
 
@@ -75,6 +76,7 @@ Web Application using Vue3 and Spring Boot
 - 구현체에 공통 기능 적용을 위한 default 메서드 활용 ([#63](https://github.com/dlask913/vue3-spring-project/issues/63)) opened on Oct 23, 2025
 - 서버 예외 처리 방식 ([#72](https://github.com/dlask913/vue3-spring-project/issues/72)) opened on Jan 24, 2026
 - 감사용 로그 기록 방식 - AOP + 이벤트리스너 활용 ([#74](https://github.com/dlask913/vue3-spring-project/issues/74)) opened on Jan 31, 2026
+- 클라이언트 토큰 관리 방법 - LocalStorage 와 Cookie ([#56](https://github.com/dlask913/vue3-spring-project/issues/56)) opened on Jul 31, 2025
 
 <br>
 
@@ -86,6 +88,9 @@ Web Application using Vue3 and Spring Boot
 - 계정 인증 보안 설정 - 비밀번호 암호화, 로그인 시도 횟수 제한, 동시 접속 ([#64](https://github.com/dlask913/vue3-spring-project/issues/64)) opened on Oct 29, 2025
 - MFA 적용 - Google OTP 인증 ([#65](https://github.com/dlask913/vue3-spring-project/issues/65)) opened on Nov 1, 2025
 - 저장된 민감 정보 관리를 위한 데이터 양방향 암호화 - AES Algorithm ([#75](https://github.com/dlask913/vue3-spring-project/issues/75)) opened on Feb 1, 2026
+- 토큰 검증 플로우 정리 - access token 및 refresh token ([#24](https://github.com/dlask913/vue3-spring-project/issues/24)) opened on Mar 6, 2025
+- 사용자 권한 별 접근 제어 - Spring CustomAccessDeniedHandler 와 Vue 라우터 가드 ([#71](https://github.com/dlask913/vue3-spring-project/issues/71)) opened on Jan 11, 2026
+- Nginx 보안 설정 - HTTPS, TLS, 보안 헤더, 타임아웃 ([#88](https://github.com/dlask913/vue3-spring-project/issues/88)) opened on Mar 28, 2026
 
 <br>
 

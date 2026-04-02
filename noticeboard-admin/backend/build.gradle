@@ -32,6 +32,8 @@ ext {
 	googleQrVersion = "3.5.3";
 	apachePoiVersion = "5.2.5";
 	flyingSaucerVersion = "9.1.22";
+	fcmVersion = "9.2.0";
+	jasyptVersion = "3.0.5";
 }
 
 dependencies {
@@ -84,7 +86,10 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-crypto'
 
 	// FCM 설정
-	implementation 'com.google.firebase:firebase-admin:9.2.0'
+	implementation "com.google.firebase:firebase-admin:${fcmVersion}"
+
+	// Jasypt 암호화 설정
+	implementation "com.github.ulisesbocchio:jasypt-spring-boot-starter:${jasyptVersion}"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
