@@ -10,23 +10,62 @@ spring:
     #    url: jdbc:mysql://localhost:3306/noticeboard?serverTimezone=UTC
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     url: jdbc:log4jdbc:mysql://localhost:3306/noticeboard?serverTimezone=UTC
-    username: root
-    password: 1234
+    username: "ENC(o4A+xk+wy7nkFcw5JfWYre87nAsfNJGMHnuXQqXUOXSo3uan5bOT3Tab1upHVrxt)"
+    password: "ENC(yM1Uz6uEFDrlgCYiFLduDjonzCt06A7HBn1DDpQXaNFIe7db2xfzQkBX3aL6hSm/)"
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "ENC(jMG9rN8fclimcYGyhz5GdHgShQOog7Ybwq7jTBXaBhvK0/f2wfSo6n5MeLMv7F1lwbY45RLc+4s4VkMEEmJMxA==)"
+    password: "ENC(XC8B0Cs0ZleRhDtYAWmktF066i7zWwO+tr2E95MVf7W423O9WdRueN7zxrN02FHxBD1tBYkruE89nflHGV837w==)"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  # caffeine cache 설정
+  cache:
+    type: caffeine
+  caffeine:
+    spec: maximumSize=500,expireAfterWrite=5m
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  thymeleaf:
+    encoding: UTF-8
+    mode: HTML
+    cache: false
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+jasypt:
+  encryptor:
+    property:
+      prefix: "ENC("
+      suffix: ")"
 
 # Mapper Xml Location
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.limnj.noticeboardadmin.category, com.limnj.noticeboardadmin.image, com.limnj.noticeboardadmin.notice, com.limnj.noticeboardadmin.member, com.limnj.noticeboardadmin.jwt
+  type-aliases-package: com.limnj.noticeboardadmin
   configuration:
     map-underscore-to-camel-case: true
 
 jwt:
-  secret: 6qh3C2sv6MnfJrcwIsJdXApelnm9s0SxC/oAmv5zzDQ=
+  secret: "ENC(6yvA4NjuUqa8nwQPtRLUhTXWVOJISDUIot2KfjZP8n6Ze2BI3/o+38hzgRDucbte1sbUvu9HZNb8Gu3ACb+yRd6LCOCHZjYvQSAkSDm/BXQ=)"
 
-# 이미지 경로 설정
-uploadPath: file:///C:/images/
+# 파일 경로 설정
+uploadPath: file:///C:/files/
 defaultImgPath: classpath:/static/default-image/
 categoryImgLocation: C:/images/category
+fileLocation: C:/images/files
+
+AUTH_EMAIL_SUBJECT: "[인증코드 발송]"
+AUTH_EMAIL_TEMPLATE: "templates/email/sendAuthentication.html"
 
 ---
 spring:
@@ -38,5 +77,5 @@ spring:
     #    url: jdbc:mysql://localhost:3306/testboard?serverTimezone=UTC
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     url: jdbc:log4jdbc:mysql://localhost:3306/testboard?serverTimezone=UTC
-    username: root
-    password: 1234
+    username: "ENC(o4A+xk+wy7nkFcw5JfWYre87nAsfNJGMHnuXQqXUOXSo3uan5bOT3Tab1upHVrxt)"
+    password: "ENC(yM1Uz6uEFDrlgCYiFLduDjonzCt06A7HBn1DDpQXaNFIe7db2xfzQkBX3aL6hSm/)"
