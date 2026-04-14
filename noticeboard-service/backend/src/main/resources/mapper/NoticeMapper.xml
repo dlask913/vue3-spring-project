@@ -16,11 +16,11 @@
     <!-- 게시글 조회 -->
     <select id="findNotice" resultMap="NoticeResponseDtoMap" parameterType="long">
         SELECT n.id, n.title, n.content,
-                DATE_FORMAT(n.post_date, '%Y-%m-%d %H:%i:%s') AS post_date,
-                DATE_FORMAT(n.update_date, '%Y-%m-%d %H:%i:%s') AS update_date,
+                TO_CHAR(n.post_date, 'YYYY-MM-DD HH24:MI:SS') AS post_date,
+                TO_CHAR(n.update_date, 'YYYY-MM-DD HH24:MI:SS') AS update_date,
                 n.member_id, m.username, m.email, n.view_count
         FROM contents n
-            LEFT JOIN Members m ON n.member_id = m.id
+            LEFT JOIN members m ON n.member_id = m.id
         WHERE n.id = #{noticeId}
     </select>
 
@@ -42,10 +42,10 @@
     <!-- 게시글 데이터 모두 조회 -->
     <select id="findAllNotices" resultMap="NoticeResponseDtoMap">
         SELECT n.id, n.title, n.content, n.view_count,
-            DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, NULL AS update_date,
+            TO_CHAR(n.post_date, 'YYYY-MM-DD') AS post_date, NULL AS update_date,
             n.member_id, m.username, NULL AS email, n.view_count
         FROM contents n
-            LEFT JOIN Members m ON n.member_id = m.id
+            LEFT JOIN members m ON n.member_id = m.id
         WHERE 1=1
         <if test="params.title != null">
             AND n.title LIKE CONCAT('%', #{params.title}, '%')
@@ -59,10 +59,10 @@
     <!-- 게시글 데이터 조회 By Page AND Keyword -->
     <select id="searchNoticesByPage" resultMap="NoticeResponseDtoMap">
         SELECT n.id, n.title, n.content,
-            DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, NULL AS update_date,
+            TO_CHAR(n.post_date, 'YYYY-MM-DD') AS post_date, NULL AS update_date,
             n.member_id, m.username, NULL AS email, n.view_count
         FROM contents n
-             LEFT JOIN Members m ON n.member_id = m.id
+             LEFT JOIN members m ON n.member_id = m.id
         WHERE 1=1
         <if test="params.title != null">
             AND n.title LIKE CONCAT('%', #{params.title}, '%')
@@ -88,10 +88,10 @@
     <!-- 내가 쓴 게시글 모두 조회 -->
     <select id="findNoticeByEmail" resultMap="NoticeResponseDtoMap" parameterType="String">
         SELECT n.id, n.title, n.content,
-            DATE_FORMAT(n.post_date, '%Y-%m-%d') AS post_date, NULL AS update_date,
+            TO_CHAR(n.post_date, 'YYYY-MM-DD') AS post_date, NULL AS update_date,
             n.member_id, m.username, NULL AS email, n.view_count
         FROM contents n
-            LEFT JOIN Members m ON n.member_id = m.id
+            LEFT JOIN members m ON n.member_id = m.id
         WHERE m.email = #{email}
     </select>
 

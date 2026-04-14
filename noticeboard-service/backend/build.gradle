@@ -64,6 +64,9 @@ dependencies {
 
     // 메일 전송 + 로그 추적 라이브러리
     implementation files('libs/mail-sender-0.0.1-SNAPSHOT.jar')
+
+    // postgresql
+    runtimeOnly 'org.postgresql:postgresql'
 }
 
 tasks.named('test') {

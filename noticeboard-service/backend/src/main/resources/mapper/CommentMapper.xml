@@ -18,7 +18,7 @@
         SELECT c.id, c.content, c.post_date, m.username, c.member_id, c.notice_id,
             NULL AS member_img_url, NULL AS reply_count
         FROM comments c
-            LEFT JOIN Members m ON c.member_id = m.id
+            LEFT JOIN members m ON c.member_id = m.id
         WHERE c.id = #{id}
     </select>
 
