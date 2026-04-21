@@ -22,6 +22,13 @@
               {{ valueError.password }}
             </div>
           </div>
+
+          <VueRecaptcha
+            v-if="showCaptcha"
+            :sitekey="siteKey"
+            @verify="onVerify"
+          />
+
           <div class="form-group mt-5 mb-5">
             <button
               type="submit"
@@ -44,6 +51,7 @@ import { useRouter } from 'vue-router'
 import { useToastStore } from '@/store/index'
 import { useCookies } from 'vue3-cookies'
 import { useStorageStore } from '@/store/index'
+import { VueRecaptcha } from 'vue3-recaptcha-v2'
 
 const toast = useToastStore()
 const router = useRouter()
@@ -57,6 +65,14 @@ const valueError = ref({
   emailError: '',
   passwordError: '',
 })
+
+const siteKey = import.meta.env.VITE_CAPTCHA_SITE_KEY
+const captchaToken = ref(null)
+const showCaptcha = ref(false)
+
+const onVerify = token => {
+  captchaToken.value = token
+}
 
 const onLogin = async () => {
   const requiredFields = ['email', 'password']
@@ -78,7 +94,7 @@ const onLogin = async () => {
   }
 
   try {
-    const loginDto = { ...login.value }
+    const loginDto = { ...login.value, captchaToken: captchaToken.value }
     const { data } = await loginMember(loginDto) // POST /login
     cookies.set('userId', data.memberId) // 쿠키에 userId 저장
     cookies.set('token', data.accessToken) // 쿠키에 토큰 저장
