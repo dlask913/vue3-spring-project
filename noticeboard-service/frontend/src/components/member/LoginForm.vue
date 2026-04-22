@@ -23,11 +23,12 @@
             </div>
           </div>
 
-          <VueRecaptcha
-            v-if="showCaptcha"
-            :sitekey="siteKey"
-            @verify="onVerify"
-          />
+          <div class="form-group mt-3">
+            <div
+              ref="captchaContainer"
+              class="d-flex justify-content-center"
+            ></div>
+          </div>
 
           <div class="form-group mt-5 mb-5">
             <button
@@ -46,12 +47,11 @@
 
 <script setup>
 import { loginMember } from '@/api/users'
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToastStore } from '@/store/index'
 import { useCookies } from 'vue3-cookies'
 import { useStorageStore } from '@/store/index'
-import { VueRecaptcha } from 'vue3-recaptcha-v2'
 
 const toast = useToastStore()
 const router = useRouter()
@@ -68,11 +68,37 @@ const valueError = ref({
 
 const siteKey = import.meta.env.VITE_CAPTCHA_SITE_KEY
 const captchaToken = ref(null)
-const showCaptcha = ref(false)
+const captchaContainer = ref(null) // ref로 직접 엘리먼트 참조
+let widgetId = null // 캡차 인스턴스 ID 저장
 
-const onVerify = token => {
-  captchaToken.value = token
+// Explicit 렌더링 함수
+const renderCaptcha = () => {
+  if (window.grecaptcha && window.grecaptcha.render) {
+    widgetId = window.grecaptcha.render(captchaContainer.value, {
+      sitekey: siteKey,
+      callback: token => {
+        captchaToken.value = token
+      },
+      'expired-callback': () => {
+        captchaToken.value = null
+      },
+    })
+  } else {
+    // 스크립트 로딩 대기
+    setTimeout(renderCaptcha, 100)
+  }
 }
+
+onMounted(() => {
+  renderCaptcha()
+})
+
+// SPA 환경에서 메모리 누수 및 중복 렌더링 방지
+onBeforeUnmount(() => {
+  if (widgetId !== null && window.grecaptcha) {
+    window.grecaptcha.reset(widgetId)
+  }
+})
 
 const onLogin = async () => {
   const requiredFields = ['email', 'password']
