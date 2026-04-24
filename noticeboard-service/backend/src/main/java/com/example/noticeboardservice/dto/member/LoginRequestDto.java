@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 public class LoginRequestDto {
     String email;
     String password;
+    String captchaToken;
 
     @Builder
     public LoginRequestDto(String email, String password) {

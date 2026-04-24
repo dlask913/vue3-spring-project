@@ -5,10 +5,12 @@ import com.example.noticeboardservice.dto.member.LoginResponseDto;
 import com.example.noticeboardservice.dto.member.MemberRequestDto;
 import com.example.noticeboardservice.dto.member.MemberResponseDto;
 import com.example.noticeboardservice.service.member.MemberService;
+import com.example.noticeboardservice.service.util.RecaptchaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class MemberController {
     private final MemberService memberServiceImpl;
+    private final RecaptchaService recaptchaService;
 
     @PostMapping("/member")
     @Operation(summary = "회원 가입 API")
@@ -32,7 +35,14 @@ public class MemberController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인 API")
-    public ResponseEntity<LoginResponseDto> loginMember(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<?> loginMember(@RequestBody LoginRequestDto loginRequestDto) {
+        // 리캡차 토큰 검증
+        boolean isHuman = recaptchaService.verify(loginRequestDto.getCaptchaToken());
+        if (!isHuman) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("로봇 인증에 실패했습니다.");
+        }
+
         LoginResponseDto response = memberServiceImpl.login(loginRequestDto);
         /** todo
          * HTTPOnly 로 설정하여 토큰값을 헤더에 전달하게 되면 JS 에서 접근이 불가
