@@ -3,7 +3,7 @@ FROM gradle:7.6.1-jdk17 AS builder
 WORKDIR /app
 COPY backend /app/backend
 WORKDIR /app/backend
-RUN ./gradlew clean build -x test
+RUN ./gradlew clean build -x test --no-build-cache
 
 # Stage 2: Run JAR
 FROM openjdk:17-jdk

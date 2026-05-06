@@ -27,7 +27,7 @@ cd ..
 echo "🐳 3. Docker Compose: down"
 docker-compose down
 
-docker-compose build --no-cache
+docker-compose build
 
 echo "🚀 4. Docker Compose: up"
 docker-compose up -d
