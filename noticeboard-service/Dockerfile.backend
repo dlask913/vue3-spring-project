@@ -1,7 +1,32 @@
-# Stage 2: Run JAR
-FROM openjdk:17-jdk
+# Stage 1: Build
+FROM gradle:7.6.1-jdk17 AS builder
+
 WORKDIR /app
-COPY backend/build/libs/noticeboard-service-0.0.1-SNAPSHOT.jar spring-app.jar
+
+# Gradle 관련 파일 먼저 복사
+COPY backend/gradlew ./
+COPY backend/gradle ./gradle
+COPY backend/build.gradle ./
+COPY backend/settings.gradle ./
+
+# 실행 권한
+RUN chmod +x gradlew
+
+# 의존성 캐싱
+RUN ./gradlew dependencies --no-daemon
+
+# 소스 복사
+COPY backend/src ./src
+
+# 실제 빌드
+RUN ./gradlew build -x test --no-daemon
+
+# Stage 2: Run
+FROM openjdk:17-jdk
+
+WORKDIR /app
+
+COPY --from=builder /app/build/libs/*.jar spring-app.jar
 
 EXPOSE 8080
-ENTRYPOINT ["/bin/sh", "-c", "java -jar /app/spring-app.jar"]
+ENTRYPOINT ["java", "-jar", "spring-app.jar"]
