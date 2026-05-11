@@ -8,6 +8,7 @@ COPY backend/gradlew ./
 COPY backend/gradle ./gradle
 COPY backend/build.gradle ./
 COPY backend/settings.gradle ./
+COPY backend/libs ./libs 
 
 # 실행 권한
 RUN chmod +x gradlew
