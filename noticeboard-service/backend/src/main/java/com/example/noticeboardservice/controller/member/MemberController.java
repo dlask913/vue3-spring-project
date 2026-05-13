@@ -10,7 +10,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
     private final MemberService memberServiceImpl;
     private final RecaptchaService recaptchaService;
+
+    @Value("${httponly-secure-option}")
+    private boolean HTTPONLY_SECURE_OPTION;
 
     @PostMapping("/member")
     @Operation(summary = "회원 가입 API")
@@ -44,11 +50,22 @@ public class MemberController {
         }
 
         LoginResponseDto response = memberServiceImpl.login(loginRequestDto);
-        /** todo
-         * HTTPOnly 로 설정하여 토큰값을 헤더에 전달하게 되면 JS 에서 접근이 불가
-         * 추후 배포 시 SSL 인증 적용하여 통신 방법 변경
-         */
-        return ResponseEntity.ok().body(response);
+
+        // 1. RefreshToken 을 위한 쿠키 생성
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", response.getRefreshToken())
+                .httpOnly(true)
+                .secure(HTTPONLY_SECURE_OPTION)
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60) // 유효기간 7일
+                .sameSite("Lax")
+                .build();
+
+        // 2. 응답 DTO 에서 RefreshToken 제거
+        response.clearRefreshToken();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+                .body(response);
     }
 
     @GetMapping("/member/{memberId}")

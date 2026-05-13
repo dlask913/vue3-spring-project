@@ -4,9 +4,9 @@ spring:
       on-profile: dev
   datasource:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mysql://mysql-app:3306/noticeboard?serverTimezone=UTC
-    username: root
-    password: 1234
+    url: jdbc:log4jdbc:postgresql://postgres:5432/noticeboard?serverTimezone=UTC
+    username: myuser
+    password: mypass
   mail:
     host: smtp.gmail.com
     port: 587
@@ -45,3 +45,5 @@ jwt:
 slack:
   webhook:
     url: ${SLACK_WEBHOOK_URL}
+
+httponly-secure-option: false
