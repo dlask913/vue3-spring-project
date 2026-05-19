@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface RefreshTokenService {
     String generateRefreshToken(String username);
-    String generateNewAccessToken(RefreshTokenRequestDto requestDto);
+    String generateNewAccessToken(String refreshToken);
     void expireRefreshToken(String username);
 }

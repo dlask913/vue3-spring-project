@@ -22,4 +22,8 @@ public class LoginResponseDto {
         this.refreshToken = refreshToken;
         this.role = role;
     }
+
+    public void clearRefreshToken() {
+        this.refreshToken = null;
+    }
 }

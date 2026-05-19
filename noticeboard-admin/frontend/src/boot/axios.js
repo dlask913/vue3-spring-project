@@ -46,13 +46,11 @@ export default defineBoot(({ router, store }) => {
         userStore.refreshToken
       ) {
         try {
-          // refresh token 발급 API 호출
+          // refresh token을 통해 access token 발급 API 호출
           const newAccessToken = await axios.post(
             'http://localhost:8081/refresh',
-            {
-              username: userStore.username,
-              refreshToken: userStore.refreshToken,
-            },
+            {},
+            { withCredentials: true }
           );
 
           if (!newAccessToken.data) {
@@ -67,7 +65,6 @@ export default defineBoot(({ router, store }) => {
             userStore.userId,
             userStore.username,
             newAccessToken.data,
-            userStore.refreshToken,
             userStore.email,
             userStore.userRole,
           );

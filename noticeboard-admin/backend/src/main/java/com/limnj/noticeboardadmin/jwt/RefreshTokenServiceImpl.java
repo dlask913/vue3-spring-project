@@ -30,7 +30,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public String generateNewAccessToken(RefreshTokenRequestDto requestDto) {
+    public String generateNewAccessToken(String refreshToken) {
+        String username = jwtTokenUtil.getUsernameFromToken(refreshToken);
+        RefreshTokenRequestDto requestDto = RefreshTokenRequestDto.builder()
+                .username(username)
+                .refreshToken(refreshToken)
+                .build();
         if(!validateRefreshToken(requestDto)){
             log.error("Refresh Token 이 일치하지 않습니다.");
             throw new BizException(ErrorCode.REFRESH_TOKEN_INVALID);
