@@ -67,6 +67,9 @@ dependencies {
 
     // postgresql
     runtimeOnly 'org.postgresql:postgresql'
+
+    // 실시간 접속자 수 카운팅을 위한 웹소켓 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 
 tasks.named('test') {
