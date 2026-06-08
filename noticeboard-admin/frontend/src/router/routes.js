@@ -78,6 +78,11 @@ const routes = [
         },
       },
       {
+        path: '/statistics/active-users',
+        name: 'ActiveUsersViewPage',
+        component: () => import('src/pages/statistics/ActiveUsersViewPage.vue'),
+      },
+      {
         path: '/inventory',
         name: 'InventoryViewPage',
         component: () => import('src/pages/product/InventoryViewPage.vue'),

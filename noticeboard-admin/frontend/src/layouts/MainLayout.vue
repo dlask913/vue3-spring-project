@@ -133,6 +133,11 @@ const linksList = [
         icon: 'analytics',
         to: '/statistics/log',
       },
+      {
+        title: '실시간 접속자 수',
+        icon: 'analytics',
+        to: '/statistics/active-users',
+      },
     ],
   },
   {

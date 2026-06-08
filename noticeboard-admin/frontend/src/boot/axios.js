@@ -50,7 +50,7 @@ export default defineBoot(({ router, store }) => {
           const newAccessToken = await axios.post(
             'http://localhost:8081/refresh',
             {},
-            { withCredentials: true }
+            { withCredentials: true },
           );
 
           if (!newAccessToken.data) {
