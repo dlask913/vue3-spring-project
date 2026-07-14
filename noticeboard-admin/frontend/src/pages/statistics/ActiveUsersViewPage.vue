@@ -51,18 +51,15 @@ const isConnected = ref(false);
 let stompClient = null;
 
 const connectWebSocket = () => {
-  const socket = new SockJS('http://localhost:8080/ws-connect');
+  const socket = new SockJS('http://localhost:8080/ws-connection');
   stompClient = Stomp.over(socket);
-
-  // 콘솔 로그가 너무 지저분하면 주석 해제하여 비활성화
-  // stompClient.debug = null
 
   stompClient.connect(
     {},
     frame => {
       isConnected.value = true;
       console.log('Connected: ' + frame);
-      stompClient.subscribe('/topic/users', response => {
+      stompClient.subscribe('/topic/active-users', response => {
         activeUsers.value = parseInt(response.body, 10);
       });
     },

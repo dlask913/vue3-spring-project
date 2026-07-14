@@ -84,7 +84,6 @@ const onSubmit = async () => {
       data.memberId,
       data.username,
       data.accessToken,
-      data.refreshToken,
       data.email,
       data.role,
     ); // 토큰 저장
