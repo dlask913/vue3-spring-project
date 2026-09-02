@@ -22,6 +22,7 @@ onMounted(() => {
   stompClient = new Client({
     webSocketFactory: () => new SockJS('http://localhost:8080/ws-connection'),
     reconnectDelay: 5000,
+    connectHeaders: { 'client-type': 'SERVICE' }
   })
   
   // 연결만 맺어두면 백엔드 SessionConnectedEvent가 자동으로 카운트함
