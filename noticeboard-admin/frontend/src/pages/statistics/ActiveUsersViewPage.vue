@@ -43,52 +43,41 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
+import { Client } from '@stomp/stompjs'
+import SockJS from 'sockjs-client'
 
-const activeUsers = ref(0);
+const activeUsers = ref(0)
 const isConnected = ref(false);
-let stompClient = null;
 
-const connectWebSocket = () => {
-  const socket = new SockJS('http://localhost:8080/ws-connection');
-  stompClient = Stomp.over(socket);
-
-  stompClient.connect(
-    {},
-    frame => {
-      isConnected.value = true;
-      console.log('Connected: ' + frame);
-      stompClient.subscribe('/topic/active-users', response => {
-        activeUsers.value = parseInt(response.body, 10);
-      });
-    },
-    error => {
-      console.error('WebSocket error: ', error);
-      isConnected.value = false;
-      setTimeout(connectWebSocket, 5000);
-    },
-  );
-};
-
-const disconnectWebSocket = () => {
-  if (stompClient !== null) {
-    stompClient.disconnect();
-  }
-  isConnected.value = false;
-};
+// 현재 탭 전용 소켓 변수
+let stompClient = null
 
 onMounted(() => {
-  connectWebSocket();
-});
+  // 탭이 열릴 때 소켓 클라이언트 설정
+  stompClient = new Client({
+    webSocketFactory: () => new SockJS('http://localhost:8080/ws-connection'),
+    reconnectDelay: 500,
+    connectHeaders: { 'client-type': 'ADMIN' },
+    onConnect: () => {
+      isConnected.value = true;
+      stompClient.subscribe('/topic/active-users', (message) => {
+        activeUsers.value = parseInt(message.body, 10)
+      })
+    },
+  })
+
+  stompClient.activate()
+})
 
 onUnmounted(() => {
-  disconnectWebSocket();
-});
+  // 컴포넌트 해제 / 탭 종료 시 소켓 연결 끊기
+  if (stompClient) {
+    stompClient.deactivate()
+  }
+})
 </script>
 
 <style scoped>
-/* 원하시면 커스텀 라운드나 스타일을 추가할 수 있습니다 */
 .rounded-borders-xl {
   border-radius: 16px;
 }
