@@ -1,0 +1,55 @@
+name: Deploy Noticeboard Admin Frontend to AWS S3
+
+on:
+  push:
+    branches:
+      - main
+    # noticeboard-admin/frontend 폴더 내의 파일이 수정되었을 때만 실행
+    paths:
+      - 'noticeboard-admin/frontend/**'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ap-northeast-2
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    
+    # 이 Job 내부의 모든 run 명령어를 해당 디렉토리에서 실행하도록 설정
+    defaults:
+      run:
+        working-directory: noticeboard-admin/frontend
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          # working-directory 내의 package-lock.json을 사용하도록 캐시 설정
+          cache: 'npm'
+          cache-dependency-path: noticeboard-admin/frontend/package-lock.json
+
+      # AWS OIDC 임시 자격 증명 획득
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsDeployRole
+          aws-region: ${{ env.AWS_REGION }}
+
+      # noticeboard-admin/frontend 폴더 기준 실행
+      - name: Install Dependencies & Build Quasar
+        run: |
+          npm ci
+          npx quasar build
+
+      # 빌드 결과물(dist/spa)을 S3 버킷으로 업로드
+      - name: Sync to S3
+        run: |
+          aws s3 sync dist/spa s3://${{ secrets.AWS_S3_BUCKET }} --delete
