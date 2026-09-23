@@ -77,6 +77,7 @@ Web Application using Vue3 and Spring Boot
 - 서버 예외 처리 방식 ([#72](https://github.com/dlask913/vue3-spring-project/issues/72)) opened on Jan 24, 2026
 - 감사용 로그 기록 방식 - AOP + 이벤트리스너 활용 ([#74](https://github.com/dlask913/vue3-spring-project/issues/74)) opened on Jan 31, 2026
 - 클라이언트 토큰 관리 방법 - LocalStorage 와 Cookie ([#56](https://github.com/dlask913/vue3-spring-project/issues/56)) opened on Jul 31, 2025
+- 도커 배포 시 설정 업데이트 안되는 오류(cache) - Docker Multistage ([#94](https://github.com/dlask913/vue3-spring-project/issues/94)) opened on Apr 11, 2026
 
 <br>
 
@@ -91,6 +92,7 @@ Web Application using Vue3 and Spring Boot
 - 토큰 검증 플로우 정리 - access token 및 refresh token ([#24](https://github.com/dlask913/vue3-spring-project/issues/24)) opened on Mar 6, 2025
 - 사용자 권한 별 접근 제어 - Spring CustomAccessDeniedHandler 와 Vue 라우터 가드 ([#71](https://github.com/dlask913/vue3-spring-project/issues/71)) opened on Jan 11, 2026
 - Nginx 보안 설정 - HTTPS, TLS, 보안 헤더, 타임아웃 ([#88](https://github.com/dlask913/vue3-spring-project/issues/88)) opened on Mar 28, 2026
+- Refresh Token 응답 방식 쿠키로 변경 ([#95](https://github.com/dlask913/vue3-spring-project/issues/95)) opened on May 11, 2026
 
 <br>
 
@@ -98,6 +100,7 @@ Web Application using Vue3 and Spring Boot
 - 서버, 클라이언트, DB 도커 컨테이너 배포 ([#28](https://github.com/dlask913/vue3-spring-project/issues/28)) opened on Mar 27, 2025
 - 컨테이너 자동 배포 - Jenkinsfile ([#34](https://github.com/dlask913/vue3-spring-project/issues/34)) opened on Apr 23, 2025
 - 컨테이너 배포 방식 전환 - to Docker Image 기반 배포 ([#43](https://github.com/dlask913/vue3-spring-project/issues/43)) opened on Jun 12, 2025
+- GitHub Actions 를 이용한 Quasar 프론트엔드 CI/CD 파이프라인 구성 ([#58](https://github.com/dlask913/vue3-spring-project/issues/58)) opened on Sep 23, 2025
 
 <br>
 
