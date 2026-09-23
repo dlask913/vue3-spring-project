@@ -1,60 +1,75 @@
-name: Deploy Noticeboard Admin Frontend to AWS S3
-
+name: Deploy Noticeboard Admin Frontend
 on:
   push:
-    branches:
-      - main
-    # noticeboard-admin/frontend 폴더 내의 파일이 수정되었을 때만 실행
+    branches: [main]
     paths:
       - 'noticeboard-admin/frontend/**'
-
+      - '.github/workflows/deploy-admin-fe.yml'
+  workflow_dispatch:
 permissions:
-  id-token: write
   contents: read
-
-env:
-  AWS_REGION: ap-northeast-2
-
+concurrency:
+  group: admin-frontend-production
+  cancel-in-progress: false
 jobs:
   deploy-frontend:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    
-    # 이 Job 내부의 모든 run 명령어를 해당 디렉토리에서 실행하도록 설정
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: ap-northeast-2
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+      VITE_FIREBASE_VAPID_KEY: ${{ vars.VITE_FIREBASE_VAPID_KEY }}
     defaults:
       run:
         working-directory: noticeboard-admin/frontend
-
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
-
+      - name: Validate deployment settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in AWS_ACCOUNT_ID AWS_S3_BUCKET CLOUDFRONT_DISTRIBUTION_ID; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Missing repository secret: $name"
+              exit 1
+            fi
+          done
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          # working-directory 내의 package-lock.json을 사용하도록 캐시 설정
-          cache: 'npm'
+          node-version: '22'
+          cache: npm
           cache-dependency-path: noticeboard-admin/frontend/package-lock.json
-
-      # AWS OIDC 임시 자격 증명 획득
-      - name: Configure AWS Credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsDeployRole
-          aws-region: ${{ env.AWS_REGION }}
-
-      # noticeboard-admin/frontend 폴더 기준 실행
-      - name: Install Dependencies & Build Quasar
+      - name: Install and build SPA
         run: |
           npm ci
-          npx quasar build
-
-      # 빌드 결과물(dist/spa)을 S3 버킷으로 업로드
-      - name: Sync to S3
+          npm run build
+          test -f dist/spa/index.html
+      - name: Assume AWS deployment role with OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/GitHubActionsDeployRole
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: github-admin-${{ github.run_id }}
+          role-duration-seconds: 900
+      # Keep old hashed assets for already-open clients; publish index last.
+      - name: Upload files and publish index
+        shell: bash
         run: |
-          aws s3 sync dist/spa s3://${{ secrets.AWS_S3_BUCKET }} --delete
-
-      # CloudFront 캐시 무효화 (새 버전 즉시 반영)
-      - name: Invalidate CloudFront Cache
+          set -euo pipefail
+          aws s3 sync dist/spa/ "s3://$AWS_S3_BUCKET/" \
+            --exclude 'index.html' --cache-control 'public,max-age=300' --only-show-errors
+          aws s3 cp dist/spa/index.html "s3://$AWS_S3_BUCKET/index.html" \
+            --cache-control 'no-cache,no-store,must-revalidate' \
+            --content-type 'text/html; charset=utf-8' --only-show-errors
+      - name: Invalidate CloudFront cache
         run: |
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+          aws cloudfront create-invalidation \
+            --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths '/*'
