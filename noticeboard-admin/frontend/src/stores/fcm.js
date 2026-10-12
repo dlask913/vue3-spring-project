@@ -4,8 +4,8 @@ export const useFcmStore = defineStore('fcm', {
   state: () => ({
     token: null,
   }),
-   getters: {
-    getToken: state => state.token
+  getters: {
+    getToken: state => state.token,
   },
   actions: {
     setToken(token) {

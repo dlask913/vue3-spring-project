@@ -2,16 +2,13 @@ package com.limnj.noticeboardadmin.notice;
 
 import com.limnj.noticeboardadmin.file.FileInfoMapper;
 import com.limnj.noticeboardadmin.file.FileInfoResponseDto;
-import com.limnj.noticeboardadmin.file.FileInfoService;
 import com.limnj.noticeboardadmin.file.FileType;
 import com.limnj.noticeboardadmin.member.AdminMemberRequestDto;
 import com.limnj.noticeboardadmin.member.MemberMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -29,8 +25,7 @@ class NoticeServiceTest {
     NoticeService noticeService;
     @Autowired
     NoticeMapper noticeMapper;
-//    @Autowired
-//    FileInfoService fileInfoService;
+
     @Autowired
     FileInfoMapper fileInfoMapper;
 

@@ -2,7 +2,7 @@ package com.limnj.noticeboardadmin.file;
 
 import com.limnj.noticeboardadmin.notice.NoticeService;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +30,8 @@ class FileInfoServiceTest {
     String fileLocation;
 
     @Test
-    void saveFileTest() {
+    @DisplayName("파일을 저장한다")
+    void saveFile_success() {
         // given
         Long noticeId = 1L;
         MockMultipartFile noticePdf = new MockMultipartFile(
@@ -54,7 +55,8 @@ class FileInfoServiceTest {
     }
 
     @Test
-    void deleteFileTest() {
+    @DisplayName("파일을 삭제한다")
+    void deleteFile_success() {
         // given
         Long noticeId = 1L;
         MockMultipartFile noticePdf = new MockMultipartFile(
