@@ -2,13 +2,13 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
 }
 
 configurations {
@@ -32,7 +32,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisVersion}"
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
 
     implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -40,7 +39,7 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation "org.mybatis.spring.boot:mybatis-spring-boot-starter-test:${mybatisVersion}"
-    runtimeOnly 'com.h2database:h2'
+    testRuntimeOnly 'org.testcontainers:postgresql'
 
     // security 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -70,8 +69,18 @@ dependencies {
 
     // 실시간 접속자 수 카운팅을 위한 웹소켓 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named('processTestResources') {
+    from('../init-postgresql.sql') {
+        rename 'init-postgresql.sql', 'schema-postgresql.sql'
+    }
+}
+kotlin {
+    jvmToolchain(17)
 }

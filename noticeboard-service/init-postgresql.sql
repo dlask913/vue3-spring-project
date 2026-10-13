@@ -1,3 +1,7 @@
+-- PostgreSQL 15 schema for a new noticeboard database.
+-- Docker Compose runs this file once when its PostgreSQL volume is empty.
+BEGIN;
+
 -- 1. members 테이블
 CREATE TABLE members (
     id BIGSERIAL PRIMARY KEY,
@@ -223,3 +227,40 @@ CREATE TABLE fcm_tokens (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uk_fcm_token UNIQUE (token)
 );
+
+-- PostgreSQL 은 ON UPDATE CURRENT_TIMESTAMP 를 지원하지 않으므로, 트리거를 사용하여 update_date 및 updated_at 컬럼을 자동으로 갱신하도록 설정
+CREATE FUNCTION set_update_date() RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW IS DISTINCT FROM OLD
+       AND NEW.update_date IS NOT DISTINCT FROM OLD.update_date THEN
+        NEW.update_date := statement_timestamp();
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER contents_update_date BEFORE UPDATE ON contents
+    FOR EACH ROW EXECUTE FUNCTION set_update_date();
+CREATE TRIGGER comments_update_date BEFORE UPDATE ON comments
+    FOR EACH ROW EXECUTE FUNCTION set_update_date();
+CREATE TRIGGER replies_update_date BEFORE UPDATE ON replies
+    FOR EACH ROW EXECUTE FUNCTION set_update_date();
+CREATE TRIGGER products_update_date BEFORE UPDATE ON products
+    FOR EACH ROW EXECUTE FUNCTION set_update_date();
+
+CREATE FUNCTION set_updated_at() RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW IS DISTINCT FROM OLD
+       AND NEW.updated_at IS NOT DISTINCT FROM OLD.updated_at THEN
+        NEW.updated_at := statement_timestamp();
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER page_metadata_updated_at BEFORE UPDATE ON page_metadata
+    FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER fcm_tokens_updated_at BEFORE UPDATE ON fcm_tokens
+    FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+COMMIT;

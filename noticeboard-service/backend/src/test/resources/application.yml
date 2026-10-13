@@ -2,10 +2,18 @@ spring:
   profiles:
     active: test
   datasource:
-    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mysql://localhost:3306/testboard?serverTimezone=UTC
-    username: root
-    password: 1234
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgresql:15:///testboard_${random.uuid}
+    username: test
+    password: test
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema-postgresql.sql
+      separator: "^^^ END OF SCRIPT ^^^"
+  mail:
+    host: localhost
+    port: 2525
 
 #MyBatis
 mybatis:
@@ -14,11 +22,16 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
-upload-path: file:///C:/images/
+upload-path: file:./build/test-images/
 default-img-path: classpath:/static/default-image/
-member-img-location: C:/images/member
-product-img-location: C:/images/product
-category-img-location: C:/images/category
+member-img-location: ./build/test-images/member
+product-img-location: ./build/test-images/product
+category-img-location: ./build/test-images/category
+
+httponly-secure-option: false
+google:
+  recaptcha:
+    secret-key: test-only
 
 # 카카오 REST API KEY
 kakao-rest-api-key: 049c84589ed98d01f5fe19b15cb67ea4
