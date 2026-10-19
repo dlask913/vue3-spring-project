@@ -18,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
@@ -168,8 +170,8 @@ class MemberServiceTest {
     private static MemberRequestDto createMemberDto(Long memberId, String email, String password, String username, String address) {
         AddressRequestDto addressDto = AddressRequestDto.builder()
                 .roadAddressName("roadAddressName")
-                .latitude("11")
-                .longitude("11")
+                .latitude(new BigDecimal("11"))
+                .longitude(new BigDecimal("11"))
                 .addressName(address)
                 .build();
         return MemberRequestDto.builder()
