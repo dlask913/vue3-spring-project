@@ -16,4 +16,8 @@ public class LoginResponseDto {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
+
+    public void clearRefreshToken() {
+        this.refreshToken = null;
+    }
 }
