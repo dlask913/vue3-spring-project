@@ -72,7 +72,7 @@ public class MemberServiceImpl implements MemberService{
         // FCM 토큰 저장
         FcmTokenRequestDto fcmTokenRequestDto = FcmTokenRequestDto.builder()
                 .userId(findMember.getId())
-                .token(requestDto.getFcmToken())
+                .token(requestDto.getFcmToken() == null ? "NULL" : requestDto.getFcmToken())
                 .build();
         fcmNotificationService.updateFcmTokenForUser(fcmTokenRequestDto);
 
