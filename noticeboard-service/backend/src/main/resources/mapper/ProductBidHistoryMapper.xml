@@ -1,7 +1,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.product.ProductBidHistoryMapper">
     <!-- 가격 등록 -->
-    <insert id="addBidHistory" parameterType="ProductBidDto" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addBidHistory" parameterType="ProductBidDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO bid_history (bid_price, customer_id, product_id)
         VALUES (#{bidPrice}, #{customerId}, #{productId})
     </insert>
@@ -12,7 +12,7 @@
         FROM bid_history bh
             JOIN Members m ON bh.customer_id = m.id
         WHERE bh.product_id = #{productId}
-        ORDER BY bh.bid_price DESC
+        ORDER BY bh.bid_price DESC, bh.created_at DESC, bh.id DESC
         LIMIT 1
     </select>
 

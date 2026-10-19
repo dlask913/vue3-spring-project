@@ -15,7 +15,7 @@
     </select>
 
     <!-- 좋아요 생성 -->
-    <insert id="saveHeart" parameterType="HeartDto" useGeneratedKeys="true" keyProperty="id">
+    <insert id="saveHeart" parameterType="HeartDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO hearts (member_id, comment_id)
         VALUES (#{memberId}, #{commentId})
     </insert>

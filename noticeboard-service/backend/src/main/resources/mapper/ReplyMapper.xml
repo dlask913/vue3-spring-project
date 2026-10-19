@@ -1,7 +1,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.comment.ReplyMapper">
     <!-- 대댓글 생성 -->
-    <insert id="insertReply" parameterType="ReplyRequestDto" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertReply" parameterType="ReplyRequestDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO replies (content, comment_id, member_id)
         VALUES (#{content}, #{commentId}, #{memberId})
     </insert>

@@ -1,9 +1,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.product.ProductMapper">
     <!-- 상품 등록 -->
-    <insert id="insertProduct" parameterType="ProductRequestDto" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertProduct" parameterType="ProductRequestDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO products (title, content, category, standard_price, owner_id, deadline)
-        VALUES (#{title}, #{content}, #{category}, #{standardPrice}, #{ownerId}, #{deadline})
+        VALUES (#{title}, #{content}, #{category}, #{standardPrice}, #{ownerId}, CAST(#{deadline} AS DATE))
     </insert>
 
     <!-- 상품 단일 조회 -->
@@ -15,7 +15,7 @@
         ),
         RankedBids AS (
             SELECT product_id, bid_price, customer_id,
-                ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY created_at DESC) AS latest
+                ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY created_at DESC, id DESC) AS latest
             FROM bid_history
         )
 
@@ -67,7 +67,7 @@
         ),
         RankedBids AS (
             SELECT product_id, bid_price, customer_id,
-            ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY created_at DESC) AS latest
+            ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY created_at DESC, id DESC) AS latest
             FROM bid_history
         )
 
@@ -112,7 +112,7 @@
         SELECT id, title, content, category, NULL AS standard_price, owner_id AS owner_id,
             NULL AS img_url, post_date
         FROM products
-        WHERE DATE(deadline) = CURRENT_DATE();
+        WHERE deadline = CURRENT_DATE
     </select>
 
 

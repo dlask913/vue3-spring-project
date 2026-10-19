@@ -1,7 +1,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.message.RoomMapper">
     <!-- 채팅방 생성 -->
-    <insert id="insertRoom" parameterType="RoomDto" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertRoom" parameterType="RoomDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO rooms (member_id_lower, member_id_higher)
         VALUES (#{lowerId}, #{higherId})
     </insert>

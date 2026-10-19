@@ -1,7 +1,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.noticeboardservice.mapper.comment.CommentMapper">
     <!-- 댓글 생성 -->
-    <insert id="insertComment" parameterType="CommentRequestDto" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertComment" parameterType="CommentRequestDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO comments (content, member_id, notice_id)
         VALUES (#{content}, #{memberId}, #{noticeId})
     </insert>
