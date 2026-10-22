@@ -2,21 +2,22 @@ server:
   port: 8081
 
 spring:
+  config:
+    import:
+      - "optional:file:${LOCAL_SECRETS_FILE:../.env.local}[.properties]"
   application:
     name: noticeboard-admin
-  # MySQL DataSource
+  # PostgreSQL DataSource
   datasource:
-    #    driver-class-name: com.mysql.cj.jdbc.Driver
-    #    url: jdbc:mysql://localhost:3306/noticeboard?serverTimezone=UTC
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mysql://localhost:3306/noticeboard?serverTimezone=UTC
-    username: "ENC(o4A+xk+wy7nkFcw5JfWYre87nAsfNJGMHnuXQqXUOXSo3uan5bOT3Tab1upHVrxt)"
-    password: "ENC(yM1Uz6uEFDrlgCYiFLduDjonzCt06A7HBn1DDpQXaNFIe7db2xfzQkBX3aL6hSm/)"
+    url: jdbc:log4jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:noticeboard}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   mail:
     host: smtp.gmail.com
     port: 587
-    username: "ENC(jMG9rN8fclimcYGyhz5GdHgShQOog7Ybwq7jTBXaBhvK0/f2wfSo6n5MeLMv7F1lwbY45RLc+4s4VkMEEmJMxA==)"
-    password: "ENC(XC8B0Cs0ZleRhDtYAWmktF066i7zWwO+tr2E95MVf7W423O9WdRueN7zxrN02FHxBD1tBYkruE89nflHGV837w==)"
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -44,6 +45,7 @@ spring:
 
 jasypt:
   encryptor:
+    password: ${JASYPT_ENCRYPTOR_PASSWORD:}
     property:
       prefix: "ENC("
       suffix: ")"
@@ -56,7 +58,7 @@ mybatis:
     map-underscore-to-camel-case: true
 
 jwt:
-  secret: "ENC(6yvA4NjuUqa8nwQPtRLUhTXWVOJISDUIot2KfjZP8n6Ze2BI3/o+38hzgRDucbte1sbUvu9HZNb8Gu3ACb+yRd6LCOCHZjYvQSAkSDm/BXQ=)"
+  secret: ${JWT_SECRET}
 
 # 파일 경로 설정
 uploadPath: file:///C:/files/
@@ -67,15 +69,14 @@ fileLocation: C:/images/files
 AUTH_EMAIL_SUBJECT: "[인증코드 발송]"
 AUTH_EMAIL_TEMPLATE: "templates/email/sendAuthentication.html"
 
+httponly-secure-option: false
 ---
 spring:
   config:
     activate:
       on-profile: test
   datasource:
-    #    driver-class-name: com.mysql.cj.jdbc.Driver
-    #    url: jdbc:mysql://localhost:3306/testboard?serverTimezone=UTC
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mysql://localhost:3306/testboard?serverTimezone=UTC
-    username: "ENC(o4A+xk+wy7nkFcw5JfWYre87nAsfNJGMHnuXQqXUOXSo3uan5bOT3Tab1upHVrxt)"
-    password: "ENC(yM1Uz6uEFDrlgCYiFLduDjonzCt06A7HBn1DDpQXaNFIe7db2xfzQkBX3aL6hSm/)"
+    url: jdbc:log4jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_TEST_DB:testboard}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}

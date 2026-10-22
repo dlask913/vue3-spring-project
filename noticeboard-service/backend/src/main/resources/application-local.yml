@@ -4,8 +4,8 @@ spring:
       on-profile: local
   datasource:
     url: jdbc:log4jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:noticeboard}
-    username: ${POSTGRES_USER:myuser}
-    password: ${POSTGRES_PASSWORD:mypass}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
 
 management:

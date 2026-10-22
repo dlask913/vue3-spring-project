@@ -1,0 +1,21 @@
+noticeboard-service/logs/spring-app-1/nohup.log
+noticeboard-service/logs/spring-app-2/nohup.log
+oom-test/.dump.hprof
+oom-test/.dump.hprof.hwcache/NBProfiler.nphd
+oom-test/.dump.hprof.hwcache/NBProfiler2806068226077455240.map
+oom-test/.dump.hprof.hwcache/NBProfiler9852362075786145170.ref
+noticeboard-service/backup_logs/spring-app-1/nohup-2025-05-19.log
+noticeboard-service/backup_logs/spring-app-2/nohup-2025-06-30.log
+noticeboard-service/backup_logs/spring-app-2/nohup-2025-07-01.log
+noticeboard-service/frontend/.env.development
+noticeboard-admin/frontend/.env.development
+noticeboard-admin/backend/src/test/java/com/limnj/noticeboardadmin/config/handler/JasyptTest.java
+noticeboard-service/backend/artillery/report-with-index.json
+noticeboard-service/backend/artillery/report-without-index.json
+noticeboard-admin/frontend/.env.development
+# Local credentials in all projects; share only empty examples.
+.env.local
+.env.local.*
+!.env.local.example
+noticeboard-admin/frontend/.env.development
+noticeboard-service/frontend/.env.development

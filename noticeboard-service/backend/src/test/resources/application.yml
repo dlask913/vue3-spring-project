@@ -4,8 +4,8 @@ spring:
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:postgresql:15:///testboard_${random.uuid}
-    username: test
-    password: test
+    username: ${TEST_DB_USER:test}
+    password: ${TEST_DB_PASSWORD:test}
   sql:
     init:
       mode: always
@@ -31,13 +31,13 @@ category-img-location: ./build/test-images/category
 httponly-secure-option: false
 google:
   recaptcha:
-    secret-key: test-only
+    secret-key: ${TEST_RECAPTCHA_SECRET_KEY:test-only}
 
 # 카카오 REST API KEY
-kakao-rest-api-key: 049c84589ed98d01f5fe19b15cb67ea4
+kakao-rest-api-key: ${TEST_KAKAO_API_KEY:test-only}
 
 jwt:
-  secret: 6qh3C2sv6MnfJrcwIsJdXApelnm9s0SxC/oAmv5zzDQ=
+  secret: ${TEST_JWT_SECRET:dGVzdC1vbmx5LWp3dC1zaWduaW5nLWtleS0zMi1ieXRlcw==}
 
 slack:
   webhook:
