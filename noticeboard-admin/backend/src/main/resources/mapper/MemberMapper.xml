@@ -13,7 +13,7 @@
     </resultMap>
 
     <!-- 관리자 회원 가입 -->
-    <insert id="saveAdminMember" parameterType="AdminMemberRequestDto" useGeneratedKeys="true" keyProperty="id">
+    <insert id="saveAdminMember" parameterType="AdminMemberRequestDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO members (username, password, email, user_type)
         VALUES (#{username}, #{password}, #{email, typeHandler=com.limnj.noticeboardadmin.config.handler.EncryptedStringTypeHandler}, 'ADMIN')
     </insert>
@@ -61,7 +61,7 @@
         SET login_fail_count = login_fail_count + 1,
             lock_until = CASE
                 WHEN login_fail_count + 1 >= 5
-                THEN DATE_ADD(NOW(), INTERVAL 5 MINUTE)
+                THEN NOW() + INTERVAL '5 minutes'
                 ELSE lock_until
             END
         WHERE id = #{id}

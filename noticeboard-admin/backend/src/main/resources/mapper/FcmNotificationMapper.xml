@@ -3,8 +3,8 @@
     <insert id="saveFcmToken" parameterType="FcmTokenRequestDto">
         INSERT INTO fcm_tokens(user_id, token, device_type)
         VALUES (#{userId}, #{token}, #{deviceType})
-        ON DUPLICATE KEY UPDATE
-            user_id = COALESCE(VALUES(user_id), user_id),
+        ON CONFLICT (token) DO UPDATE
+        SET user_id = COALESCE(EXCLUDED.user_id, fcm_tokens.user_id),
             updated_at = NOW();
     </insert>
 

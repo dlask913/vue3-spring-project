@@ -24,6 +24,8 @@ repositories {
 }
 
 ext {
+	// Docker 29 API compatibility for PostgreSQL integration tests.
+	set('testcontainers.version', '1.21.4')
 	mybatisVersion = "3.0.3";
 	swaggerVerion = "2.2.0";
 	jwtVersion = "0.11.2";
@@ -40,7 +42,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 
 	// Swagger 설정
@@ -93,9 +95,16 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'org.testcontainers:postgresql'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.named('processTestResources') {
+	from('../../noticeboard-service/init-postgresql.sql') {
+		rename 'init-postgresql.sql', 'schema-postgresql.sql'
+	}
 }

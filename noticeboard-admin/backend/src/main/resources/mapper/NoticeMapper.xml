@@ -1,7 +1,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.limnj.noticeboardadmin.notice.NoticeMapper">
     <!-- 게시글 생성 -->
-    <insert id="insertNotice" parameterType="NoticeRequestDto" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertNotice" parameterType="NoticeRequestDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO Contents (title, content, member_id, post_type)
         VALUES (#{title}, #{content}, #{memberId}, #{postType})
     </insert>
