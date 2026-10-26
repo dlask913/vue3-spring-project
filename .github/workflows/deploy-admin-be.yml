@@ -1,0 +1,96 @@
+name: Deploy Noticeboard Admin Backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'noticeboard-admin/backend/**'
+      - 'noticeboard-admin/deploy/**'
+      - '.github/workflows/deploy-admin-be.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: admin-backend-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: '17'
+          cache: gradle
+          cache-dependency-path: |
+            noticeboard-admin/backend/*.gradle
+            noticeboard-admin/backend/gradle/wrapper/gradle-wrapper.properties
+      - name: Check deployment and rollback scripts
+        run: |
+          bash -n noticeboard-admin/deploy/deploy.sh
+          python3 -m unittest discover -s noticeboard-admin/deploy/tests -v
+      # Existing integration tests need a separate DB and external service setup.
+      - name: Test deployment configuration and build executable JAR
+        working-directory: noticeboard-admin/backend
+        run: bash ./gradlew --no-daemon clean test --tests '*DeploymentConfigurationTest' bootJar
+      - name: Check JAR contains no Firebase private credentials
+        run: |
+          if jar tf noticeboard-admin/backend/build/libs/noticeboard-admin.jar | grep -q 'firebase-service-account.json'; then
+            echo '::error::Firebase credentials must not be packaged in the JAR.'
+            exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: admin-backend-jar
+          path: noticeboard-admin/backend/build/libs/noticeboard-admin.jar
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: ap-northeast-2
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_ADMIN_ARTIFACT_BUCKET: ${{ secrets.AWS_ADMIN_ARTIFACT_BUCKET }}
+      AWS_ADMIN_BACKEND_INSTANCE_ID: ${{ vars.AWS_ADMIN_BACKEND_INSTANCE_ID }}
+      AWS_ADMIN_BACKEND_PORT: ${{ vars.AWS_ADMIN_BACKEND_PORT || '8081' }}
+      RELEASE_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+      AWS_PAGER: ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: admin-backend-jar
+          path: noticeboard-admin/backend/build/libs
+      - name: Validate deployment settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$AWS_ACCOUNT_ID" =~ ^[0-9]{12}$ ]] || { echo '::error::Set secret AWS_ACCOUNT_ID'; exit 1; }
+          [[ "$AWS_ADMIN_ARTIFACT_BUCKET" =~ ^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$ ]] || { echo '::error::Set secret AWS_ADMIN_ARTIFACT_BUCKET'; exit 1; }
+          [[ "$AWS_ADMIN_BACKEND_INSTANCE_ID" =~ ^i-([0-9a-f]{8}|[0-9a-f]{17})$ ]] || { echo '::error::Set variable AWS_ADMIN_BACKEND_INSTANCE_ID'; exit 1; }
+          [[ "$AWS_ADMIN_BACKEND_PORT" =~ ^[0-9]{1,5}$ ]] && ((10#$AWS_ADMIN_BACKEND_PORT > 0 && 10#$AWS_ADMIN_BACKEND_PORT < 65536))
+      - name: Assume existing AWS deployment role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/GitHubActionsDeployRole
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: github-admin-be-${{ github.run_id }}
+          role-duration-seconds: 1800
+      - name: Upload immutable release artifacts
+        run: |
+          aws s3 cp noticeboard-admin/backend/build/libs/noticeboard-admin.jar "s3://$AWS_ADMIN_ARTIFACT_BUCKET/admin-backend/$RELEASE_ID/noticeboard-admin.jar" --only-show-errors
+          aws s3 cp noticeboard-admin/deploy/deploy.sh "s3://$AWS_ADMIN_ARTIFACT_BUCKET/admin-backend/$RELEASE_ID/deploy.sh" --only-show-errors
+      - name: Deploy through SSM and wait for readiness or rollback
+        run: python3 noticeboard-admin/deploy/ssm_deploy.py
