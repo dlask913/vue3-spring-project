@@ -1,0 +1,55 @@
+# The existing CloudFormation systemd unit activates this profile.
+spring:
+  config:
+    import: "file:${ADMIN_SECRETS_FILE:/var/lib/noticeboard-admin/config/secrets.properties}"
+  datasource:
+    # RDS requires TLS. Provision the AWS RDS CA bundle on the instance.
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT:5432}/${POSTGRES_DB:noticeboard}?sslmode=verify-full&sslrootcert=${POSTGRES_SSL_ROOT_CERT:/var/lib/noticeboard-admin/config/rds-ca-bundle.pem}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 5000
+  mail:
+    properties:
+      mail:
+        smtp:
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+server:
+  port: ${SERVER_PORT:8081}
+  servlet:
+    context-path: /api
+  shutdown: graceful
+
+app:
+  cors:
+    allowed-origins: ${ADMIN_FRONTEND_ORIGIN}
+
+firebase:
+  credentials: file:${FIREBASE_CREDENTIALS_FILE:/var/lib/noticeboard-admin/config/firebase-service-account.json}
+
+uploadPath: file:/var/lib/noticeboard-admin/files/
+categoryImgLocation: /var/lib/noticeboard-admin/images/category
+fileLocation: /var/lib/noticeboard-admin/files
+httponly-secure-option: true
+
+# Only health is exposed. Readiness includes the application state and database,
+# not optional outbound integrations (SMTP/Firebase/Redis).
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db
+
+logging:
+  level:
+    jdbc: OFF
