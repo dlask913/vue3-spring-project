@@ -1,4 +1,4 @@
--- PostgreSQL 15 schema for a new noticeboard database.
+-- Shared PostgreSQL 17 schema for a new noticeboard service/admin database.
 -- Docker Compose runs this file once when its PostgreSQL volume is empty.
 BEGIN;
 
@@ -11,6 +11,7 @@ CREATE TABLE members (
     address VARCHAR(255),
     secret_key VARCHAR(50),
     user_type VARCHAR(20) NOT NULL DEFAULT 'USER',
+    user_role VARCHAR(20) NOT NULL DEFAULT 'ROLE_USER',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     login_fail_count INT DEFAULT 0,
@@ -23,6 +24,7 @@ CREATE TABLE contents (
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     is_html CHAR(1) NOT NULL DEFAULT 'N',
+    hide_yn VARCHAR(1) NOT NULL DEFAULT 'N',
     post_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     view_count BIGINT DEFAULT 0,

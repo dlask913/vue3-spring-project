@@ -111,7 +111,7 @@ tasks.named('bootJar') {
 }
 
 tasks.named('processTestResources') {
-	from('../../noticeboard-service/init-postgresql.sql') {
+	from('../../database/init-postgresql.sql') {
 		rename 'init-postgresql.sql', 'schema-postgresql.sql'
 	}
 }

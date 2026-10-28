@@ -2,16 +2,16 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:15
+    image: postgres:17
     container_name: postgres-app
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-noticeboard}
-      POSTGRES_USER: ${POSTGRES_USER:-myuser}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mypass}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init-postgresql.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ../database/init-postgresql.sql:/docker-entrypoint-initdb.d/init.sql:ro
     ports:
       - "${POSTGRES_PORT:-5432}:5432" # 기본 포트
     healthcheck:
@@ -38,13 +38,14 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: ${POSTGRES_DB:-noticeboard}
-      POSTGRES_USER: ${POSTGRES_USER:-myuser}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mypass}
-      # JWT_SECRET: "${JWT_SECRET}"
-      # KAKAO_API_KEY: "${KAKAO_API_KEY}"
-      # MAIL_USERNAME: "${MAIL_USERNAME}"
-      # MAIL_PASSWORD: "${MAIL_PASSWORD}"
-      # SLACK_WEBHOOK_URL: "${SLACK_WEBHOOK_URL}"
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      JWT_SECRET: "${JWT_SECRET}"
+      KAKAO_API_KEY: "${KAKAO_API_KEY}"
+      MAIL_USERNAME: "${MAIL_USERNAME}"
+      MAIL_PASSWORD: "${MAIL_PASSWORD}"
+      SLACK_WEBHOOK_URL: "${SLACK_WEBHOOK_URL:-}"
+      RECAPTCHA_SECRET_KEY: "${RECAPTCHA_SECRET_KEY}"
     expose:
       - "8080"
     depends_on:
@@ -67,13 +68,14 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: ${POSTGRES_DB:-noticeboard}
-      POSTGRES_USER: ${POSTGRES_USER:-myuser}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mypass}
-      # JWT_SECRET: "${JWT_SECRET}"
-      # KAKAO_API_KEY: "${KAKAO_API_KEY}"
-      # MAIL_USERNAME: "${MAIL_USERNAME}"
-      # MAIL_PASSWORD: "${MAIL_PASSWORD}"
-      # SLACK_WEBHOOK_URL: "${SLACK_WEBHOOK_URL}"
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      JWT_SECRET: "${JWT_SECRET}"
+      KAKAO_API_KEY: "${KAKAO_API_KEY}"
+      MAIL_USERNAME: "${MAIL_USERNAME}"
+      MAIL_PASSWORD: "${MAIL_PASSWORD}"
+      SLACK_WEBHOOK_URL: "${SLACK_WEBHOOK_URL:-}"
+      RECAPTCHA_SECRET_KEY: "${RECAPTCHA_SECRET_KEY}"
     expose:
       - "8080"
     depends_on:

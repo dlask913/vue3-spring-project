@@ -3,7 +3,7 @@ spring:
     active: test
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:postgresql:15:///testboard_${random.uuid}
+    url: jdbc:tc:postgresql:17:///testboard_${random.uuid}
     username: ${TEST_DB_USER:test}
     password: ${TEST_DB_PASSWORD:test}
   sql:

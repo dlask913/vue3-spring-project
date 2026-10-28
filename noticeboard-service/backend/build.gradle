@@ -76,7 +76,7 @@ tasks.named('test') {
 }
 
 tasks.named('processTestResources') {
-    from('../init-postgresql.sql') {
+    from('../../database/init-postgresql.sql') {
         rename 'init-postgresql.sql', 'schema-postgresql.sql'
     }
 }
