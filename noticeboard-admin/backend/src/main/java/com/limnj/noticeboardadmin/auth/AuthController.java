@@ -5,7 +5,6 @@ import com.limnj.noticeboardadmin.member.LoginRequestDto;
 import com.limnj.noticeboardadmin.member.LoginResponseDto;
 import com.limnj.noticeboardadmin.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@Slf4j
 public class AuthController {
     private final MemberService memberServiceImpl;
     private final EmailVerificationService emailVerificationService;
@@ -32,7 +30,6 @@ public class AuthController {
     @PostMapping("/email-verify")
     @Operation(summary = "2FA 이메일 인증 코드 검증 API")
     public ResponseEntity<?> verifyAuthenticationCode(@RequestBody LoginRequestDto requestDto) {
-        log.info("requestDto.toString(): {}", requestDto.toString());
         boolean authResult = emailVerificationService.verifyCode(requestDto.getEmail(), requestDto.getAuthenticationCode());
         if(!authResult){
             return ResponseEntity.badRequest().body("인증 코드 검증에 실패하였습니다.");

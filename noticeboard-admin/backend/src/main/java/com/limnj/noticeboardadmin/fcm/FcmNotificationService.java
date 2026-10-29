@@ -70,7 +70,7 @@ public class FcmNotificationService {
                         // 등록되지 않은 토큰 → DB 삭제
                         String invalidToken = tokens.get(i);
                         invalidTokens.add(invalidToken);
-                        log.warn("Invalid FCM token detected: {}", invalidToken);
+                        log.warn("Invalid FCM token detected; removing its registration");
                     }
                 }
             }

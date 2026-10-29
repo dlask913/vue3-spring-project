@@ -1,0 +1,29 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="jdbc" level="OFF"/>
+    <logger name="local.auth.verification" level="OFF"/>
+    <springProfile name="(default | local) &amp; !prod &amp; !test">
+        <appender name="SQL_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <charset>UTF-8</charset>
+                <pattern>%n%d{HH:mm:ss.SSS} [%thread][SQL]=======================================================================%n%msg%n</pattern>
+            </encoder>
+        </appender>
+        <!-- Local SQL with bound values and execution time, without DEBUG call-site noise. -->
+        <logger name="jdbc.sqltiming" level="INFO" additivity="false">
+            <appender-ref ref="SQL_STDOUT"/>
+        </logger>
+        <logger name="local.auth.verification" level="INFO"/>
+    </springProfile>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

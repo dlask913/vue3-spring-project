@@ -42,7 +42,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             String jwtToken = requestTokenHeader.substring(7);
             try {
                 String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-                log.info("[REQUEST] [" + username + "]" + request.getRequestURI());
+                log.debug("[REQUEST] {} {}", request.getMethod(), request.getRequestURI());
 
                 if (StringUtils.isNoneEmpty(username) && null == SecurityContextHolder.getContext().getAuthentication()) {
                     UserDetails userDetails = memberServiceImpl.loadUserByUsername(username);
@@ -64,11 +64,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             } catch (SecurityException | SignatureException e) {
                 throw new BizException(ErrorCode.TOKEN_INVALID_SIGNATURE);
             } catch (Exception e) {
-                log.warn("인증 실패 : {}", e.getMessage());
-                e.printStackTrace();
+                log.warn("JWT authentication failed", e);
             }
-        } else {
-            log.warn("JWT Token does not begin with Bearer String");
         }
 
         filterChain.doFilter(request,response);

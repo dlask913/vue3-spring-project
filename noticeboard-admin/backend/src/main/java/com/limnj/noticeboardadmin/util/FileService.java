@@ -42,9 +42,9 @@ public class FileService {
         File deleteFile = new File(getFullPath(imgLocation, filePath));
         if (deleteFile.exists()) {
             deleteFile.delete();
-            log.info("기존 파일을 삭제하였습니다.");
+            log.debug("기존 파일을 삭제하였습니다.");
         } else {
-            log.info("파일이 존재하지 않습니다.");
+            log.debug("파일이 존재하지 않습니다.");
         }
     }
 }

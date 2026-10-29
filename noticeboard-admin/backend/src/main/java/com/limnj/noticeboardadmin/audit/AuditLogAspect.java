@@ -21,7 +21,6 @@ public class AuditLogAspect {
     public Object logExecution(ProceedingJoinPoint joinPoint, AuditLog auditLog) throws Throwable {
         String eventType = auditLog.eventType().toString();
         String actionType = auditLog.actionType().toString();
-        Object[] args = joinPoint.getArgs(); // 메서드 파라미터들
 
         long start = System.currentTimeMillis();
         try {
@@ -40,7 +39,7 @@ public class AuditLogAspect {
 
             auditLogEventListener.handleAuditLogEvent(event);
 
-            log.info("SUCCESS - Action: [{}], eventType: [{}], Args: [{}]", actionType, eventType, args);
+            log.debug("SUCCESS - Action: [{}], eventType: [{}]", actionType, eventType);
             return result;
         } catch (Exception e) {
             AuditLogEvent event = AuditLogEvent.builder()
@@ -59,7 +58,7 @@ public class AuditLogAspect {
             throw e;
         } finally {
             long executionTime = System.currentTimeMillis() - start;
-            log.info("Execution Time: {}ms", executionTime);
+            log.debug("Action: [{}], eventType: [{}], execution time: {}ms", actionType, eventType, executionTime);
         }
     }
 

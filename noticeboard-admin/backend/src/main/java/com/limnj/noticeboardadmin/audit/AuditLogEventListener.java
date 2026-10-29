@@ -19,7 +19,7 @@ public class AuditLogEventListener {
     public void handleAuditLogEvent(AuditLogEvent auditLogEvent) {
         try {
             auditLogMapper.insertAuditLog(auditLogEvent);
-            log.info("Audit Log saved: {} - {}", auditLogEvent.getEventType(), auditLogEvent.getActionType());
+            log.debug("Audit Log saved: {} - {}", auditLogEvent.getEventType(), auditLogEvent.getActionType());
         } catch (Exception e) {
             log.error("Failed to save audit log", e);
         }
