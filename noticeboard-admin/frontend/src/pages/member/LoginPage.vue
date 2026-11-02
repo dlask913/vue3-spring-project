@@ -57,10 +57,21 @@ const onLogin = async () => {
       path: '/auth/email-verify',
       query: { email: data.email, username: data.username },
     }); // 이메일 인증 페이지로 이동
+
   } catch (error) {
-    console.error('로그인 중 오류 발생:', error);
+    let message = '로그인에 실패했습니다. 잠시 후 다시 시도해주세요.';
+    if(error.response.data.errorCode === 'PASSWORD_MISMATCH') {
+      message = '비밀번호가 일치하지 않습니다.';
+    }else if(error.response.data.errorCode === 'MEMBER_NOT_FOUND') {
+      message = '사용자를 찾을 수 없습니다. 회원가입 후 로그인해주세요.';
+    }else if(error.response.data.errorCode === 'ACCOUNT_LOCKED'){
+      message = '계정이 잠겨 있습니다. 관리자에게 문의해주세요.';
+    } else {
+      console.error('로그인 중 오류 발생:', error.response.data.errorCode);
+    }
+
     Notify.create({
-      message: '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.',
+      message: message,
       color: 'negative',
       position: 'top',
     });
