@@ -135,11 +135,12 @@ const onSaveNotice = async () => {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
 
-    // 2. 푸시 알림 API 호출
-    await api.post('/push/all', {
-      title: '새로운 공지사항이 등록되었습니다!',
-      body: form.value.title,
-    });
+    if (userStore.userRole === 'ROLE_ADMIN') {
+      await api.post('/push/all', {
+        title: '새로운 공지사항이 등록되었습니다!',
+        body: form.value.title,
+      });
+    }
 
     Notify.create({
       message: '게시글이 성공적으로 저장되었습니다!',
