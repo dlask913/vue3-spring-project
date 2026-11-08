@@ -77,9 +77,7 @@ const email = computed(() => userStore.email);
 
 const generateQr = async () => {
   try {
-    const response = await api.post('/qr-register', null, {
-      params: { email: email.value },
-    });
+    const response = await api.post('/qr-register');
     qrCode.value = response.data.qrCodeBase64;
     Notify.create({
       message: 'QR 코드가 성공적으로 생성되었습니다!',

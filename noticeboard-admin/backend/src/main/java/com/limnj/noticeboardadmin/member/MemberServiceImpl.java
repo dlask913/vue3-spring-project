@@ -94,23 +94,16 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     @AuditLog(eventType = AuditLog.EventType.QR_SECRET_KEY, actionType = AuditLog.ActionType.UPDATE)
-    public void updateSecretKeyByEmail(String email, String secretKey) {
-        // 사용자 존재 확인
-        if (!memberMapper.existsByEmail(email)) {
-            throw new BizException(ErrorCode.EMAIL_NOT_FOUND);
-        }
-        memberMapper.updateSecretKeyByEmail(email, secretKey);
+    public void updateSecretKeyByUsername(String username, String secretKey) {
+        AdminMemberResponseDto member = memberMapper.findMemberByUsername(username)
+                .orElseThrow(() -> new BizException(ErrorCode.MEMBER_NOT_FOUND));
+        memberMapper.updateSecretKeyById(member.getId(), secretKey);
     }
 
     @Override
     public String findSecretKeyByEmail(String email) {
         return memberMapper.findSecretKeyByEmail(email)
                 .orElseThrow(() -> new BizException(ErrorCode.QR_NOT_GENERATE)); // QR 생성하지 않은 회원 예외 처리
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return memberMapper.existsByEmail(email);
     }
 
     @Override

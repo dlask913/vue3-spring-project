@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import java.security.Principal;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -50,8 +50,8 @@ public class AuthController {
 
     @PostMapping("/qr-register")
     @Operation(summary = "2FA QR 인증 코드 생성 API")
-    public ResponseEntity<?> registerQrAuthenticationCode(@RequestParam String email) throws IOException, WriterException {
-        QrResponseDto qrResponseDto = qrVerificationService.generateQrCodeForUser(email);
+    public ResponseEntity<?> registerQrAuthenticationCode(Principal principal) throws IOException, WriterException {
+        QrResponseDto qrResponseDto = qrVerificationService.generateQrCodeForUser(principal.getName());
         return ResponseEntity.ok().body(qrResponseDto);
     }
 

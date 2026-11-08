@@ -5,16 +5,16 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.limnj.noticeboardadmin.exception.BizException;
-import com.limnj.noticeboardadmin.exception.ErrorCode;
 import com.limnj.noticeboardadmin.member.MemberService;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Service
@@ -25,15 +25,11 @@ public class QrVerificationService {
     private final MemberService memberServiceImpl;
     private final GoogleAuthenticator gAuth = new GoogleAuthenticator();
 
-    public QrResponseDto generateQrCodeForUser(String userEmail) throws IOException, WriterException {
-        if(!memberServiceImpl.existsByEmail(userEmail)){
-            throw new BizException(ErrorCode.EMAIL_NOT_FOUND);
-        }
+    public QrResponseDto generateQrCodeForUser(String username) throws IOException, WriterException {
         GoogleAuthenticatorKey secretKey = createSecretKey();
-        memberServiceImpl.updateSecretKeyByEmail(userEmail, secretKey.getKey()); // secretKey DB에 저장
-
-        String otpAuthUrl = getOtpAuthURL(userEmail, secretKey.getKey());
+        String otpAuthUrl = getOtpAuthURL(username, secretKey.getKey());
         String qrCodeBase64 = generateQrCode(otpAuthUrl);
+        memberServiceImpl.updateSecretKeyByUsername(username, secretKey.getKey());
 
         return QrResponseDto.builder()
                 .qrCodeBase64("data:image/png;base64," + qrCodeBase64)
@@ -47,9 +43,9 @@ public class QrVerificationService {
     }
 
     // otpauth URI 생성
-    private String getOtpAuthURL(String userEmail, String secretKey) {
+    private String getOtpAuthURL(String username, String secretKey) {
         return String.format("otpauth://totp/%s:%s?secret=%s&issuer=%s",
-                ISSUER, userEmail, secretKey, ISSUER);
+                ISSUER, UriUtils.encode(username, StandardCharsets.UTF_8), secretKey, ISSUER);
     }
 
     // QR 이미지 Base64 인코딩으로 반환

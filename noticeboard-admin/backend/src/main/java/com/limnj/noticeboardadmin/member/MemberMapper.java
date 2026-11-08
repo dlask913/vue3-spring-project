@@ -11,7 +11,7 @@ public interface MemberMapper {
     Optional<AdminMemberResponseDto> findMemberById(Long memberId);
     Optional<AdminMemberResponseDto> findMemberByUsername(String username);
     boolean existsByEmail(String email);
-    void updateSecretKeyByEmail(@Param("email") String email, @Param("secretKey") String secretKey);
+    void updateSecretKeyById(@Param("id") Long id, @Param("secretKey") String secretKey);
     Optional<String> findSecretKeyByEmail(String email);
     void incrementFailCount(Long memberId);
     void resetFailCount(Long memberId);

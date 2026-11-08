@@ -29,11 +29,10 @@ class QrVerificationServiceTest {
     @DisplayName("QR 코드를 생성한다")
     void generateQrCodeForUser_success() throws IOException, WriterException {
         // given
-        String userEmail = "test@example.com";
-        when(memberService.existsByEmail(userEmail)).thenReturn(true);
+        String username = "test-admin";
 
         // when
-        QrResponseDto response = qrService.generateQrCodeForUser(userEmail);
+        QrResponseDto response = qrService.generateQrCodeForUser(username);
 
         // then
         assertNotNull(response);

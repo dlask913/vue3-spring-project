@@ -116,7 +116,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("관리자 2FA QR 코드 생성 시 secretKey 를 저장한다")
-    public void updateSecretKeyByEmail_success(){
+    public void updateSecretKeyByUsername_success(){
         // given
         AdminMemberRequestDto requestDto = getMember("limnj", "limnj@test.com", "1234");
         GoogleAuthenticator gAuth = new GoogleAuthenticator();
@@ -124,7 +124,7 @@ class MemberServiceTest {
         memberServiceImpl.saveAdminMember(requestDto);
 
         // when
-        memberServiceImpl.updateSecretKeyByEmail(requestDto.getEmail(), secretKey);
+        memberServiceImpl.updateSecretKeyByUsername(requestDto.getUsername(), secretKey);
 
         // then
         String findSecretKey = memberMapper.findSecretKeyByEmail(requestDto.getEmail()).orElseThrow();
@@ -133,17 +133,17 @@ class MemberServiceTest {
 
 
     @Test
-    @DisplayName("존재하지 않는 회원 이메일로 2FA QR 코드를 생성한다")
-    public void updateSecretKeyByEmail_failure(){
+    @DisplayName("존재하지 않는 회원의 QR 등록을 거절한다")
+    public void updateSecretKeyByUsername_failure(){
         // given
-        String email = "limnj@test.com";
+        String username = "missing-user";
         GoogleAuthenticator gAuth = new GoogleAuthenticator();
         String secretKey = gAuth.createCredentials().getKey();
 
         // when // then
-        assertThatThrownBy(() -> memberServiceImpl.updateSecretKeyByEmail(email, secretKey))
+        assertThatThrownBy(() -> memberServiceImpl.updateSecretKeyByUsername(username, secretKey))
                 .isInstanceOf(BizException.class)
-                .hasMessage(EMAIL_NOT_FOUND.getDescription());
+                .hasMessage(MEMBER_NOT_FOUND.getDescription());
     }
 
     @Test
@@ -154,7 +154,7 @@ class MemberServiceTest {
         GoogleAuthenticator gAuth = new GoogleAuthenticator();
         String secretKey = gAuth.createCredentials().getKey();
         memberServiceImpl.saveAdminMember(requestDto);
-        memberServiceImpl.updateSecretKeyByEmail(requestDto.getEmail(), secretKey);
+        memberServiceImpl.updateSecretKeyByUsername(requestDto.getUsername(), secretKey);
 
         // when
         String secretKeyByEmail = memberServiceImpl.findSecretKeyByEmail(requestDto.getEmail());

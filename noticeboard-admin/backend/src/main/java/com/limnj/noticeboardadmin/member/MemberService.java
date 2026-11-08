@@ -14,9 +14,8 @@ public interface MemberService extends UserDetailsService {
     /* 2차 인증 성공 후 토큰 발급 - 2차 로그인 */
     LoginResponseDto generateSecondaryAuthToken(LoginRequestDto requestDto);
     /* QR 시크릿 키 저장 */
-    void updateSecretKeyByEmail(String email, String secretKey);
+    void updateSecretKeyByUsername(String username, String secretKey);
     /* QR 시크릿 키 조회 */
     String findSecretKeyByEmail(String email);
-    boolean existsByEmail(String email);
     void logoutMember(LogoutRequestDto requestDto);
 }

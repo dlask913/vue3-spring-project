@@ -42,10 +42,10 @@
     </select>
 
     <!-- 회원 2FA QR secretKey 저장 -->
-    <update id ="updateSecretKeyByEmail">
+    <update id="updateSecretKeyById">
         UPDATE members
         SET secret_key = #{secretKey}, updated_at = NOW()
-        WHERE email = #{email, typeHandler=com.limnj.noticeboardadmin.config.handler.EncryptedStringTypeHandler} AND user_type = 'ADMIN'
+        WHERE id = #{id} AND user_type = 'ADMIN'
     </update>
 
     <!-- 회원 2FA QR secretKey 조회 -->
