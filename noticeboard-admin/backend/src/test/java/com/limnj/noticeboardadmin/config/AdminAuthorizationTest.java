@@ -34,8 +34,11 @@ class AdminAuthorizationTest {
     @MockBean FcmNotificationService notifications;
 
     @Test
-    void enrollmentRequiresLogin() throws Exception {
+    void enrollmentRequiresLoginAndUsesTheAuthenticatedAccount() throws Exception {
         mvc.perform(post("/qr-register")).andExpect(status().isUnauthorized());
+        mvc.perform(post("/qr-register").with(user("owner")).param("email", "other@example.org"))
+                .andExpect(status().isOk());
+        verify(qrVerification).generateQrCodeForUser("owner");
     }
 
     @Test
