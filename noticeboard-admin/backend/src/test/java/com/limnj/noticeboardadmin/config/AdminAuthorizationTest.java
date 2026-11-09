@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,6 +46,15 @@ class AdminAuthorizationTest {
                         .contentType("application/json").content("{}"))
                 .andExpect(status().isOk());
         verify(notifications).sendNotificationToAll(any());
+    }
+
+    @Test
+    void anonymousDeviceRegistrationCannotAssignAUser() throws Exception {
+        mvc.perform(post("/fcm/token").contentType("application/json")
+                        .content("{\"token\":\"device\",\"userId\":42}"))
+                .andExpect(status().isOk());
+        verify(notifications).updateFcmTokenForUser(argThat(token ->
+                token.getUserId() == null && "device".equals(token.getToken())));
     }
 
     @Test
