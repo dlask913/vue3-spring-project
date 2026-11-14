@@ -4,9 +4,6 @@ import com.limnj.noticeboardadmin.auth.EmailVerificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private final MemberService memberServiceImpl;
     private final EmailVerificationService emailVerificationService;
-    @Value("${httponly-secure-option}")
-    private boolean HTTPONLY_SECURE_OPTION;
 
     public MemberController(MemberService memberServiceImpl,
                             @Qualifier("concurrentEmailVerificationServiceImpl") EmailVerificationService emailVerificationService) {
@@ -45,21 +40,8 @@ public class MemberController {
             return ResponseEntity.badRequest().body("인증 코드 전송에 실패하였습니다.");
         }
 
-        // 1. RefreshToken 을 위한 쿠키 생성
-        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", loginResponseDto.getRefreshToken())
-                .httpOnly(true)
-                .secure(HTTPONLY_SECURE_OPTION)
-                .path("/")
-                .maxAge(7 * 24 * 60 * 60) // 유효기간 7일
-                .sameSite("Lax")
-                .build();
-
-        // 2. 응답 DTO 에서 RefreshToken 제거
-        loginResponseDto.clearRefreshToken();
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
-                .body(loginResponseDto);
+        // 1차 인증에서는 mfaToken만 발급하고 로그인 완료용 쿠키는 2차 인증에서 설정
+        return ResponseEntity.ok().body(loginResponseDto);
     }
 
     @PostMapping("/logout")

@@ -1,6 +1,7 @@
 package com.limnj.noticeboardadmin.member;
 
 import com.limnj.noticeboardadmin.audit.AuditLog;
+import com.limnj.noticeboardadmin.auth.MfaTokenService;
 import com.limnj.noticeboardadmin.exception.BizException;
 import com.limnj.noticeboardadmin.exception.ErrorCode;
 import com.limnj.noticeboardadmin.fcm.FcmNotificationService;
@@ -27,6 +28,7 @@ public class MemberServiceImpl implements MemberService{
     private final PasswordEncoder passwordEncoder;
     private final LoginPolicyService loginPolicyService;
     private final FcmNotificationService fcmNotificationService;
+    private final MfaTokenService mfaTokenService;
 
     @Override
     @AuditLog(eventType = AuditLog.EventType.REGISTER_MEMBER, actionType = AuditLog.ActionType.CREATE)
@@ -56,11 +58,14 @@ public class MemberServiceImpl implements MemberService{
         loginPolicyService.validateAccountStatus(findMember.getLockUntil());
         loginPolicyService.validatePassword(requestDto.getPassword(), findMember.getPassword(), findMember.getId());
 
+        // 로그인 토큰 대신 2차 인증 대기용 토큰을 발급하고 서버에서 확인한 회원 ID와 연결
+        String mfaToken = mfaTokenService.issueToken(findMember.getId());
         return LoginResponseDto.builder()
                 .memberId(findMember.getId())
                 .username(findMember.getUsername())
                 .email(findMember.getEmail())
                 .role(findMember.getRole())
+                .mfaToken(mfaToken)
                 .build();
     }
 
