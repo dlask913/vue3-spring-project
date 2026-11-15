@@ -64,7 +64,7 @@ class MemberLoginMfaTest {
                 .andExpect(jsonPath("$.email").value("owner@example.com"))
                 .andExpect(jsonPath("$.mfaToken").isNotEmpty())
                 .andExpect(jsonPath("$.accessToken").value(nullValue()))
-                .andExpect(jsonPath("$.refreshToken").value(nullValue()))
+                .andExpect(jsonPath("$.refreshToken").doesNotHaveJsonPath())
                 .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE))
                 .andReturn().getResponse().getContentAsString();
 

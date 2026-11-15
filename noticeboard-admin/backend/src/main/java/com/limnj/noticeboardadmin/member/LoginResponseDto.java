@@ -1,5 +1,6 @@
 package com.limnj.noticeboardadmin.member;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ public class LoginResponseDto {
     String username;
     String email;
     String accessToken;
+    // Refresh Token은 HttpOnly 쿠키로만 전달하고 JSON 응답에서는 제외
+    @JsonIgnore
     String refreshToken;
     String role;
     String mfaToken;

@@ -1,11 +1,15 @@
 package com.limnj.noticeboardadmin.auth;
 
 import com.google.zxing.WriterException;
+import com.limnj.noticeboardadmin.jwt.RefreshTokenServiceImpl;
 import com.limnj.noticeboardadmin.member.LoginRequestDto;
 import com.limnj.noticeboardadmin.member.LoginResponseDto;
 import com.limnj.noticeboardadmin.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +23,8 @@ public class AuthController {
     private final MemberService memberServiceImpl;
     private final EmailVerificationService emailVerificationService;
     private final QrVerificationService qrVerificationService;
+    @Value("${httponly-secure-option}")
+    private boolean secureCookie;
 
     public AuthController(MemberService memberServiceImpl,
                           @Qualifier("concurrentEmailVerificationServiceImpl") EmailVerificationService emailVerificationService, QrVerificationService qrVerificationService) {
@@ -35,7 +41,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body("인증 코드 검증에 실패하였습니다.");
         }
         LoginResponseDto loginResponseDto = memberServiceImpl.generateSecondaryAuthToken(requestDto);
-        return ResponseEntity.ok().body(loginResponseDto);
+        return secondaryAuthenticationResponse(loginResponseDto);
     }
 
     @PostMapping("/resend-code")
@@ -64,6 +70,20 @@ public class AuthController {
             return ResponseEntity.badRequest().body("인증 코드 검증에 실패하였습니다.");
         }
         LoginResponseDto loginResponseDto = memberServiceImpl.generateSecondaryAuthToken(requestDto);
-        return ResponseEntity.ok().body(loginResponseDto);
+        return secondaryAuthenticationResponse(loginResponseDto);
+    }
+
+    private ResponseEntity<LoginResponseDto> secondaryAuthenticationResponse(LoginResponseDto loginResponseDto) {
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", loginResponseDto.getRefreshToken())
+                .httpOnly(true)
+                .secure(secureCookie)
+                .path("/")
+                .maxAge(RefreshTokenServiceImpl.REFRESH_TOKEN_VALIDITY / 1000)
+                .sameSite("Lax")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+                .body(loginResponseDto);
     }
 }

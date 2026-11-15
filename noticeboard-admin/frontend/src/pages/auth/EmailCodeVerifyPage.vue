@@ -80,13 +80,16 @@ const onSubmit = async () => {
   loading.value = true;
   try {
     const fcmToken = fcmStore.getToken;
-    // console.log('FCM Token:', fcmToken); // FCM 토큰 확인용 로그
-    const { data } = await api.post('/email-verify', {
-      email: email,
-      username: username,
-      authenticationCode: code.value,
-      fcmToken: fcmToken || null,
-    });
+    const { data } = await api.post(
+      '/email-verify',
+      {
+        email: email,
+        username: username,
+        authenticationCode: code.value,
+        fcmToken: fcmToken || null,
+      },
+      { withCredentials: true },
+    );
 
     Notify.create({
       type: 'positive',
@@ -98,7 +101,6 @@ const onSubmit = async () => {
       data.memberId,
       data.username,
       data.accessToken,
-      data.refreshToken,
       data.email,
       data.role,
     ); // 토큰 저장

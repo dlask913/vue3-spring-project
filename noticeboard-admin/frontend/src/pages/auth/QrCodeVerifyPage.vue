@@ -68,11 +68,15 @@ const onSubmit = async () => {
   if (!code.value) return;
   loading.value = true;
   try {
-    const { data } = await api.post('/qr-verify', {
-      email: email,
-      username: username,
-      authenticationCode: code.value,
-    });
+    const { data } = await api.post(
+      '/qr-verify',
+      {
+        email: email,
+        username: username,
+        authenticationCode: code.value,
+      },
+      { withCredentials: true },
+    );
 
     Notify.create({
       type: 'positive',
