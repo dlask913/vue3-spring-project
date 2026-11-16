@@ -1,0 +1,33 @@
+# Shared build context for Dockerfile.backend, Dockerfile.nginx and Dockerfile.jenkins.
+
+# Version control and editor metadata
+**/.git
+**/.idea
+**/.vscode
+**/*.iml
+**/.DS_Store
+**/Thumbs.db
+
+# Local dependencies, build output and caches
+**/node_modules
+**/dist
+**/.vite
+**/.gradle
+**/build
+**/coverage
+
+# Runtime output and Jenkins temporary workspaces
+logs
+backup_logs
+**/*.log
+**/*.hprof
+**/hs_err_pid*.log
+**/*@tmp
+
+# Local environment files; Vite needs the production config during its build.
+**/.env
+**/.env.*
+!frontend/.env.production
+
+# Keep backend/gradle (including the wrapper JAR), backend/libs, source files,
+# frontend/public and nginx configuration/SSL files required by Dockerfile COPY.
