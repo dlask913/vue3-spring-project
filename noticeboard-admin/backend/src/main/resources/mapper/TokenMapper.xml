@@ -8,11 +8,11 @@
         SET token = EXCLUDED.token, expiry_date = EXCLUDED.expiry_date
     </insert>
 
-    <!-- 만료되지 않은 token 정보 조회 -->
-    <select id="findRefreshTokenByUsername" parameterType="string" resultType="RefreshToken">
+    <!-- 요청한 토큰 값과 일치하며 만료되지 않은 계정 정보 조회 -->
+    <select id="findValidRefreshTokenByToken" parameterType="string" resultType="RefreshToken">
         SELECT username, token, expiry_date
         FROM refresh_token
-        WHERE username = #{username} AND expiry_date > NOW();
+        WHERE token = #{token} AND expiry_date > NOW();
     </select>
 
     <!-- 회원 로그아웃 -->

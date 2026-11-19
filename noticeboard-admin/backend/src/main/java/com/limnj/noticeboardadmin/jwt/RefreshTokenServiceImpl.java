@@ -3,7 +3,6 @@ package com.limnj.noticeboardadmin.jwt;
 import com.limnj.noticeboardadmin.exception.BizException;
 import com.limnj.noticeboardadmin.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service @Transactional
-@RequiredArgsConstructor @Slf4j
+@RequiredArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final TokenMapper tokenMapper;
@@ -31,16 +30,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public String generateNewAccessToken(String refreshToken) {
-        String username = jwtTokenUtil.getUsernameFromToken(refreshToken);
-        RefreshTokenRequestDto requestDto = RefreshTokenRequestDto.builder()
-                .username(username)
-                .refreshToken(refreshToken)
-                .build();
-        if(!validateRefreshToken(requestDto)){
-            log.error("Refresh Token 이 일치하지 않습니다.");
+        if (refreshToken == null || refreshToken.isBlank()) {
             throw new BizException(ErrorCode.REFRESH_TOKEN_INVALID);
         }
-        return jwtTokenUtil.generateToken(requestDto.getUsername());
+        // Refresh Token은 UUID이므로 DB에 저장된 유효한 토큰으로 계정을 확인
+        RefreshToken savedToken = tokenMapper.findValidRefreshTokenByToken(refreshToken)
+                .orElseThrow(() -> new BizException(ErrorCode.REFRESH_TOKEN_INVALID));
+        return jwtTokenUtil.generateToken(savedToken.getUsername());
     }
 
     @Override
@@ -48,10 +44,4 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         tokenMapper.expireRefreshToken(username);
     }
 
-    public boolean validateRefreshToken(RefreshTokenRequestDto requestDto) {
-        RefreshToken refreshToken = tokenMapper.findRefreshTokenByUsername(requestDto.getUsername()).orElseThrow(
-                () -> new BizException(ErrorCode.REFRESH_TOKEN_INVALID)
-        );
-        return refreshToken.getToken().equals(requestDto.getRefreshToken());
-    }
 }
