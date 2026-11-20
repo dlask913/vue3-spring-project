@@ -33,6 +33,15 @@
         WHERE token = #{fcmToken}
     </update>
 
+    <update id="unbindFcmTokenForUser">
+        UPDATE fcm_tokens
+        SET user_id = NULL
+        WHERE token = #{fcmToken}
+          AND user_id IN (
+              SELECT id FROM members WHERE username = #{username} AND user_type = 'ADMIN'
+          )
+    </update>
+
     <delete id="deleteFcmTokens" parameterType="String">
         DELETE FROM fcm_tokens
         WHERE token IN

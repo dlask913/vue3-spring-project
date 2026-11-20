@@ -4,8 +4,12 @@ import com.limnj.noticeboardadmin.auth.EmailVerificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private final MemberService memberServiceImpl;
     private final EmailVerificationService emailVerificationService;
+    @Value("${httponly-secure-option}")
+    private boolean secureCookie;
 
     public MemberController(MemberService memberServiceImpl,
                             @Qualifier("concurrentEmailVerificationServiceImpl") EmailVerificationService emailVerificationService) {
@@ -46,9 +52,20 @@ public class MemberController {
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃")
-    public ResponseEntity<?> logoutMember(@RequestBody LogoutRequestDto requestDto) {
-        memberServiceImpl.logoutMember(requestDto);
+    public ResponseEntity<Void> logoutMember(
+            @CookieValue(name = "refreshToken", required = false) String refreshToken,
+            @RequestBody(required = false) LogoutRequestDto requestDto) {
+        memberServiceImpl.logoutMember(refreshToken, requestDto == null ? null : requestDto.getFcmToken());
 
-        return ResponseEntity.noContent().build();
+        ResponseCookie expiredCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(secureCookie)
+                .path("/")
+                .sameSite("Lax")
+                .maxAge(0)
+                .build();
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, expiredCookie.toString())
+                .build();
     }
 }

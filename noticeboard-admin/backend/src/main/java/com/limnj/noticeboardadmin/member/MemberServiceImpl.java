@@ -125,12 +125,12 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public void logoutMember(LogoutRequestDto requestDto) {
-        /**
-         * - fcmToken 의 userId NULL 로 UPDATE (UNBIND)
-         * - userId 의 refreshToken 데이터 DELETE
-         */
-        fcmNotificationService.unbindFcmToken(requestDto.getFcmToken());
-        refreshTokenServiceImpl.expireRefreshToken(requestDto.getUsername());
+    public void logoutMember(String refreshToken, String fcmToken) {
+        // username 이 아니라 토큰 자체를 기반으로 삭제하고 삭제된 토큰의 소유 계정을 반환받아 FCM 토큰을 해제
+        refreshTokenServiceImpl.revokeRefreshToken(refreshToken).ifPresent(username -> {
+            if (fcmToken != null && !fcmToken.isBlank()) {
+                fcmNotificationService.unbindFcmTokenForUser(username, fcmToken);
+            }
+        });
     }
 }

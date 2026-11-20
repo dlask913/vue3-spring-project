@@ -36,6 +36,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // Access Token 검증 필터는 로그아웃 요청에서는 수행 X
+        return "POST".equals(request.getMethod()) && "/logout".equals(request.getServletPath());
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String requestTokenHeader = request.getHeader("Authorization");
         if (StringUtils.startsWith(requestTokenHeader, "Bearer ")) {

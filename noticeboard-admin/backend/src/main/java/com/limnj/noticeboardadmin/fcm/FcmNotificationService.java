@@ -94,4 +94,8 @@ public class FcmNotificationService {
     public void unbindFcmToken(String fcmToken){
         fcmNotificationMapper.unbindFcmToken(fcmToken);
     }
+
+    public void unbindFcmTokenForUser(String username, String fcmToken) {
+        fcmNotificationMapper.unbindFcmTokenForUser(username, fcmToken);
+    }
 }

@@ -17,5 +17,5 @@ public interface MemberService extends UserDetailsService {
     void updateSecretKeyByUsername(String username, String secretKey);
     /* QR 시크릿 키 조회 */
     String findSecretKeyByEmail(String email);
-    void logoutMember(LogoutRequestDto requestDto);
+    void logoutMember(String refreshToken, String fcmToken);
 }

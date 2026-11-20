@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.Optional;
 
 @Service @Transactional
 @RequiredArgsConstructor
@@ -37,6 +38,14 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshToken savedToken = tokenMapper.findValidRefreshTokenByToken(refreshToken)
                 .orElseThrow(() -> new BizException(ErrorCode.REFRESH_TOKEN_INVALID));
         return jwtTokenUtil.generateToken(savedToken.getUsername());
+    }
+
+    @Override
+    public Optional<String> revokeRefreshToken(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            return Optional.empty();
+        }
+        return tokenMapper.deleteRefreshTokenByToken(refreshToken);
     }
 
     @Override

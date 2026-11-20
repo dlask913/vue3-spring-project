@@ -10,4 +10,5 @@ public interface TokenMapper {
     void saveRefreshToken(RefreshToken refreshToken);
     Optional<RefreshToken> findValidRefreshTokenByToken(@Param("token") String token);
     void expireRefreshToken(String username);
+    Optional<String> deleteRefreshTokenByToken(@Param("token") String token);
 }

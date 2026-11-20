@@ -15,7 +15,14 @@
         WHERE token = #{token} AND expiry_date > NOW();
     </select>
 
-    <!-- 회원 로그아웃 -->
+    <!-- 쿠키와 일치하는 토큰만 삭제하고 소유 계정을 반환, 만료된 토큰 정리 -->
+    <select id="deleteRefreshTokenByToken" resultType="string" affectData="true" flushCache="true">
+        DELETE FROM refresh_token
+        WHERE token = #{token}
+        RETURNING username
+    </select>
+
+    <!-- 계정의 토큰 폐기 -->
     <delete id="expireRefreshToken" parameterType="string">
         DELETE FROM refresh_token
         WHERE username = #{username}

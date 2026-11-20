@@ -86,6 +86,7 @@ import { useRouter } from 'vue-router';
 import { messaging } from 'boot/firebase';
 import { getToken, onMessage } from 'firebase/messaging';
 import { api } from 'boot/axios';
+import { Notify } from 'quasar';
 
 const userStore = useUserStore();
 const fcmStore = useFcmStore();
@@ -155,13 +156,20 @@ const linksList = [
 
 // 로그아웃 수행
 const onLogout = async () => {
-  const request = {
-    username: userStore.username,
-    fcmToken: fcmStore.getToken,
-  };
-  await api.post('/logout', request);
-  userStore.clearAuthInfo();
-  router.push('/login');
+  try {
+    await api.post(
+      '/logout',
+      { fcmToken: fcmStore.getToken },
+      { withCredentials: true },
+    );
+    userStore.clearAuthInfo();
+    router.push('/login');
+  } catch {
+    Notify.create({
+      type: 'negative',
+      message: '로그아웃에 실패했습니다. 다시 시도해주세요.',
+    });
+  }
 };
 
 // 로그인 여부

@@ -47,7 +47,7 @@ public class SecurityConfig {
                     }
                     request
                             .requestMatchers(POST, "/member", "/login", "/email-verify", "/qr-verify",
-                                    "/resend-code", "/refresh", "/fcm/token").permitAll()
+                                    "/resend-code", "/refresh", "/logout", "/fcm/token").permitAll()
                             .requestMatchers(GET, "/actuator/health/readiness", "/templates/inventory_template.xlsx").permitAll()
                             .requestMatchers(POST, "/qr-register").authenticated()
                             .requestMatchers(GET, "/notices", "/notice/{noticeId}", "/categories")
@@ -77,13 +77,8 @@ public class SecurityConfig {
                 )
         ;
 
-        http
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessHandler((request, response, authentication) -> {
-                            response.setStatus(HttpServletResponse.SC_OK);
-                        })
-                );
+        // Refresh Token 폐기와 쿠키 삭제는 POST /logout 컨트롤러에서 처리
+        http.logout(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
