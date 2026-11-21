@@ -1,6 +1,7 @@
 import { defineBoot } from '#q-app/wrappers';
 import axios from 'axios';
 import { useUserStore } from 'stores/user';
+import { installAuthInterceptors } from '../api/authInterceptors.js';
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -14,79 +15,16 @@ const api = axios.create({
 });
 
 export default defineBoot(({ router, store }) => {
-  // 요청 인터셉터
-  api.interceptors.request.use(config => {
-    const userStore = useUserStore(store);
-    if (userStore.accessToken) {
-      config.headers.Authorization = `Bearer ${userStore.accessToken}`;
-    }
-    return config;
+  // 인터셉터 없는 별도 클라이언트 전달
+  const refreshClient = axios.create({
+    baseURL: api.defaults.baseURL,
+    timeout: api.defaults.timeout,
   });
-
-  // 응답 인터셉터
-  api.interceptors.response.use(
-    response => response,
-    async error => {
-      const userStore = useUserStore();
-      const originalRequest = error.config;
-
-      if (
-        error.response?.status === 403 &&
-        error.response?.data?.message === 'ACCESS_DENIED'
-      ) {
-        // 권한이 없는 경우
-        router.push('/error/denied');
-        return Promise.reject(error);
-      }
-
-      // token 관련 인증 실패
-      if (
-        error.response?.status === 401 &&
-        error.response?.data?.errorCode?.startsWith('TOKEN_') &&
-        userStore.refreshToken
-      ) {
-        try {
-          // refresh token을 통해 access token 발급 API 호출
-          const newAccessToken = await axios.post(
-            'http://localhost:8081/refresh',
-            {},
-            { withCredentials: true },
-          );
-
-          if (!newAccessToken.data) {
-            // refresh token이 유효하지 않은 경우
-            userStore.clearAuthInfo();
-            router.push('/login');
-            return Promise.reject(error);
-          }
-
-          // 새로운 access token 저장
-          userStore.setAuthInfo(
-            userStore.userId,
-            userStore.username,
-            newAccessToken.data,
-            userStore.email,
-            userStore.userRole,
-          );
-
-          // 실패했던 요청에 새 토큰 넣어서 재시도
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken.data}`;
-          return api(originalRequest);
-        } catch (e) {
-          console.error(e);
-          userStore.clearAuthInfo();
-          router.push('/login');
-        }
-      } else if (!userStore.refreshToken || error.response?.status === 403) {
-        // refresh token이 없거나 다른 이유로 403 발생한 경우
-        // → 로그아웃 처리
-        userStore.clearAuthInfo();
-        router.push('/login');
-      }
-
-      return Promise.reject(error);
-    },
-  );
+  installAuthInterceptors(api, {
+    refreshClient,
+    userStore: useUserStore(store),
+    router,
+  });
 });
 
 export { api };
