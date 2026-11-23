@@ -9,6 +9,8 @@ import com.google.firebase.messaging.SendResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -153,13 +155,13 @@ class FcmNotificationServiceTest {
     }
 
     @Test
-    @DisplayName("혼합 발송 결과에서 등록 해제된 토큰만 삭제하고 성공·일시 실패 토큰은 유지한다")
+    @DisplayName("혼합 발송 결과에서 등록 해제된 토큰만 삭제하고 인자 오류·성공·일시 실패 토큰은 유지한다")
     void removesOnlyUnregisteredTokensFromMixedResults() throws Exception {
         when(mapper.findAllTokens()).thenReturn(List.of(
                 registeredToken(1L, "healthy"), registeredToken(2L, "expired"),
-                registeredToken(3L, "temporary-failure")));
+                registeredToken(3L, "temporary-failure"), registeredToken(4L, "invalid-argument")));
         stubResponses(successfulResponse(), failedResponse(MessagingErrorCode.UNREGISTERED),
-                failedResponse(MessagingErrorCode.UNAVAILABLE));
+                failedResponse(MessagingErrorCode.UNAVAILABLE), failedResponse(MessagingErrorCode.INVALID_ARGUMENT));
 
         try (MockedStatic<FirebaseMessaging> firebase = mockStatic(FirebaseMessaging.class)) {
             firebase.when(FirebaseMessaging::getInstance).thenReturn(messaging);
@@ -167,6 +169,35 @@ class FcmNotificationServiceTest {
             service.sendNotificationToAll(pushRequest(null));
 
             verify(mapper).deleteFcmTokens(List.of("expired"));
+        }
+    }
+
+    @ParameterizedTest(name = "전체 발송={0}")
+    @ValueSource(booleans = {true, false})
+    @DisplayName("INVALID_ARGUMENT는 메시지 오류일 수 있으므로 전체·개별 발송에서 토큰을 삭제하지 않는다")
+    void preservesTokensWhenArgumentsAreInvalid(boolean broadcast) throws Exception {
+        List<FcmTokenResponseDto> tokens = List.of(
+                registeredToken(1L, "desktop"), registeredToken(1L, "mobile"));
+        if (broadcast) {
+            when(mapper.findAllTokens()).thenReturn(tokens);
+        } else {
+            when(mapper.findFcmTokenByUserId(1L)).thenReturn(tokens);
+        }
+        // FCM이 공통 메시지의 문제로 모든 수신 대상에 같은 오류를 반환하는 경우도 보존한다.
+        stubResponses(failedResponse(MessagingErrorCode.INVALID_ARGUMENT),
+                failedResponse(MessagingErrorCode.INVALID_ARGUMENT));
+
+        try (MockedStatic<FirebaseMessaging> firebase = mockStatic(FirebaseMessaging.class)) {
+            firebase.when(FirebaseMessaging::getInstance).thenReturn(messaging);
+
+            if (broadcast) {
+                service.sendNotificationToAll(pushRequest(null));
+            } else {
+                service.sendNotificationToUser(pushRequest(1L));
+            }
+
+            assertSentMessage(List.of("desktop", "mobile"));
+            verify(mapper, never()).deleteFcmTokens(any());
         }
     }
 

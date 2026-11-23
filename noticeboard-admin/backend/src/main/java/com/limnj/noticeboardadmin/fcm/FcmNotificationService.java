@@ -65,12 +65,14 @@ public class FcmNotificationService {
                     MessagingErrorCode errorCode = exception.getMessagingErrorCode();
 
                     if (errorCode == MessagingErrorCode.UNREGISTERED
-                            || errorCode == MessagingErrorCode.INVALID_ARGUMENT
                             || errorCode == MessagingErrorCode.SENDER_ID_MISMATCH) {
                         // 등록되지 않은 토큰 → DB 삭제
                         String invalidToken = tokens.get(i);
                         invalidTokens.add(invalidToken);
                         log.warn("Invalid FCM token detected; removing its registration");
+                    } else if (errorCode == MessagingErrorCode.INVALID_ARGUMENT) {
+                        // 메시지 payload 오류 → 토큰 유지, 메시지 payload 확인 필요
+                        log.warn("FCM returned INVALID_ARGUMENT; retaining token registration and checking message payload is required");
                     }
                 }
             }
