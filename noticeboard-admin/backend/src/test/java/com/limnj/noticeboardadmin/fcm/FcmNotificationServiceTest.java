@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -100,8 +99,11 @@ class FcmNotificationServiceTest {
         when(mapper.findAllTokens()).thenReturn(List.of());
 
         try (MockedStatic<FirebaseMessaging> firebase = mockStatic(FirebaseMessaging.class)) {
-            service.sendNotificationToAll(pushRequest(null));
+            SendPushResponseDto result = service.sendNotificationToAll(pushRequest(null));
 
+            assertThat(result.getSuccessCount()).isZero();
+            assertThat(result.getFailureCount()).isZero();
+            assertThat(result.getErrorCounts()).isEmpty();
             firebase.verifyNoInteractions();
         }
     }
@@ -129,8 +131,11 @@ class FcmNotificationServiceTest {
         try (MockedStatic<FirebaseMessaging> firebase = mockStatic(FirebaseMessaging.class)) {
             firebase.when(FirebaseMessaging::getInstance).thenReturn(messaging);
 
-            service.sendNotificationToAll(pushRequest(null));
+            SendPushResponseDto result = service.sendNotificationToAll(pushRequest(null));
 
+            assertThat(result.getSuccessCount()).isEqualTo(2);
+            assertThat(result.getFailureCount()).isZero();
+            assertThat(result.getErrorCounts()).isEmpty();
             assertSentMessage(List.of("anonymous-device", "user-device"));
             verify(mapper, never()).deleteFcmTokens(any());
         }
@@ -166,8 +171,14 @@ class FcmNotificationServiceTest {
         try (MockedStatic<FirebaseMessaging> firebase = mockStatic(FirebaseMessaging.class)) {
             firebase.when(FirebaseMessaging::getInstance).thenReturn(messaging);
 
-            service.sendNotificationToAll(pushRequest(null));
+            SendPushResponseDto result = service.sendNotificationToAll(pushRequest(null));
 
+            assertThat(result.getSuccessCount()).isEqualTo(1);
+            assertThat(result.getFailureCount()).isEqualTo(3);
+            assertThat(result.getErrorCounts()).containsOnly(
+                    org.assertj.core.api.Assertions.entry("UNREGISTERED", 1),
+                    org.assertj.core.api.Assertions.entry("UNAVAILABLE", 1),
+                    org.assertj.core.api.Assertions.entry("INVALID_ARGUMENT", 1));
             verify(mapper).deleteFcmTokens(List.of("expired"));
         }
     }
@@ -190,11 +201,14 @@ class FcmNotificationServiceTest {
         try (MockedStatic<FirebaseMessaging> firebase = mockStatic(FirebaseMessaging.class)) {
             firebase.when(FirebaseMessaging::getInstance).thenReturn(messaging);
 
-            if (broadcast) {
-                service.sendNotificationToAll(pushRequest(null));
-            } else {
-                service.sendNotificationToUser(pushRequest(1L));
-            }
+            SendPushResponseDto result = broadcast
+                    ? service.sendNotificationToAll(pushRequest(null))
+                    : service.sendNotificationToUser(pushRequest(1L));
+
+            assertThat(result.getSuccessCount()).isZero();
+            assertThat(result.getFailureCount()).isEqualTo(2);
+            assertThat(result.getErrorCounts()).containsOnly(
+                    org.assertj.core.api.Assertions.entry("INVALID_ARGUMENT", 2));
 
             assertSentMessage(List.of("desktop", "mobile"));
             verify(mapper, never()).deleteFcmTokens(any());
@@ -211,8 +225,11 @@ class FcmNotificationServiceTest {
         try (MockedStatic<FirebaseMessaging> firebase = mockStatic(FirebaseMessaging.class)) {
             firebase.when(FirebaseMessaging::getInstance).thenReturn(messaging);
 
-            assertThatCode(() -> service.sendNotificationToAll(pushRequest(null)))
-                    .doesNotThrowAnyException();
+            SendPushResponseDto result = service.sendNotificationToAll(pushRequest(null));
+            assertThat(result.getSuccessCount()).isZero();
+            assertThat(result.getFailureCount()).isEqualTo(1);
+            assertThat(result.getErrorCounts()).containsOnly(
+                    org.assertj.core.api.Assertions.entry("UNKNOWN", 1));
 
             verify(messaging).sendEachForMulticast(any(MulticastMessage.class));
             verify(mapper, never()).deleteFcmTokens(any());

@@ -36,12 +36,8 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * 실제 Spring 서비스, MyBatis 매퍼, 실행 중인 PostgreSQL을 연결하는 통합 테스트다.
- * application.yml의 test 프로필과 로컬 비밀 설정에서 DB 접속 정보를 읽는다.
- * POSTGRES_TEST_DB가 있으면 사용하고, 없으면 POSTGRES_DB(기본값 noticeboard)에 접속한다.
- * 접속한 DB 안에 테스트마다 임시 스키마를 생성하므로 DB 생성 권한은 필요 없다.
- * 기존 테이블은 사용하지 않으며 스키마와 데이터 모두 종료 시 롤백한다.
- * 푸시 발송은 호출하지 않으므로 실제 Firebase 연결이나 기기 토큰은 필요 없다.
+ * 실제 Spring 서비스, MyBatis 매퍼, 실행 중인 PostgreSQL을 연결하는 통합 테스트
+ * 푸시 발송은 호출하지 않으므로 실제 Firebase 연결이나 기기 토큰은 필요 없음
  */
 @SpringJUnitConfig(classes = FcmNotificationServiceIntegrationTest.TestConfig.class,
         initializers = ConfigDataApplicationContextInitializer.class)

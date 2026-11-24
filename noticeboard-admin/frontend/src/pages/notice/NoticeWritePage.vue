@@ -136,10 +136,25 @@ const onSaveNotice = async () => {
     });
 
     if (userStore.userRole === 'ROLE_ADMIN') {
-      await api.post('/push/all', {
-        title: '새로운 공지사항이 등록되었습니다!',
-        body: form.value.title,
-      });
+      try {
+        const { data } = await api.post('/push/all', {
+          title: '새로운 공지사항이 등록되었습니다!',
+          body: form.value.title,
+        });
+        if (data.failureCount > 0) {
+          Notify.create({
+            message: `공지 저장은 완료됐지만 알림 ${data.failureCount}건의 발송이 실패했습니다.`,
+            color: 'warning',
+            position: 'top',
+          });
+        }
+      } catch {
+        Notify.create({
+          message: '공지 저장은 완료됐지만 알림 발송 요청이 실패했습니다.',
+          color: 'warning',
+          position: 'top',
+        });
+      }
     }
 
     Notify.create({
