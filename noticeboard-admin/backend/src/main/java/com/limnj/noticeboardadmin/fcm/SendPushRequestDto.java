@@ -25,7 +25,7 @@ public class SendPushRequestDto {
     @JsonIgnore
     @AssertTrue(message = "알림 제목과 본문은 합계 4000바이트 이하여야 합니다.")
     public boolean isContentSizeValid() {
-        // FCM에서 알림 제목과 본문을 합쳐서 4000바이트를 초과하면 안되기 때문에 설정
+        // FCM에서 알림 제목과 본문을 합쳐서 4000바이트로 제한
         if (title == null || body == null) return true;
         return (long) title.getBytes(StandardCharsets.UTF_8).length
                 + body.getBytes(StandardCharsets.UTF_8).length <= 4000;

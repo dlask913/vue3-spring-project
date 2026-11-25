@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,6 +20,9 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +40,112 @@ class FcmNotificationServiceTest {
 
     @InjectMocks
     private FcmNotificationService service;
+
+    @ParameterizedTest(name = "전체 발송={0}, 대상={1}개")
+    @CsvSource({"true,500", "true,501", "true,1001", "false,500", "false,501", "false,1001"})
+    @DisplayName("전체·개별 발송을 최대 500개씩 나누고 누락·중복 없이 결과를 합산한다")
+    void splitsMulticastAt500Tokens(boolean broadcast, int tokenCount) throws Exception {
+        List<FcmTokenResponseDto> tokens = IntStream.range(0, tokenCount)
+                .mapToObj(i -> registeredToken(1L, "device-" + i)).toList();
+        if (broadcast) {
+            when(mapper.findAllTokens()).thenReturn(tokens);
+        } else {
+            when(mapper.findFcmTokenByUserId(1L)).thenReturn(tokens);
+        }
+        SendResponse success = successfulResponse();
+        when(messaging.sendEachForMulticast(any(MulticastMessage.class))).thenAnswer(invocation -> {
+            MulticastMessage message = invocation.getArgument(0);
+            List<?> sentTokens = (List<?>) ReflectionTestUtils.getField(message, "tokens");
+            return batchResponse(Collections.nCopies(sentTokens.size(), success));
+        });
+
+        try (MockedStatic<FirebaseMessaging> firebase = mockStatic(FirebaseMessaging.class)) {
+            firebase.when(FirebaseMessaging::getInstance).thenReturn(messaging);
+            SendPushResponseDto result = broadcast
+                    ? service.sendNotificationToAll(pushRequest(null))
+                    : service.sendNotificationToUser(pushRequest(1L));
+
+            assertThat(result.getSuccessCount()).isEqualTo(tokenCount);
+            assertThat(result.getFailureCount()).isZero();
+            assertThat(result.getErrorCounts()).isEmpty();
+            ArgumentCaptor<MulticastMessage> captor = ArgumentCaptor.forClass(MulticastMessage.class);
+            verify(messaging, times((tokenCount + 499) / 500)).sendEachForMulticast(captor.capture());
+            List<Object> allSentTokens = new ArrayList<>();
+            for (MulticastMessage message : captor.getAllValues()) {
+                List<?> sentTokens = (List<?>) ReflectionTestUtils.getField(message, "tokens");
+                assertThat(sentTokens.size()).isBetween(1, 500);
+                allSentTokens.addAll(sentTokens);
+                assertThat(message).extracting("notification.title", "notification.body")
+                        .containsExactly("새 공지", "공지 내용을 확인해 주세요.");
+            }
+            assertThat(allSentTokens).containsExactlyElementsOf(tokens.stream().map(FcmTokenResponseDto::getToken).toList());
+            verify(mapper, never()).deleteFcmTokens(any());
+        }
+    }
+
+    @Test
+    @DisplayName("중간 묶음이 실패해도 다음 묶음을 발송하고 묶음 내 위치에 맞는 토큰만 삭제한다")
+    void continuesAfterBatchFailureAndDeletesMatchingTokens() throws Exception {
+        when(mapper.findAllTokens()).thenReturn(IntStream.range(0, 1001)
+                .mapToObj(i -> registeredToken(1L, "device-" + i)).toList());
+        List<SendResponse> firstResponses = new ArrayList<>(Collections.nCopies(499, successfulResponse()));
+        firstResponses.add(failedResponse(MessagingErrorCode.UNREGISTERED));
+        FirebaseMessagingException unavailable = mock(FirebaseMessagingException.class);
+        when(unavailable.getMessagingErrorCode()).thenReturn(MessagingErrorCode.UNAVAILABLE);
+        BatchResponse firstBatch = batchResponse(firstResponses);
+        BatchResponse lastBatch = batchResponse(List.of(failedResponse(MessagingErrorCode.UNREGISTERED)));
+        when(messaging.sendEachForMulticast(any(MulticastMessage.class)))
+                .thenReturn(firstBatch)
+                .thenThrow(unavailable)
+                .thenReturn(lastBatch);
+
+        try (MockedStatic<FirebaseMessaging> firebase = mockStatic(FirebaseMessaging.class)) {
+            firebase.when(FirebaseMessaging::getInstance).thenReturn(messaging);
+            SendPushResponseDto result = service.sendNotificationToAll(pushRequest(null));
+
+            assertThat(result.getSuccessCount()).isEqualTo(499);
+            assertThat(result.getFailureCount()).isEqualTo(502);
+            assertThat(result.getErrorCounts()).containsOnly(
+                    org.assertj.core.api.Assertions.entry("UNREGISTERED", 2),
+                    org.assertj.core.api.Assertions.entry("UNAVAILABLE", 500));
+            verify(messaging, times(3)).sendEachForMulticast(any(MulticastMessage.class));
+            var order = inOrder(mapper);
+            order.verify(mapper).findAllTokens();
+            order.verify(mapper).deleteFcmTokens(List.of("device-499"));
+            order.verify(mapper).deleteFcmTokens(List.of("device-1000"));
+            order.verifyNoMoreInteractions();
+        }
+    }
+
+    @ParameterizedTest(name = "전체 발송={0}")
+    @ValueSource(booleans = {true, false})
+    @DisplayName("발신자 불일치는 설정 오류일 수 있으므로 토큰을 유지하고 실패 건수를 반환한다")
+    void preservesTokensWhenSenderDoesNotMatch(boolean broadcast) throws Exception {
+        List<FcmTokenResponseDto> tokens = List.of(registeredToken(1L, "device"));
+        if (broadcast) {
+            when(mapper.findAllTokens()).thenReturn(tokens);
+        } else {
+            when(mapper.findFcmTokenByUserId(1L)).thenReturn(tokens);
+        }
+        stubResponses(failedResponse(MessagingErrorCode.SENDER_ID_MISMATCH));
+        try (MockedStatic<FirebaseMessaging> firebase = mockStatic(FirebaseMessaging.class)) {
+            firebase.when(FirebaseMessaging::getInstance).thenReturn(messaging);
+            SendPushResponseDto result = broadcast
+                    ? service.sendNotificationToAll(pushRequest(null))
+                    : service.sendNotificationToUser(pushRequest(1L));
+            assertThat(result.getSuccessCount()).isZero();
+            assertThat(result.getFailureCount()).isEqualTo(1);
+            assertThat(result.getErrorCounts()).containsOnly(
+                    org.assertj.core.api.Assertions.entry("SENDER_ID_MISMATCH", 1));
+            verify(mapper, never()).deleteFcmTokens(any());
+        }
+    }
+
+    private BatchResponse batchResponse(List<SendResponse> responses) {
+        BatchResponse batch = mock(BatchResponse.class);
+        when(batch.getResponses()).thenReturn(responses);
+        return batch;
+    }
 
     @Test
     @DisplayName("익명 기기의 신규 토큰은 사용자 ID 없이 저장 요청한다")
