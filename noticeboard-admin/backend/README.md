@@ -6,10 +6,10 @@
 | --- | --- | --- | --- | --- |
 | POST | `/member` | Admin 계정 가입 | 없음 | 제한 없음 |
 | POST | `/login` | 1차 로그인 후 mfaToken 반환 및 이메일 인증 코드 발송 | 아이디·비밀번호 | 제한 없음 |
-| POST | `/email-verify` | 이메일 코드 확인 후 로그인 토큰 발급 | 이메일 인증 코드 | 제한 없음 |
-| POST | `/resend-code` | 요청한 이메일로 인증 코드 재발송 | 없음 | 제한 없음 |
+| POST | `/email-verify` | MFA 계정의 이메일 코드 확인 후 로그인 토큰 발급 | mfaToken + 이메일 인증 코드 | 제한 없음 |
+| POST | `/resend-code` | MFA 계정의 이메일로 인증 코드 재발송 | mfaToken | 제한 없음 |
 | POST | `/qr-register` | 로그인한 본인 계정의 OTP 키 등록 및 QR 반환 | JWT | 로그인한 사용자 |
-| POST | `/qr-verify` | 등록된 OTP 확인 후 로그인 토큰 발급 | 인증 앱의 6자리 OTP | 제한 없음 |
+| POST | `/qr-verify` | MFA 계정의 OTP 확인 후 로그인 토큰 발급 | mfaToken + 인증 앱의 6자리 OTP | 제한 없음 |
 | POST | `/refresh` | Access Token 재발급 요청 | `refreshToken` 쿠키 | 제한 없음 |
 | POST | `/logout` | 쿠키의 Refresh Token 폐기, 회원 FCM 연결 해제, 쿠키 삭제 후 204 응답 | Refresh Token 쿠키로 대상 확인 | 역할 제한 없음 |
 

@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
     TOKEN_EXPIRED(401, "ACCESS TOKEN 만료"),
+    MFA_TOKEN_INVALID(401, "2차 인증 대기 토큰이 없거나 만료되었습니다. 다시 로그인해주세요."),
     TOKEN_MALFORMED(401, "잘못된 ACCESS TOKEN"),
     TOKEN_INVALID_SIGNATURE(401, "잘못된 ACCESS TOKEN"),
     ACCESS_DENIED(403,"API 접근 권한 부족"),

@@ -12,7 +12,7 @@ public interface MemberService extends UserDetailsService {
     /* 유저 ID & Password 검증 - 1차 로그인 */
     LoginResponseDto loginWithCredentials(LoginRequestDto requestDto);
     /* 2차 인증 성공 후 토큰 발급 - 2차 로그인 */
-    LoginResponseDto generateSecondaryAuthToken(LoginRequestDto requestDto);
+    LoginResponseDto generateSecondaryAuthToken(Long verifiedMemberId, String fcmToken);
     /* QR 시크릿 키 저장 */
     void updateSecretKeyByUsername(String username, String secretKey);
     /* QR 시크릿 키 조회 */

@@ -1,6 +1,7 @@
 package com.limnj.noticeboardadmin.config;
 
 import com.limnj.noticeboardadmin.auth.AuthController;
+import com.limnj.noticeboardadmin.auth.MfaTokenService;
 import com.limnj.noticeboardadmin.auth.EmailVerificationService;
 import com.limnj.noticeboardadmin.auth.QrVerificationService;
 import com.limnj.noticeboardadmin.config.handler.CustomAccessDeniedHandler;
@@ -31,6 +32,7 @@ class AdminAuthorizationTest {
     @MockBean JwtTokenUtil jwt;
     @MockBean(name = "concurrentEmailVerificationServiceImpl") EmailVerificationService emailVerification;
     @MockBean QrVerificationService qrVerification;
+    @MockBean MfaTokenService mfaTokens;
     @MockBean FcmNotificationService notifications;
 
     @Test
@@ -46,7 +48,7 @@ class AdminAuthorizationTest {
         mvc.perform(post("/push/all").with(user("manager").roles("MANAGER")))
                 .andExpect(status().isForbidden());
         mvc.perform(post("/push/all").with(user("admin").roles("ADMIN"))
-                        .contentType("application/json").content("{}"))
+                        .contentType("application/json").content("{\"title\":\"공지\",\"body\":\"내용\"}"))
                 .andExpect(status().isOk());
         verify(notifications).sendNotificationToAll(any());
     }

@@ -2,7 +2,10 @@ package com.limnj.noticeboardadmin.auth;
 
 import com.google.zxing.WriterException;
 import com.limnj.noticeboardadmin.jwt.RefreshTokenServiceImpl;
-import com.limnj.noticeboardadmin.member.LoginRequestDto;
+import com.limnj.noticeboardadmin.member.AdminMemberResponseDto;
+import com.limnj.noticeboardadmin.exception.BizException;
+import com.limnj.noticeboardadmin.exception.ErrorCode;
+import jakarta.validation.Valid;
 import com.limnj.noticeboardadmin.member.LoginResponseDto;
 import com.limnj.noticeboardadmin.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,31 +26,35 @@ public class AuthController {
     private final MemberService memberServiceImpl;
     private final EmailVerificationService emailVerificationService;
     private final QrVerificationService qrVerificationService;
+    private final MfaTokenService mfaTokenService;
     @Value("${httponly-secure-option}")
     private boolean secureCookie;
 
     public AuthController(MemberService memberServiceImpl,
-                          @Qualifier("concurrentEmailVerificationServiceImpl") EmailVerificationService emailVerificationService, QrVerificationService qrVerificationService) {
+                          @Qualifier("concurrentEmailVerificationServiceImpl") EmailVerificationService emailVerificationService,
+                          QrVerificationService qrVerificationService, MfaTokenService mfaTokenService) {
         this.memberServiceImpl = memberServiceImpl;
         this.emailVerificationService = emailVerificationService;
         this.qrVerificationService = qrVerificationService;
+        this.mfaTokenService = mfaTokenService;
     }
 
     @PostMapping("/email-verify")
     @Operation(summary = "2FA 이메일 인증 코드 검증 API")
-    public ResponseEntity<?> verifyAuthenticationCode(@RequestBody LoginRequestDto requestDto) {
-        boolean authResult = emailVerificationService.verifyCode(requestDto.getEmail(), requestDto.getAuthenticationCode());
+    public ResponseEntity<?> verifyAuthenticationCode(@Valid @RequestBody MfaVerificationRequestDto requestDto) {
+        AdminMemberResponseDto member = findPendingMember(requestDto.getMfaToken());
+        boolean authResult = emailVerificationService.verifyCode(member.getEmail(), requestDto.getAuthenticationCode());
         if(!authResult){
             return ResponseEntity.badRequest().body("인증 코드 검증에 실패하였습니다.");
         }
-        LoginResponseDto loginResponseDto = memberServiceImpl.generateSecondaryAuthToken(requestDto);
-        return secondaryAuthenticationResponse(loginResponseDto);
+        return completeAuthentication(requestDto, member.getId());
     }
 
     @PostMapping("/resend-code")
     @Operation(summary = "2FA 이메일 인증 코드 발송 API")
-    public ResponseEntity<?> resendAuthenticationCode(@RequestBody LoginRequestDto requestDto) {
-        boolean authResult = emailVerificationService.sendVerificationCode(requestDto.getEmail());
+    public ResponseEntity<?> resendAuthenticationCode(@RequestBody MfaResendRequestDto requestDto) {
+        AdminMemberResponseDto member = findPendingMember(requestDto.getMfaToken());
+        boolean authResult = emailVerificationService.sendVerificationCode(member.getEmail());
         if(!authResult){
             return ResponseEntity.badRequest().body("코드 재발송에 실패하였습니다.");
         }
@@ -63,13 +70,28 @@ public class AuthController {
 
     @PostMapping("/qr-verify")
     @Operation(summary = "2FA QR 인증 코드 검증 API")
-    public ResponseEntity<?> verifyQrAuthenticationCode(@RequestBody LoginRequestDto requestDto) {
+    public ResponseEntity<?> verifyQrAuthenticationCode(@Valid @RequestBody MfaVerificationRequestDto requestDto) {
+        AdminMemberResponseDto member = findPendingMember(requestDto.getMfaToken());
         boolean authResult = qrVerificationService.verifyCode(
-                requestDto.getEmail(), Integer.parseInt(requestDto.getAuthenticationCode()));
+                member.getEmail(), Integer.parseInt(requestDto.getAuthenticationCode()));
         if(!authResult){
             return ResponseEntity.badRequest().body("인증 코드 검증에 실패하였습니다.");
         }
-        LoginResponseDto loginResponseDto = memberServiceImpl.generateSecondaryAuthToken(requestDto);
+        return completeAuthentication(requestDto, member.getId());
+    }
+
+    private AdminMemberResponseDto findPendingMember(String mfaToken) {
+        Long memberId = mfaTokenService.findMemberId(mfaToken)
+                .orElseThrow(() -> new BizException(ErrorCode.MFA_TOKEN_INVALID));
+        return memberServiceImpl.findMemberById(memberId);
+    }
+
+    private ResponseEntity<LoginResponseDto> completeAuthentication(MfaVerificationRequestDto requestDto, Long memberId) {
+        // 검증 도중 만료됐거나 다른 요청이 먼저 완료했다면 발급하지 않는다.
+        if (!mfaTokenService.consumeToken(requestDto.getMfaToken(), memberId)) {
+            throw new BizException(ErrorCode.MFA_TOKEN_INVALID);
+        }
+        LoginResponseDto loginResponseDto = memberServiceImpl.generateSecondaryAuthToken(memberId, requestDto.getFcmToken());
         return secondaryAuthenticationResponse(loginResponseDto);
     }
 

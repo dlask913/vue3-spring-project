@@ -7,6 +7,8 @@ import com.limnj.noticeboardadmin.exception.ErrorCode;
 import com.limnj.noticeboardadmin.jwt.JwtTokenUtil;
 import com.limnj.noticeboardadmin.member.LoginResponseDto;
 import com.limnj.noticeboardadmin.member.MemberService;
+import com.limnj.noticeboardadmin.member.AdminMemberResponseDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -21,15 +23,16 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /** 실제 컨트롤러,JSON 직렬화,보안 필터를 사용하고 인증 및 토큰 발급 서비스는 대체 */
 @WebMvcTest(AuthController.class)
-@Import({SecurityConfig.class, CustomAccessDeniedHandler.class})
+@Import({SecurityConfig.class, CustomAccessDeniedHandler.class, MfaTokenService.class})
 @DisplayName("2차 인증 성공 후 Refresh Token 쿠키 전달")
 class AuthRefreshTokenCookieTest {
     @Autowired private MockMvc mvc;
@@ -39,10 +42,20 @@ class AuthRefreshTokenCookieTest {
     @MockBean(name = "concurrentEmailVerificationServiceImpl")
     private EmailVerificationService emailVerification;
     @MockBean private QrVerificationService qrVerification;
+    @Autowired private MfaTokenService mfaTokens;
 
-    private static final String REQUEST = """
-            {"username":"admin","email":"owner@example.com","authenticationCode":"123456"}
-            """;
+    private String request;
+
+    @BeforeEach
+    void preparePendingMember() {
+        AdminMemberResponseDto member = new AdminMemberResponseDto();
+        ReflectionTestUtils.setField(member, "id", 10L);
+        ReflectionTestUtils.setField(member, "email", "owner@example.com");
+        when(members.findMemberById(10L)).thenReturn(member);
+        request = """
+                {"mfaToken":"%s","authenticationCode":"123456"}
+                """.formatted(mfaTokens.issueToken(10L));
+    }
 
     @ParameterizedTest(name = "{0}, Secure={1}")
     @CsvSource({"/email-verify, false", "/email-verify, true", "/qr-verify, false", "/qr-verify, true"})
@@ -50,7 +63,7 @@ class AuthRefreshTokenCookieTest {
     void returnsRefreshTokenOnlyInCookie(String endpoint, boolean secure) throws Exception {
         ReflectionTestUtils.setField(controller, "secureCookie", secure);
         stubVerification(endpoint, true);
-        when(members.generateSecondaryAuthToken(any())).thenReturn(LoginResponseDto.builder()
+        when(members.generateSecondaryAuthToken(eq(10L), isNull())).thenReturn(LoginResponseDto.builder()
                 .memberId(10L)
                 .username("admin")
                 .email("owner@example.com")
@@ -59,7 +72,7 @@ class AuthRefreshTokenCookieTest {
                 .refreshToken("issued-refresh-token")
                 .build());
 
-        mvc.perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(REQUEST))
+        mvc.perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(request))
                 .andExpect(status().isOk())
                 .andExpect(cookie().value("refreshToken", "issued-refresh-token"))
                 .andExpect(cookie().httpOnly("refreshToken", true))
@@ -81,11 +94,11 @@ class AuthRefreshTokenCookieTest {
     void invalidCodeDoesNotSetCookie(String endpoint) throws Exception {
         stubVerification(endpoint, false);
 
-        mvc.perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(REQUEST))
+        mvc.perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(request))
                 .andExpect(status().isBadRequest())
                 .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE));
 
-        verifyNoInteractions(members);
+        verify(members, never()).generateSecondaryAuthToken(any(), any());
     }
 
     @ParameterizedTest
@@ -93,10 +106,10 @@ class AuthRefreshTokenCookieTest {
     @DisplayName("코드 검증 후 계정 조회가 실패해도 Refresh Token 쿠키를 설정하지 않는다")
     void tokenIssuanceFailureDoesNotSetCookie(String endpoint) throws Exception {
         stubVerification(endpoint, true);
-        when(members.generateSecondaryAuthToken(any()))
+        when(members.generateSecondaryAuthToken(eq(10L), isNull()))
                 .thenThrow(new BizException(ErrorCode.MEMBER_NOT_FOUND));
 
-        mvc.perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(REQUEST))
+        mvc.perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(request))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value("MEMBER_NOT_FOUND"))
                 .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE));

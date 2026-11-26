@@ -46,4 +46,10 @@ public class MfaTokenService {
         }
         return Optional.ofNullable(pendingMembers.getIfPresent(mfaToken));
     }
+
+    /** 코드 검증을 마친 요청 중 하나만 로그인 토큰 발급 단계로 진행하도록 소비한다. */
+    public boolean consumeToken(String mfaToken, Long memberId) {
+        if (mfaToken == null || mfaToken.isBlank() || memberId == null) return false;
+        return pendingMembers.asMap().remove(mfaToken, memberId);
+    }
 }

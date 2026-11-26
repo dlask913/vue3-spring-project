@@ -51,4 +51,24 @@ class MfaTokenServiceTest {
         assertThat(service.findMemberId(" ")).isEmpty();
         assertThat(service.findMemberId("unknown-token")).isEmpty();
     }
+
+    @Test
+    @DisplayName("동일 토큰을 동시에 소비해도 한 요청만 성공한다")
+    void consumesTokenOnlyOnceUnderConcurrentRequests() {
+        String token = service.issueToken(1L);
+        long successes = java.util.stream.IntStream.range(0, 20).parallel()
+                .filter(i -> service.consumeToken(token, 1L)).count();
+        assertThat(successes).isEqualTo(1);
+        assertThat(service.findMemberId(token)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("계정이 다르면 토큰을 소비하지 않고 만료된 토큰도 소비할 수 없다")
+    void rejectsMismatchedAndExpiredConsumption() {
+        String token = service.issueToken(1L);
+        assertThat(service.consumeToken(token, 2L)).isFalse();
+        assertThat(service.findMemberId(token)).contains(1L);
+        elapsedNanos.set(Duration.ofMinutes(5).toNanos());
+        assertThat(service.consumeToken(token, 1L)).isFalse();
+    }
 }

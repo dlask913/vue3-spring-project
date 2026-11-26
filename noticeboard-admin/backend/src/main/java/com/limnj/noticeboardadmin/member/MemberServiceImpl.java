@@ -70,14 +70,14 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public LoginResponseDto generateSecondaryAuthToken(LoginRequestDto requestDto) {
-        AdminMemberResponseDto findMember = memberMapper.findMemberByUsername(requestDto.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
+    public LoginResponseDto generateSecondaryAuthToken(Long verifiedMemberId, String fcmToken) {
+        AdminMemberResponseDto findMember = findMemberById(verifiedMemberId);
+        loginPolicyService.validateAccountStatus(findMember.getLockUntil());
 
         // FCM 토큰 저장
         FcmTokenRequestDto fcmTokenRequestDto = FcmTokenRequestDto.builder()
                 .userId(findMember.getId())
-                .token(requestDto.getFcmToken() == null ? "NULL" : requestDto.getFcmToken())
+                .token(fcmToken == null ? "NULL" : fcmToken)
                 .build();
         fcmNotificationService.updateFcmTokenForUser(fcmTokenRequestDto);
 
