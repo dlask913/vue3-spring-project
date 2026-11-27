@@ -156,6 +156,21 @@ class RefreshTokenIntegrationTest {
                         exception -> assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.REFRESH_TOKEN_INVALID));
     }
 
+    @Test
+    @DisplayName("Refresh Token 쿠키 없이 재발급을 요청하면 401 인증 오류를 반환한다")
+    void rejectsMissingCookie() throws Exception {
+        mvc.perform(post("/refresh"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorCode").value("REFRESH_TOKEN_INVALID"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", " "})
+    @DisplayName("Refresh Token 쿠키가 비어 있거나 공백이면 401 인증 오류를 반환한다")
+    void rejectsBlankCookie(String token) throws Exception {
+        assertRejected(token);
+    }
+
     private void assertRejected(String token) throws Exception {
         mvc.perform(post("/refresh").cookie(new Cookie("refreshToken", token)))
                 .andExpect(status().isUnauthorized())
